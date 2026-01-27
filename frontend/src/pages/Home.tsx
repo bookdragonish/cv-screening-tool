@@ -1,13 +1,13 @@
 
-function App() {
+function Home() {
 
   return (
     <>
-      <div>
+      <div className="w-full h-screen">
 
       </div>
     </>
   )
 }
 
-export default App
+export default Home;
