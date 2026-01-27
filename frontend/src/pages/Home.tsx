@@ -3,7 +3,7 @@ function App() {
 
   return (
     <>
-      <div>
+      <div className="w-full h-screen">
 
       </div>
     </>
