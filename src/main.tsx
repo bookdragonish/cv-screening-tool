@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './css/main.css'
+import './lib/styles/globals.css'
 import Home from './pages/Home.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
