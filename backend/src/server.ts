@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import { pool } from "./db.js";
+import { pool } from "./pool.js";
 
 const app = express();
 app.use(express.json());
