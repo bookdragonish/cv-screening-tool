@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { pool } from "../pool.js";
+import { pool } from "../db/pool.js";
 
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
