@@ -1,4 +1,8 @@
-# Denne filen kan brukes gjennom å kjøre (python backend/src/cvToMarkdown.py "backend\\src\\Bruce Wayne Mock CV.pdf") i terminalen
+# Usage: Activate venv in backend folder, then run:
+#   .\venv\Scripts\activate
+#   python src\cvToMarkdown.py "src\mockCV.pdf"
+# And to exit, run:
+#   deactivate
 
 import sys
 
@@ -11,10 +15,9 @@ def cv_to_markdown(pdf_path: str):
         artifact_dict=create_model_dict(),
     )
     rendered = converter(pdf_path)
-    text, _, images = text_from_rendered(rendered)
+    text, _, _ = text_from_rendered(rendered)
     return text
 
-# Bare for testing:
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Format for the input: python cvToMarkdown.py <pdf_path>")
