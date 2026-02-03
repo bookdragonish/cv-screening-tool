@@ -1,9 +1,3 @@
-# Usage: Activate venv in backend folder, then run:
-#   .\venv\Scripts\activate
-#   python src\cvToMarkdown.py "src\mockCV.pdf"
-# And to exit, run:
-#   deactivate
-
 import sys
 
 from marker.converters.pdf import PdfConverter
