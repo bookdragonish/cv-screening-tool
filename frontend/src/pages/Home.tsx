@@ -1,5 +1,10 @@
+import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 
 function Home() {
+  const { data, isError, isLoading } = useFetchCandidates();
+
+  console.log(data, isError, isLoading);
+
   return (
     <>
       <div className="w-full h-screen p-10">
