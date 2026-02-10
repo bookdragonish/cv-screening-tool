@@ -37,7 +37,7 @@ function Home() {
           Upload resumes here:
         </label>
         <input
-          type="file" accept="application/pdf" multiple onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-300 focus:outline-none multiple"
+          type="file" accept="application/pdf" multiple onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-300 focus:outline-none"
         />
 
         {error && (
