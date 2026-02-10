@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useFetchCandidate, useFetchCandidates } from "@/hooks/useFetchCandidates";
 
 function Home() {
@@ -7,7 +8,24 @@ function Home() {
 
   return (
     <>
-      <div className="w-full h-screen p-10">
+      <div>
+        <nav>
+          <Link
+            to="/screening"
+          >
+            Screening
+          </Link>
+          <Link
+            to="/screening-history"
+          >
+            Screening history
+          </Link>
+          <Link
+            to="/cv-database"
+          >
+            CV database
+          </Link>
+        </nav>
         <label className="block mb-2 text-sm font-medium text-white">
           Upload resumes here:
         </label>
