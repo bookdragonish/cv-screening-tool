@@ -15,8 +15,14 @@ function Home() {
 
       for (let i = 0; i < selectedFiles.length; i++){
         const currentFile = selectedFiles[i];
+        
         if (currentFile.type === "application/pdf"){
-          validFiles.push(selectedFiles[i])
+          const alreadyExists = files.some(existingFile =>
+            existingFile.name === currentFile.name && existingFile.size == currentFile.size
+          )
+          if (!alreadyExists){
+            validFiles.push(selectedFiles[i])
+          }
         } else {
           foundError = true;
         }
