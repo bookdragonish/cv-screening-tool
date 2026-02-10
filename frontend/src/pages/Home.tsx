@@ -1,17 +1,37 @@
 
 import { useState } from "react";
+import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
+import placeholder1 from "../assets/pdfs/placeholder1.pdf";
+import placeholder2 from "../assets/pdfs/placeholder2.pdf";
+import placeholder3 from "../assets/pdfs/placeholder3.pdf";
 
 function Home() {
 
   const [documents, setDocuments] = useState([
-    {id: 1, title: "cv 1", file: "placeholder1.pdf"},
-    {id: 2, title: "cv 2", file: "placeholder2.pdf"},
-    {id: 3, title: "cv 3", file: "placeholder3.pdf"},
+    {id: 1, title: "cv 1", file: placeholder1},
+    {id: 2, title: "cv 2", file: placeholder2},
+    {id: 3, title: "cv 3", file: placeholder3},
   ]);
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  function showPreview(index: number) {
+    setSelectedIndex(index);
+    setIsPreviewOpen(true);
+  }
+
+  function nextPdfPreview() {
+    if (selectedIndex < documents.length - 1) {
+          setSelectedIndex(selectedIndex+1)
+    }
+  }
+
+  function prevPdfPreview() {
+    if (selectedIndex > 0) {
+          setSelectedIndex(selectedIndex - 1)
+    }
+  }
 
   return (
     <>
@@ -30,31 +50,23 @@ function Home() {
             {documents.map((doc, index) => (
               <li 
                 key={doc.id} 
-                className="text-gray-200 cursor-pointer hover:text-white"
-                onClick={()=> {
-                  setSelectedIndex(index);
-                  setIsPreviewOpen(true);
-                }}
+                className="text-black cursor-pointer hover:text-gray-200"
+                onClick={() => showPreview(index)}
               >
                 {doc.title}
               </li>
             ))}
           </ul>
         </div>
-        {isPreviewOpen && selectedIndex !== null && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded shadow-lg w-1/2">
-              <h3 className="font-bold mb-4">
-                Previewing: {documents[selectedIndex].title}
-              </h3>
-              <button 
-                className="px-4 py-2 bg-gray-700 text-white rounded"
-                onClick={() => setIsPreviewOpen(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
+        {isPreviewOpen && (
+          <PdfPreviewOverlay
+            document={documents[selectedIndex]}
+            hasPrevious={selectedIndex > 0}
+            hasNext={selectedIndex < documents.length - 1}
+            onPrevious={prevPdfPreview}
+            onNext={nextPdfPreview}
+            onClose={() => setIsPreviewOpen(false)}
+          />
         )}
       </div>
     </>
