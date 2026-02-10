@@ -26,7 +26,7 @@ function Home() {
       if (foundError){
         setError("OBS! Kun PDF-filer er tillatt!");
       }
-      setFiles(validFiles)
+      setFiles(prevFiles => [...prevFiles,...validFiles])
     }
   };
   
