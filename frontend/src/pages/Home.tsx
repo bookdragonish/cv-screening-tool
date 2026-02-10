@@ -1,4 +1,4 @@
-import { useFetchCandidate, useFetchCandidates } from "@/hooks/useFetchCandidates";
+import { useFetchCandidate } from "@/hooks/useFetchCandidates";
 
 function Home() {
   const { data, isError, isLoading } = useFetchCandidate("1");

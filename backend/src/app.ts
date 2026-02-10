@@ -1,5 +1,6 @@
 import express from "express";
 import routes from "./routes/index.js";
+import multer from "multer";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
@@ -9,14 +10,22 @@ export const app = express();
 app.use(
   cors({
     origin: process.env.FRONTEND_HOSTED_LINK,
-  })
+  }),
 );
 
 app.use(express.json());
 app.use("/api", routes);
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
+
 app.get("/api", (_req, res) => {
-  res.json({ ok: true, message: "API is running. Write /candidates to get info" });
+  res.json({
+    ok: true,
+    message: "API is running. Write /candidates to get info",
+  });
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
@@ -31,5 +40,3 @@ app.get("/db-check", async (_req, res, next) => {
 });
 
 app.use(errorHandler);
-
-
