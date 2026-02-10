@@ -78,7 +78,7 @@ create table if not exists candidates (
 
 create table if not exists job_posts (
   id serial primary key,
-  header text not null
+  header text not null,
   title text not null,
   description text not null,
   hardQualifications text,
