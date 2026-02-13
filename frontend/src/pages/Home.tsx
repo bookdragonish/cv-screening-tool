@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent } from 'react'
+import { validatePdfUpload } from '@/utils/fileValidation';
 
 function Home() {
   const [files, setFiles] = useState<File[]>([]);
@@ -9,25 +10,9 @@ function Home() {
 
     if (event.target.files && event.target.files.length > 0) {
 
-      const selectedFiles = Array.from(event.target.files)
-      const validFiles: File[] = []
-      let foundError = false;
-
-      for (let i = 0; i < selectedFiles.length; i++){
-        const currentFile = selectedFiles[i];
-        
-        if (currentFile.type === "application/pdf"){
-          const alreadyExists = files.some(existingFile =>
-            existingFile.name === currentFile.name && existingFile.size == currentFile.size
-          )
-          if (!alreadyExists){
-            validFiles.push(selectedFiles[i])
-          }
-        } else {
-          foundError = true;
-        }
-
-      }
+      const incomingFiles = Array.from(event.target.files)
+      
+      const {validFiles, foundError } = validatePdfUpload(incomingFiles, files)
       
       if (foundError){
         setError("OBS! Kun PDF-filer er tillatt!");
@@ -66,7 +51,7 @@ function Home() {
         )}
       </div>
     </>
-    
+
   )
 }
 
