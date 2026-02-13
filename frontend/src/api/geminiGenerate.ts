@@ -1,6 +1,8 @@
 import {
+  type Content,
   type ContentListUnion,
   GoogleGenAI,
+  type Part,
   createPartFromUri,
 } from "@google/genai";
 import type { UploadedGeminiFile } from "./multipleFileUpload";
@@ -14,20 +16,27 @@ export async function generateFromGeminiOnFiles(params: {
 }): Promise<string> {
   const { ai, model, files, prompt, labelFiles = true } = params;
 
-  const contents: ContentListUnion = [];
+  const parts: Part[] = [{text: prompt}];
 
-  contents.push(prompt);
 
   for (const f of files) {
     if (labelFiles) {
-      contents.push(`File: ${f.displayName}`);
+      parts.push({text: `\nFile: ${f.displayName}`});
     }
-    contents.push(createPartFromUri(f.uri, f.mimeType));
+
+    parts.push({
+      fileData: {mimeType: f.mimeType, fileUri: f.uri}
+    })
+  }
+
+  const userContent: Content = {
+    role: "user",
+    parts: parts,
   }
 
   const response = await ai.models.generateContent({
     model,
-    contents,
+    contents: [userContent],
   });
 
   const text = response.candidates?.[0]?.content?.parts?.[0]?.text;

@@ -24,7 +24,7 @@ function GeminiTestPage() {
   const onPickFiles = (e: ChangeEvent<HTMLInputElement>) => {
     const list = e.target.files ? Array.from(e.target.files) : [];
     setSelectedFiles(list);
-    setUploaded([]);
+    //setUploaded([]);
     setResponseText("");
   };
 
@@ -39,7 +39,7 @@ function GeminiTestPage() {
 
     try {
       const up = await uploadMultipleFilesToGemini(ai, selectedFiles);
-      setUploaded(up);
+      up.forEach((f) => uploaded.push(f))
       setResponseText(`Lastet opp ${up.length} filer. Klar for å bruke Gemini.`);
     } catch (err) {
       setResponseText(`Filopplasting feilet: ${(err as Error).message}`);
@@ -62,7 +62,7 @@ function GeminiTestPage() {
         ai,
         model: "gemini-2.5-flash",
         files: uploaded,
-        prompt: GEMINI_PROMPTS.COMPARE_FILES,
+        prompt: GEMINI_PROMPTS.SCREEN_CVS,
         labelFiles: true,
       });
       setResponseText(text);
@@ -83,8 +83,9 @@ function GeminiTestPage() {
 
           <input
             type="file"
-            accept="application/pdf"
+            accept="application/pdf, application/text"
             multiple
+
             onChange={ onPickFiles }
           />
         </div>
