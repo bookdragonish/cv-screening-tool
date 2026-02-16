@@ -21,14 +21,14 @@ function CVDatabase() {
 		<>
 			<div className="w-full h-screen p-10">
 				<label className="block mb-2 text-sm font-medium text-white">
-					Upload resumes here:
+					Last opp CVene dine her:
 				</label>
 				<input
 					type="file" accept="application/pdf" multiple onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-300 focus:outline-none"
 				/>
 				{error && (
 					<div className="mt-4 p-3 bg-red-900/50 border border-red-500 text-red-200 rounded-lg">
-						<p className="text-sm font-bold">⚠️ {error}</p>
+						<p className="text-sm font-bold">{error}</p>
 					</div>
 				)}
 				{files.length > 0 && (
