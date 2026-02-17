@@ -26,7 +26,8 @@ function CandidateView() {
 
       <p>rrr</p>
 
-      <Button onClick={handleCreate} className="">
+
+      <Button onClick={handleCreate} className="float-right">
         <img
           src="src/assets/icons/plus-solid.svg"
           alt="delete candidate"
