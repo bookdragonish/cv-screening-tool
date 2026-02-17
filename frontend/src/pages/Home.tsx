@@ -158,7 +158,7 @@ function Home() {
             </div>
           </div>
         
-        <div className="mt-6">
+{/*         <div className="mt-6">
           <h2 className="text-white font-bold mb-2">Documents on this page:</h2>
           <ul>
             {documents.map((doc, index) => (
@@ -181,7 +181,7 @@ function Home() {
             onNext={nextPdfPreview}
             onClose={() => setIsPreviewOpen(false)}
           />
-        )}
+        )} */}
         </div>
     </main>
   );
