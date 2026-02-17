@@ -43,7 +43,6 @@ function Home() {
           type="file" accept="application/pdf" className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-300 focus:outline-none multiple"
         />
         
-        {/* Step 1: render document list */}
         <div className="mt-6">
           <h2 className="text-white font-bold mb-2">Documents on this page:</h2>
           <ul>
