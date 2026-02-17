@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import '@/lib/styles/globals.css'
 import Home from '@/pages/Home'
 import Layout from './pages/Layout'
-import CandidateView from "./pages/CandidateView"
 import Screening from '@/pages/Screening'
 import ScreeningHistory from '@/pages/ScreeningHistory'
 import CVDatabase from '@/pages/CVDatabase'
@@ -15,7 +14,6 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="/candidates/" element={<CandidateView />} />
             <Route path="/screening" element={<Screening />} />
             <Route path="/screening-history" element={<ScreeningHistory />} />
             <Route path="/cv-database" element={<CVDatabase />} />
