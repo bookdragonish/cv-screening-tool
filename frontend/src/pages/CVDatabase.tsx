@@ -2,16 +2,32 @@ import { Button } from "@/components/ui/button";
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 
+import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
+import placeholder1 from "../assets/pdfs/placeholder1.pdf";
+import placeholder2 from "../assets/pdfs/placeholder2.pdf";
+import placeholder3 from "../assets/pdfs/placeholder3.pdf";
+
 function handleDelete(id: number) {
   console.log("Delete", id);
 }
 function handleCreate() {
   console.log("Create");
 }
+function handleEdit(id: number) {
+  console.log("Edit", id);
+}
 
 function CVDatabase() {
   const { data, isError, isLoading } = useFetchCandidates();
   const [search, setSearch] = useState("");
+  const [documents, setDocuments] = useState([
+    { id: 1, title: "cv 1", file: placeholder1 },
+    { id: 2, title: "cv 2", file: placeholder2 },
+    { id: 3, title: "cv 3", file: placeholder3 },
+  ]);
+
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   if (isError || !data) {
     return <div>Error.</div>;
@@ -25,6 +41,22 @@ function CVDatabase() {
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
 
+  function showPreview(index: number) {
+    setSelectedIndex(index);
+    setIsPreviewOpen(true);
+  }
+
+  function nextPdfPreview() {
+    if (selectedIndex < documents.length - 1) {
+      setSelectedIndex(selectedIndex + 1);
+    }
+  }
+
+  function prevPdfPreview() {
+    if (selectedIndex > 0) {
+      setSelectedIndex(selectedIndex - 1);
+    }
+  }
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
       {/* Breadcrumb */}
@@ -86,7 +118,7 @@ function CVDatabase() {
               <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Sist endret
               </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <th className="px-5 py-3 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
                 Pdf
               </th>
               <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">
@@ -95,7 +127,7 @@ function CVDatabase() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {filtered.map((candidate) => (
+            {filtered.map((candidate, index) => (
               <tr
                 key={candidate.id}
                 className="hover:bg-gray-50 transition-colors duration-100"
@@ -110,12 +142,20 @@ function CVDatabase() {
                   }).format(new Date(candidate.created_at))}
                 </td>
 
-                <td className="py-3">{candidate.cv_pdf}</td>
+                <td className="py-3 text-center">
+                  <button onClick={() => showPreview(index)} className="cursor-pointer">
+                    <img
+                      src="src/assets/icons/file-pdf-solid.svg"
+                      alt="delete candidate"
+                      className="w-5 h-5 opacity-70 hover:opacity-100"
+                    />
+                  </button>
+                </td>
 
                 <td className="px-5 py-3.5 text-right">
                   <button
-                    onClick={() => handleDelete(candidate.id)}
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-grey-700 transition-colors duration-150"
+                    onClick={() => handleEdit(candidate.id)}
+                    className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md hover:bg-grey-700 transition-colors duration-150"
                     title="Delete candidate"
                   >
                     <img
@@ -127,7 +167,7 @@ function CVDatabase() {
 
                   <button
                     onClick={() => handleDelete(candidate.id)}
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
+                    className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
                     title="Delete candidate"
                   >
                     <img
@@ -149,6 +189,17 @@ function CVDatabase() {
           </p>
         </article>
       </section>
+
+      {isPreviewOpen && (
+        <PdfPreviewOverlay
+          document={documents[selectedIndex]}
+          hasPrevious={selectedIndex > 0}
+          hasNext={selectedIndex < documents.length - 1}
+          onPrevious={prevPdfPreview}
+          onNext={nextPdfPreview}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
     </main>
   );
 }
