@@ -15,15 +15,15 @@ export default function Layout() {
     <ThemeProvider>
       <div className="min-h-screen w-full bg-gray-50">
         {/* Header */}
-        <header className="border-b px-6 py-4" style={{ backgroundColor: 'var(--color-white)', borderColor: 'var(--color-primary)' }}>
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <header className="border-b border-(--color-primary) bg-white px-6 py-4">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="flex items-center gap-8">
               <div className="flex items-center gap-3">
                 {/* Logo */}
-                <div className="rounded-lg p-2" style={{ backgroundColor: 'var(--color-primary)' }}>
-                  <FileText className="w-5 h-5" style={{ color: 'var(--color-white)' }} />
+                <div className="rounded-lg bg-(--color-primary) p-2">
+                  <FileText className="h-5 w-5 text-white" />
                 </div>
-                <h1 className="text-xl font-semibold" style={{ color: 'var(--color-dark)' }}>CV-screening</h1>
+                <h1 className="text-xl font-semibold text-(--color-dark)">CV-screening</h1>
               </div>
               <nav className="flex items-center gap-6">
                 {navLinks.map((link) => {
@@ -33,17 +33,11 @@ export default function Layout() {
                     <Link
                       key={link.path}
                       to={link.path}
-                      className="flex items-center gap-2 text-sm font-medium transition-colors"
-                      style={{
-                        color: isActive ? 'var(--color-primary)' : 'var(--color-dark)',
-                        opacity: isActive ? 1 : 0.6
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) e.currentTarget.style.opacity = '1';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) e.currentTarget.style.opacity = '0.6';
-                      }}
+                      className={`flex items-center gap-2 text-sm font-medium transition-opacity ${
+                        isActive
+                          ? "text-(--color-primary) opacity-100"
+                          : "text-(--color-dark) opacity-60 hover:opacity-100"
+                      }`}
                     >
                       <Icon className="w-4 h-4" />
                       {link.label}
@@ -52,8 +46,8 @@ export default function Layout() {
                 })}
               </nav>
             </div>
-            <div className="flex items-center gap-2" style={{ color: 'var(--color-dark)' }}>
-              <User className="w-5 h-5" />
+            <div className="flex items-center gap-2 text-(--color-dark)">
+              <User className="h-5 w-5" />
               <span className="text-sm font-medium">HR-bruker</span>
             </div>
           </div>
