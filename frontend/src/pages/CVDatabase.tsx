@@ -26,8 +26,14 @@ function CVDatabase() {
     { id: 3, title: "cv 3", file: placeholder3 },
   ]);
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  // From this
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+
+  function showPreview(index: number) {
+    setPreviewIndex(index);
+  }
+
+  // To this is needed now for preview + rendering
 
   if (isError || !data) {
     return <div>Error.</div>;
@@ -41,22 +47,7 @@ function CVDatabase() {
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
 
-  function showPreview(index: number) {
-    setSelectedIndex(index);
-    setIsPreviewOpen(true);
-  }
 
-  function nextPdfPreview() {
-    if (selectedIndex < documents.length - 1) {
-      setSelectedIndex(selectedIndex + 1);
-    }
-  }
-
-  function prevPdfPreview() {
-    if (selectedIndex > 0) {
-      setSelectedIndex(selectedIndex - 1);
-    }
-  }
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
       {/* Breadcrumb */}
@@ -190,14 +181,12 @@ function CVDatabase() {
         </article>
       </section>
 
-      {isPreviewOpen && (
+      {/* Rendering */}
+      {previewIndex != null && (
         <PdfPreviewOverlay
-          document={documents[selectedIndex]}
-          hasPrevious={selectedIndex > 0}
-          hasNext={selectedIndex < documents.length - 1}
-          onPrevious={prevPdfPreview}
-          onNext={nextPdfPreview}
-          onClose={() => setIsPreviewOpen(false)}
+            documents={documents}
+            initialIndex={previewIndex}
+            onClose={() => setPreviewIndex(null)}
         />
       )}
     </main>

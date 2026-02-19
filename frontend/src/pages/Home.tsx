@@ -39,24 +39,10 @@ function Home() {
     { id: 3, title: "cv 3", file: placeholder3 },
   ]);
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   function showPreview(index: number) {
-    setSelectedIndex(index);
-    setIsPreviewOpen(true);
-  }
-
-  function nextPdfPreview() {
-    if (selectedIndex < documents.length - 1) {
-      setSelectedIndex(selectedIndex + 1);
-    }
-  }
-
-  function prevPdfPreview() {
-    if (selectedIndex > 0) {
-      setSelectedIndex(selectedIndex - 1);
-    }
+    setPreviewIndex(index);
   }
 
   return (
@@ -159,6 +145,7 @@ function Home() {
           </div>
         </div>
 
+
         <div className="mt-6">
           <h2 className="text-white font-bold mb-2">Documents on this page:</h2>
           <ul>
@@ -173,14 +160,13 @@ function Home() {
             ))}
           </ul>
         </div>
-        {isPreviewOpen && (
+
+        {/* Rendering */}
+        {previewIndex != null && (
           <PdfPreviewOverlay
-            document={documents[selectedIndex]}
-            hasPrevious={selectedIndex > 0}
-            hasNext={selectedIndex < documents.length - 1}
-            onPrevious={prevPdfPreview}
-            onNext={nextPdfPreview}
-            onClose={() => setIsPreviewOpen(false)}
+            documents={documents}
+            initialIndex={previewIndex}
+            onClose={() => setPreviewIndex(null)}
           />
         )}
       </div>
