@@ -140,7 +140,7 @@ function GeminiTestPage() {
   };
 
   return (
-    <div className="w-screen h-screen p-6 flex flex-col gap-4">
+    <div className="w-screen h-screen p-6 flex flex-col justify-center items-center gap-4">
       <div className="flex flex-col gap-2 max-w-xl">
         <Field>
           <FieldLabel>Jobbannonse</FieldLabel>
@@ -180,7 +180,7 @@ function GeminiTestPage() {
         </div>
       </div>
 
-      <div className="border rounded p-4 whitespace-pre-wrap flex-1 max-w-4xl overflow-auto">
+      <div className="border rounded p-4 whitespace-pre-wrap flex-1 max-w-5xl w-4xl overflow-auto">
         { responseText || "Gemini respons vil dukke opp her..." }
       </div>
     </div>
