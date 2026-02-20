@@ -7,6 +7,7 @@ const router = Router();
 router.get("/", candidates.list);
 router.post("/", candidates.create);
 router.get("/:id", candidates.getById);
+router.get("/:id/cv", candidates.getCV);
 
 const upload = multer({
   storage: multer.memoryStorage(),
