@@ -19,11 +19,11 @@ function CVDatabase() {
   const [search, setSearch] = useState("");
 
   // From this
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [previewId, setPreviewId] = useState<number | null>(null);
 
-  function showPreview(index: number) {
-    console.log(index);
-    setPreviewIndex(index);
+  function showPreview(id: number) {
+    console.log(id);
+    setPreviewId(id);
   }
 
   // To this is needed now for preview + rendering
@@ -39,14 +39,6 @@ function CVDatabase() {
   const filtered = data.filter((c) =>
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
-
-  const documents = filtered
-    .filter((candidate) => candidate.cv_pdf) 
-    .map((candidate) => ({
-      id: candidate.id,
-      title: candidate.name ?? `Candidate ${candidate.id}`,
-      file: candidate.cv_pdf, // must be a URL/string your PdfPreviewOverlay can load
-    }));
 
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
@@ -115,7 +107,7 @@ function CVDatabase() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {filtered.map((candidate, index) => (
+            {filtered.map((candidate) => (
               <tr
                 key={candidate.id}
                 className="hover:bg-gray-50 transition-colors duration-100"
@@ -133,7 +125,7 @@ function CVDatabase() {
                 {candidate.cv_pdf ? (
                   <td className="py-3 text-center">
                     <button
-                      onClick={() => showPreview(index)}
+                      onClick={() => showPreview(candidate.id)}
                       className="cursor-pointer"
                     >
                       <img
@@ -186,11 +178,11 @@ function CVDatabase() {
       </section>
 
       {/* Rendering PDF view */}
-      {previewIndex != null && (
+      {previewId != null && (
         <PdfPreviewOverlay
-          documents={documents}
-          initialIndex={previewIndex}
-          onClose={() => setPreviewIndex(null)}
+          documentIds={filtered.map((c) => c.id.toString())}
+          initialId={previewId}
+          onClose={() => setPreviewId(null)}
         />
       )}
     </main>

@@ -1,29 +1,32 @@
+import { useFetchPDF } from "@/hooks/useFetchPDF";
 import { useState } from "react";
 
-type Document = {
-  id: number;
-  title: string;
-  file: string;
-};
 
   type PdfPreviewOverlayProps = {
-  documents: Document[];
-  initialIndex: number;
+  documentIds: string[];
+  initialId: number;
   onClose: () => void;
 } 
 
 function PdfPreviewOverlay({
-  documents,
-  initialIndex,
+  documentIds,
+  initialId,
   onClose,
 }: PdfPreviewOverlayProps) {
 
-  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+  const [selectedIndex, setSelectedIndex] = useState(initialId);  
+  const { documentURL, isError, isLoading } = useFetchPDF("" + selectedIndex);
 
-  const document = documents[selectedIndex];
+  if (isError || !documentURL) {
+    return <div>Error.</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   function nextPdfPreview() {
-    if (selectedIndex < documents.length - 1) {
+    if (selectedIndex < documentIds.length - 1) {
       setSelectedIndex((prev) => prev + 1);
     }
   }
@@ -35,7 +38,7 @@ function PdfPreviewOverlay({
   }
 
   const hasPrevious = selectedIndex > 0;
-  const hasNext = selectedIndex < documents.length - 1;
+  const hasNext = selectedIndex < documentIds.length - 1;
 
   if (!document) return null;
 
@@ -43,7 +46,7 @@ function PdfPreviewOverlay({
     <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white w-full max-w-4xl h-[90vh] rounded-lg shadow-lg flex flex-col overflow-hidden">
       <header className="flex justify-between items-center px-4 py-2 border-b">
-        <h3 className="font-bold mb-4"> {document.title} </h3>
+        {/* <h3 className="font-bold mb-4"> {document.title} </h3>*/} 
         <button
           className="px-4 py-2 bg-gray-700 text-white rounded enabled:hover:text-gray-200"
           onClick={onClose}
@@ -54,7 +57,7 @@ function PdfPreviewOverlay({
 
           {/* PDF viewer */}
         <iframe
-            src={`${document.file}#toolbar=0&navpanes=0&scrollbar=0`} /* This does not work in every browser type */
+            src={`${documentURL}#toolbar=0&navpanes=0&scrollbar=0`} /* This does not work in every browser type */
             className="w-full h-screen"
             style={{border: "none"}}
         ></iframe>
