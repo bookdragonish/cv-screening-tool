@@ -3,9 +3,6 @@ import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
-import placeholder1 from "../assets/pdfs/placeholder1.pdf";
-import placeholder2 from "../assets/pdfs/placeholder2.pdf";
-import placeholder3 from "../assets/pdfs/placeholder3.pdf";
 
 function handleDelete(id: number) {
   console.log("Delete", id);
@@ -20,16 +17,12 @@ function handleEdit(id: number) {
 function CVDatabase() {
   const { data, isError, isLoading } = useFetchCandidates();
   const [search, setSearch] = useState("");
-  const [documents, setDocuments] = useState([
-    { id: 1, title: "cv 1", file: placeholder1 },
-    { id: 2, title: "cv 2", file: placeholder2 },
-    { id: 3, title: "cv 3", file: placeholder3 },
-  ]);
 
   // From this
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   function showPreview(index: number) {
+    console.log(index);
     setPreviewIndex(index);
   }
 
@@ -47,17 +40,22 @@ function CVDatabase() {
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
 
+  const documents = filtered
+    .filter((candidate) => candidate.cv_pdf) 
+    .map((candidate) => ({
+      id: candidate.id,
+      title: candidate.name ?? `Candidate ${candidate.id}`,
+      file: candidate.cv_pdf, // must be a URL/string your PdfPreviewOverlay can load
+    }));
 
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
-      {/* Breadcrumb */}
       <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
         <span className="hover:text-gray-600 cursor-pointer">Hjem</span>
         <span>›</span>
         <span className="text-gray-600">CV Database</span>
       </nav>
 
-      {/* Page Header */}
       <section className="flex items-start justify-between mb-6">
         <article>
           <h1 className="text-2xl font-bold text-gray-900">CV Database</h1>
@@ -79,7 +77,6 @@ function CVDatabase() {
         </Button>
       </section>
 
-      {/* Card */}
       <section className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Search */}
         <article className="px-5 py-4 border-b border-gray-100">
@@ -133,15 +130,22 @@ function CVDatabase() {
                   }).format(new Date(candidate.created_at))}
                 </td>
 
-                <td className="py-3 text-center">
-                  <button onClick={() => showPreview(index)} className="cursor-pointer">
-                    <img
-                      src="src/assets/icons/file-pdf-solid.svg"
-                      alt="delete candidate"
-                      className="w-5 h-5 opacity-70 hover:opacity-100"
-                    />
-                  </button>
-                </td>
+                {candidate.cv_pdf ? (
+                  <td className="py-3 text-center">
+                    <button
+                      onClick={() => showPreview(index)}
+                      className="cursor-pointer"
+                    >
+                      <img
+                        src="src/assets/icons/file-pdf-solid.svg"
+                        alt="open pdf"
+                        className="w-5 h-5 opacity-70 hover:opacity-100"
+                      />
+                    </button>
+                  </td>
+                ) : (
+                  <td></td>
+                )}
 
                 <td className="px-5 py-3.5 text-right">
                   <button
@@ -151,7 +155,7 @@ function CVDatabase() {
                   >
                     <img
                       src="src/assets/icons/edit-solid.svg"
-                      alt="delete candidate"
+                      alt="edit candidate"
                       className="w-5 h-5 opacity-70 hover:opacity-100"
                     />
                   </button>
@@ -181,12 +185,12 @@ function CVDatabase() {
         </article>
       </section>
 
-      {/* Rendering */}
+      {/* Rendering PDF view */}
       {previewIndex != null && (
         <PdfPreviewOverlay
-            documents={documents}
-            initialIndex={previewIndex}
-            onClose={() => setPreviewIndex(null)}
+          documents={documents}
+          initialIndex={previewIndex}
+          onClose={() => setPreviewIndex(null)}
         />
       )}
     </main>

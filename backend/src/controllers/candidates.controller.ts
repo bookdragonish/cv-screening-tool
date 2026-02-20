@@ -4,7 +4,7 @@ import { pool } from "../db/pool.js";
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
-      "select id, name, email, created_at from candidates order by id desc",
+      "select id, name, email, created_at, cv_pdf from candidates order by id desc",
     );
     res.json(r.rows);
   } catch (e) {

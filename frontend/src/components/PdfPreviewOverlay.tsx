@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-
 type Document = {
   id: number;
   title: string;
