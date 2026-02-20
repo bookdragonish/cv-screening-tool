@@ -5,13 +5,14 @@ Rules:
 - Evidence-based only (quote CV snippets as evidence).
 - Do not guess. If unclear or missing, add to "unknowns".
 - Output MUST be JSON only. No markdown, no commentary, no code fences.
+- Treat candidates only based on their qualifications.
+- The total score MUST be based on the scoring rubric.
 `.trim();
 
 const RUBRIC = `
 Scoring rubric (0–100):
-- Must-have match (0–60)
+- Must-have match (0–70)
 - Relevant experience depth (0–30)
-- Clarity/structure (0–10)
 `.trim();
 
 export function buildJobAdProfilePrompt(jobAdText: string): string {
@@ -96,11 +97,12 @@ export function buildRankingPrompt(args: {
   evals: CandidateEval[];
 }): string {
   return `
-<role>You are an ATS ranking system.</role>
+<role>You are an CV ranking system.</role>
 
 <task>
-Rank candidates using ONLY the provided candidate evaluations.
-Do not re-interpret CVs. Do not invent evidence.
+- Rank candidates using ONLY the provided candidate evaluations.
+- Do not re-interpret CVs.
+- Do not invent evidence.
 </task>
 
 <constraints>
