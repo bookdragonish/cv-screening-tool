@@ -15,15 +15,15 @@ export default function Layout() {
     <ThemeProvider>
       <div className="min-h-screen w-full bg-gray-50">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <header className="border-b border-(--color-primary) bg-white px-6 py-4">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="flex items-center gap-8">
               <div className="flex items-center gap-3">
                 {/* Logo */}
-                <div className="bg-blue-600 rounded-lg p-2">
-                  <FileText className="w-5 h-5 text-white" />
+                <div className="rounded-lg bg-(--color-primary) p-2">
+                  <FileText className="h-5 w-5 text-white" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">CV-screening</h1>
+                <h1 className="text-xl font-semibold text-(--color-dark)">CV-screening</h1>
               </div>
               <nav className="flex items-center gap-6">
                 {navLinks.map((link) => {
@@ -33,10 +33,10 @@ export default function Layout() {
                     <Link
                       key={link.path}
                       to={link.path}
-                      className={`flex items-center gap-2 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-2 text-sm font-medium transition-opacity ${
                         isActive
-                          ? "text-blue-600"
-                          : "text-gray-600 hover:text-gray-900"
+                          ? "text-(--color-primary) opacity-100"
+                          : "text-(--color-dark) opacity-60 hover:opacity-100"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -46,8 +46,8 @@ export default function Layout() {
                 })}
               </nav>
             </div>
-            <div className="flex items-center gap-2 text-gray-700">
-              <User className="w-5 h-5" />
+            <div className="flex items-center gap-2 text-(--color-dark)">
+              <User className="h-5 w-5" />
               <span className="text-sm font-medium">HR-bruker</span>
             </div>
           </div>
