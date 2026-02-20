@@ -22,7 +22,6 @@ function CVDatabase() {
   const [previewId, setPreviewId] = useState<number | null>(null);
 
   function showPreview(id: number) {
-    console.log(id);
     setPreviewId(id);
   }
 
@@ -39,6 +38,13 @@ function CVDatabase() {
   const filtered = data.filter((c) =>
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
+
+  const candidates = filtered
+  // only include candidates that actually have a CV
+  .map((candidate) => ({
+    id: candidate.id,
+    name: candidate.name ?? `Candidate ${candidate.id}`,
+  }));
 
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
@@ -180,7 +186,7 @@ function CVDatabase() {
       {/* Rendering PDF view */}
       {previewId != null && (
         <PdfPreviewOverlay
-          documentIds={filtered.map((c) => c.id.toString())}
+          candidates={candidates}
           initialId={previewId}
           onClose={() => setPreviewId(null)}
         />

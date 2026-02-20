@@ -1,7 +1,7 @@
 import { getPDF } from "@/api/fetchPDF";
 import { useEffect, useState, type SetStateAction } from "react";
 
-export function useFetchPDF(id: string) {
+export function useFetchPDF(id: number) {
   const [documentURL, setDocumentURL] = useState<SetStateAction<string | null>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
@@ -15,8 +15,7 @@ export function useFetchPDF(id: string) {
         setIsLoading(true);
         setIsError(false);
 
-        const response = await getPDF(id);
-
+        const response = await getPDF(id + "");
         setDocumentURL(response);
       } catch {
         setIsError(true);

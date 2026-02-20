@@ -2,6 +2,7 @@ import { API_URL } from "./fetchCandidates";
 
 export async function getPDF(id: string) {
   const response = await fetch(API_URL + "/api/candidates/" + id + "/cv");
+  if (response.status === 404) return null;
   if (!response.ok) {
     throw new Error(`Response Status: ${response.status}`);
   }
