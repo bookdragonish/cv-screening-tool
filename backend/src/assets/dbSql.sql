@@ -13,5 +13,5 @@ create table
 INSERT INTO
     candidates (name, email)
 VALUES
-    ('Alice Johnson', 'alice.johnson@example.com', ),
+    ('Alice Johnson', 'alice.johnson@example.com'),
     ('Mark Chen', 'mark.chen@example.com');
