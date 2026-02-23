@@ -1,3 +1,4 @@
+
 import { Link } from "react-router";
 import { FileText, Plus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -124,6 +125,9 @@ function Home() {
                 <Link to="/cv-database">Administrer CVer</Link>
               </Button>
             </div>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/cv-database">Administrer CVer</Link>
+            </Button>
           </div>
         </div>
     </main>
