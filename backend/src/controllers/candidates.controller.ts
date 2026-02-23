@@ -28,7 +28,11 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, email, cv_pdf } = req.body as { name?: string; email?: string; cv_pdf: File };
+    const { name, email, cv_pdf } = req.body as {
+      name?: string;
+      email?: string;
+      cv_pdf: File;
+    };
     if (!name || !email)
       return res.status(400).json({ error: "name and email are required" });
 
@@ -46,6 +50,10 @@ export async function create(req: Request, res: Response, next: NextFunction) {
 export async function uploadCV(req: Request, res: Response) {
   const { id } = req.params;
 
+  if (!id || isNaN(Number(id))) {
+    return res.status(400).json({ error: "Invalid candidate id" });
+  }
+
   if (!req.file) {
     return res.status(400).json({ error: "Missing file field 'cv'" });
   }
@@ -54,22 +62,25 @@ export async function uploadCV(req: Request, res: Response) {
     return res.status(415).json({ error: "Only PDF supported" });
   }
 
-  await pool.query(`UPDATE candidates SET cv_pdf = $1 WHERE id = $2`, [
-    req.file.buffer,
-    id,
-  ]);
+  const result = await pool.query(
+    `UPDATE candidates SET cv_pdf = $1 WHERE id = $2`,
+    [req.file.buffer, id],
+  );
+
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: "Candidate not found" });
+  }
 
   res.json({ ok: true });
 }
 
 export async function getCV(req: Request, res: Response, next: NextFunction) {
-   try {
+  try {
     const id = Number(req.params.id);
 
-    const r = await pool.query(
-      "select cv_pdf from candidates where id = $1",
-      [id],
-    );
+    const r = await pool.query("select cv_pdf from candidates where id = $1", [
+      id,
+    ]);
 
     if (r.rowCount === 0) return res.status(404).send("Candidate not found");
 
