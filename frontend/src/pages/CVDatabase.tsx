@@ -3,6 +3,7 @@ import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
+import { Link } from "react-router";
 
 function handleDelete(id: number) {
   console.log("Delete", id);
@@ -49,7 +50,7 @@ function CVDatabase() {
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
       <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
-        <span className="hover:text-gray-600 cursor-pointer">Hjem</span>
+        <Link to="/" className="hover:text-gray-600 cursor-pointer">Hjem</Link>
         <span>›</span>
         <span className="text-gray-600">CV Database</span>
       </nav>

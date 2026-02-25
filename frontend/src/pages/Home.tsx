@@ -68,7 +68,7 @@ function Home() {
                       </div>
                     </div>
                     <Link
-                      to="/screening-history"
+                      to="/screening-historikk"
                       className="text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
                     >
                       Se resultater
@@ -78,7 +78,7 @@ function Home() {
               </div>
               <div className="border-t border-(--color-primary) p-6 text-center">
                 <Link
-                  to="/screening-history"
+                  to="/screening-historikk"
                   className="inline-flex items-center gap-1 text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
                 >
                   Se hele screeninghistorikken →
