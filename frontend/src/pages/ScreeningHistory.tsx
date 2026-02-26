@@ -1,66 +1,44 @@
 import { Link } from "react-router";
 import { Clock, FileText, Search } from 'lucide-react';
 import React from "react";
+import {
+  getScreeningHistory,
+	type ScreeningDetails,
+} from "@/api/fetchScreenings";
 
 function ScreeningHistory() {
-	const ScreeningData = [
-    {
-	  id: 1,
-      title: "Senior Utvikler",
-      date: "28 Jan 2026",
-	  topMatches: [
-		{ candidateName: "Marius B", matchScore: 100 },
-		{ candidateName: "Markus", matchScore: 92 },
-		{ candidateName: "Ingvild", matchScore: 90 },
-	  ],
-    },
-    {
-	  id: 2,
-      title: "Prosjektleder",
-      date: "25 Jan 2026",
-	  topMatches: [
-		{ candidateName: "Marius B", matchScore: 100 },
-		{ candidateName: "Baris", matchScore: 91 },
-		{ candidateName: "Marius F", matchScore: 89 },
-	  ],
-    },
-    {
-	  id: 3,
-      title: "Grafisk Designer",
-      date: "22 Jan 2026",
-	  topMatches: [
-		{ candidateName: "Marius B", matchScore: 100 },
-		{ candidateName: "Helene", matchScore: 90 },
-		{ candidateName: "Moa", matchScore: 88 },
-	  ],
-    },
-    {
-	  id: 4,
-      title: "Dataanalytiker",
-      date: "20 Jan 2026",
-	  topMatches: [
-		{ candidateName: "Marius B", matchScore: 100 },
-		{ candidateName: "Ingvild", matchScore: 89 },
-		{ candidateName: "Markus", matchScore: 87 },
-	  ],
-    },
-    {
-	  id: 5,
-      title: "Systemadministrator",
-      date: "18 Jan 2026",
-	  topMatches: [
-		{ candidateName: "Marius B", matchScore: 100 },
-		{ candidateName: "Moa", matchScore: 88 },
-		{ candidateName: "Baris", matchScore: 86 },
-	  ],
-    },
-  ];
+	const [screeningData, setScreeningData] = React.useState<ScreeningDetails[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isError, setIsError] = React.useState(false);
 
-  var [searchQuery, setSearchQuery] = React.useState("");
+  React.useEffect(() => {
+    async function fetchHistory() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const response = await getScreeningHistory();
+        setScreeningData(response);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  const filteredHistory = ScreeningData.filter(item => 
+    fetchHistory();
+  }, []);
+
+  const filteredHistory = screeningData.filter(item => 
     item.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const formatDate = (dateValue: string) =>
+    new Intl.DateTimeFormat("nb-NO", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(dateValue));
 
   return (
     <main className="min-h-screen px-8 py-6">
@@ -75,6 +53,18 @@ function ScreeningHistory() {
 			<h1 className="text-3xl font-semibold text-(--color-dark)">Screeninghistorikk</h1>
 			<p className="mt-2 text-(--color-dark) opacity-75">Få oversikt over tidligere CV-screeningsresultater</p>
 			</div>
+
+			{isLoading && (
+			<div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+				Laster screeninghistorikk...
+			</div>
+			)}
+
+			{isError && (
+			<div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+				Kunne ikke hente screeninghistorikk.
+			</div>
+			)}
 
 			<div className="mb-6">
 			<div className="relative">
@@ -91,7 +81,7 @@ function ScreeningHistory() {
 
 			<div className="space-y-4">
 			{filteredHistory.map((screening) => (
-				<div key={screening.id} className="rounded-lg border border-(--color-primary) bg-(--color-white) p-6 shadow-sm transition-colors hover:bg-(--color-light)/40">
+				<div key={screening.jobPostId} className="rounded-lg border border-(--color-primary) bg-(--color-white) p-6 shadow-sm transition-colors hover:bg-(--color-light)/40">
 				<div className="flex items-start justify-between">
 					<div className="flex-1">
 					<div className="flex items-start space-x-3">
@@ -103,19 +93,19 @@ function ScreeningHistory() {
 						<div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
 							<span className="flex items-center">
 							<Clock className="h-4 w-4" />
-							<span>{screening.date}</span>
+							<span>{formatDate(screening.screenedAt)}</span>
 							</span>
 						</div>
 						
 						<div className="mt-4">
 							<p className="mb-2 text-sm font-medium text-(--color-dark)">Top 3 kandidater:</p>
 							<div className="flex flex-wrap gap-2">
-							{screening.topMatches.slice(0, 3).map((match, index) => (
+							{screening.candidates.slice(0, 3).map((candidate, index) => (
 								<span 
 								key={index}
 								className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
 								>
-								#{index + 1} {match.candidateName} ({match.matchScore}%)
+								#{index + 1} {candidate.candidateName} ({Math.round(candidate.score)}%)
 								</span>
 							))}
 							</div>
@@ -124,18 +114,18 @@ function ScreeningHistory() {
 					</div>
 					</div>
 
-					<button
-					onClick={() => console.log("Se resultater for ID: " + screening.id)}
-					className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-(--color-white) transition-opacity hover:opacity-90"
-					>
-					Se resultater
-					</button>
-				</div>
-				</div>
-			))}
-			</div>
+                    <Link
+                        to={`/screening-historikk/${screening.jobPostId}`}
+                        className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-(--color-white) transition-opacity hover:opacity-90"
+                    >
+                        Se resultater
+                    </Link>
+                    </div>
+                </div>
+                ))}
+            </div>
 
-			{filteredHistory.length === 0 && (
+			{!isLoading && filteredHistory.length === 0 && (
 			<div className="rounded-lg border border-(--color-primary) bg-(--color-white) p-12 text-center shadow-sm">
 				<FileText className="mx-auto mb-4 h-16 w-16 text-(--color-primary) opacity-60" />
 				<h3 className="mb-2 text-lg font-semibold text-(--color-dark)">Ingen screeningresultater funnet for søket ditt</h3>
