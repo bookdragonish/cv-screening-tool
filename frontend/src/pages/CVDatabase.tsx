@@ -87,7 +87,7 @@ function CVDatabase() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left">
+          <table className="w-full min-w-130 text-left">
             <thead>
               <tr className="border-b border-gray-100">
                 <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">

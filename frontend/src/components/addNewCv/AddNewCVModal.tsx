@@ -111,7 +111,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[calc(100%-2rem)] max-w-[520px]" aria-describedby={submitErrId}>
+      <DialogContent aria-describedby={submitErrId}>
         <DialogHeader>
           <DialogTitle>Legg til ny CV</DialogTitle>
         </DialogHeader>
