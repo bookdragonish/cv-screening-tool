@@ -85,6 +85,74 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function getScreeningHistory(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const r = await pool.query(
+      `SELECT 
+        jp.id as "jobPostId", 
+        jp.title, 
+        jp.created_at as "screenedAt",
+        json_agg(
+          json_build_object(
+            'candidateId', c.id,
+            'candidateName', c.name,
+            'rank', r.rank,
+            'score', r.score,
+            'qualified', r.qualified,
+            'qualificationsMet', r.qualifications_met,
+            'qualificationsMissing', r.qualifications_missing,
+            'summary', r.summary,
+            'createdAt', r.created_at
+          ) ORDER BY r.rank
+        ) FILTER (WHERE r.rank <= 3) as candidates
+      FROM job_posts jp
+      LEFT JOIN results r ON jp.id = r.job_post_id AND r.rank <= 3
+      LEFT JOIN candidates c ON r.candidate_id = c.id
+      WHERE jp.id IN (SELECT DISTINCT job_post_id FROM results)
+      GROUP BY jp.id, jp.title, jp.created_at
+      ORDER BY jp.created_at DESC`,
+    );
+    res.json(r.rows);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getScreeningByJobPostId(req: Request, res: Response, next: NextFunction) {
+  try {
+    const job_post_id = Number(req.params.jobPostId);
+    const r = await pool.query(
+      `SELECT 
+        jp.id as "jobPostId", 
+        jp.title, 
+        jp.created_at as "screenedAt",
+        json_agg(
+          json_build_object(
+            'candidateId', c.id,
+            'candidateName', c.name,
+            'rank', r.rank,
+            'score', r.score,
+            'qualified', r.qualified,
+            'qualificationsMet', r.qualifications_met,
+            'qualificationsMissing', r.qualifications_missing,
+            'summary', r.summary,
+            'createdAt', r.created_at
+          ) ORDER BY r.rank
+        ) as candidates
+      FROM job_posts jp
+      LEFT JOIN results r ON jp.id = r.job_post_id
+      LEFT JOIN candidates c ON r.candidate_id = c.id
+      WHERE jp.id = $1
+      GROUP BY jp.id, jp.title, jp.created_at`,
+      [job_post_id]
+    );
+    if (r.rowCount === 0) return res.status(404).json({ error: "Job post not found" });
+    res.json(r.rows[0]);
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function deleteById(req: Request, res: Response, next: NextFunction) {
   try {
     const job_post_id = Number(req.params.jobPostId);
