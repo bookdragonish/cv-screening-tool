@@ -111,7 +111,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[520px]" aria-describedby={submitErrId}>
+      <DialogContent className="w-[calc(100%-2rem)] max-w-[520px]" aria-describedby={submitErrId}>
         <DialogHeader>
           <DialogTitle>Legg til ny CV</DialogTitle>
         </DialogHeader>
@@ -230,7 +230,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
         <DialogFooter>
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             onClick={() => setOpen(false)}
             disabled={form.formState.isSubmitting}
           >
