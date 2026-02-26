@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
-
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
 import { Link } from "react-router";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 
 function handleDelete(id: number) {
   console.log("Delete", id);
@@ -16,7 +15,9 @@ function handleEdit(id: number) {
 }
 
 function CVDatabase() {
-  const { data, isError, isLoading } = useFetchCandidates();
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const { data, isError, isLoading } = useFetchCandidates(reloadKey);
   const [search, setSearch] = useState("");
 
   // From this
@@ -62,18 +63,7 @@ function CVDatabase() {
             Administrer ansattes CV-er for screening.
           </p>
         </article>
-        <Button
-          onClick={handleCreate}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm"
-        >
-          <img
-            src="src/assets/icons/plus-white.svg"
-            alt="plus icon"
-            width="20px"
-            height="20px"
-          />
-          Legg til CV
-        </Button>
+        <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
       <section className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
