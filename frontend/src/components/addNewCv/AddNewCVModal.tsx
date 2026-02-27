@@ -105,7 +105,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="bg-(--color-primary) cursor-pointer hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
+        <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
           <PlusIcon className="size-6" />
           Legg til CV
         </Button>

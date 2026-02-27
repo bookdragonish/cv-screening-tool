@@ -21,7 +21,7 @@ export default function Layout() {
               <div className="rounded-lg bg-(--color-primary) p-2">
                 <FileText className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-xl font-semibold text-(--color-dark)">CV-screening</h1>
+              <h1 className="text-xl font-semibold text-(--color-dark)">Job-Scan</h1>
             </div>
             <nav className="flex flex-wrap items-center gap-4 sm:gap-6">
               {navLinks.map((link) => {
