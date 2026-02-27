@@ -145,9 +145,6 @@ function Home() {
                 <Link to="/cv-database">Administrer CVer</Link>
               </Button>
             </div>
-            <Button asChild variant="outline" className="w-full">
-              <Link to="/cv-database">Administrer CVer</Link>
-            </Button>
           </div>
         </div>
     </main>
