@@ -69,12 +69,15 @@ DB_NAME=cv_database
 The same place we ran the create user (in pgAdmin) we will now run SQL.
 
 ```
-create table if not exists candidates (
-  id serial primary key,
-  name text not null,
-  email text not null unique,
-  created_at timestamptz default now()
-);
+create table
+    if not exists candidates (
+        id serial primary key,
+        name text not null,
+        email TEXT unique,
+        cv_pdf BYTEA,
+        cv_markdown text,
+        created_at timestamptz default now ()
+    );
 
 create table if not exists job_posts (
   id serial primary key,

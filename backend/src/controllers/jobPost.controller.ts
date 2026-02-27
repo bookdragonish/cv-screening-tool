@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 
+/**
+ * Returns a list of all job posts in descending order by id.
+ *
+ * Response:
+ * - 200: JSON array of job posts
+ */
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query("select id, header, title, description, hardQualifications, softQualifications, created_at from job_posts order by id desc");
@@ -10,6 +16,13 @@ export async function list(_req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Returns a single job post by id.
+ *
+ * Responses:
+ * - 200: JSON object of the job post
+ * - 404: If no job post with the given id exists
+ */
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number(req.params.id);
@@ -21,6 +34,15 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Creates a new job post.
+ * 
+ * Request should include 'header', 'title', 'description', 'hardQualifications', and 'softQualifications'.
+ *
+ * Responses:
+ * - 201: JSON object of the created job post
+ * - 400: If any required fields are missing
+ */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const { header, title, description, hardQualifications, softQualifications } = req.body as { header?: string; title?: string; description?: string; hardQualifications?: string; softQualifications?: string };
