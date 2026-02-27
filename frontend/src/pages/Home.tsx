@@ -3,30 +3,40 @@ import { Link } from "react-router";
 import { FileText, Plus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import React from "react";
+import {
+  getScreeningHistory,
+  type ScreeningDetails,
+} from "@/api/fetchScreenings";
 
 function Home() {
-  const screeningActivities = [
-    {
-      title: "Senior Developer",
-      date: "28 Jan 2026",
-    },
-    {
-      title: "Project Manager",
-      date: "25 Jan 2026",
-    },
-    {
-      title: "UX Designer",
-      date: "22 Jan 2026",
-    },
-    {
-      title: "Data Analyst",
-      date: "20 Jan 2026",
-    },
-    {
-      title: "System Administrator",
-      date: "18 Jan 2026",
-    },
-  ];
+  const [screeningActivities, setScreeningActivities] = React.useState<ScreeningDetails[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isError, setIsError] = React.useState(false);
+
+  React.useEffect(() => {
+    async function fetchHistory() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const response = await getScreeningHistory();
+        setScreeningActivities(response);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchHistory();
+  }, []);
+
+  const formatDate = (dateValue: string) =>
+    new Intl.DateTimeFormat("nb-NO", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(dateValue));
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
@@ -53,9 +63,9 @@ function Home() {
               </div>
               {/* Screening activity list */}
               <div className="divide-y divide-(--color-primary)">
-                {screeningActivities.map((activity, index) => (
+                {screeningActivities.slice(0, 5).map((activity) => (
                   <div
-                    key={index}
+                    key={activity.jobPostId}
                     className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"
                   >
                     <div>
@@ -64,21 +74,31 @@ function Home() {
                       </h4>
                       <div className="flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
                         <Clock className="w-4 h-4" />
-                        <span>{activity.date}</span>
+                        <span>{formatDate(activity.screenedAt)}</span>
                       </div>
                     </div>
                     <Link
-                      to="/screening-history"
+                      to={`/screening-historikk/${activity.jobPostId}`}
                       className="text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
                     >
                       Se resultater
                     </Link>
                   </div>
                 ))}
+                {isLoading && (
+                  <div className="p-6 text-sm text-(--color-dark) opacity-75">
+                    Laster screeningaktivitet...
+                  </div>
+                )}
+                {isError && !isLoading && (
+                  <div className="p-6 text-sm text-(--color-dark) opacity-75">
+                    Kunne ikke hente screeningaktivitet.
+                  </div>
+                )}
               </div>
               <div className="border-t border-(--color-primary) p-6 text-center">
                 <Link
-                  to="/screening-history"
+                  to="/screening-historikk"
                   className="inline-flex items-center gap-1 text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
                 >
                   Se hele screeninghistorikken →
