@@ -16,6 +16,10 @@ function Screening() {
     );
   }
 
+  if(isError){
+    return(<div>Error</div>)
+  }
+
   const formatDate = (dateValue: string) =>
     new Intl.DateTimeFormat("nb-NO", {
       day: "2-digit",

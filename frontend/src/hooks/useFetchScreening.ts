@@ -1,8 +1,33 @@
 import {
   getScreeningByJobPostId,
+  getScreeningHistory,
   type ScreeningDetails,
 } from "@/api/fetchScreenings";
 import { useEffect, useState } from "react";
+
+export function useFetchScreenings() {
+  const [screeningData, setScreeningData] = useState<ScreeningDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    async function fetchHistory() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const response = await getScreeningHistory();
+        setScreeningData(response);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchHistory();
+  }, []);
+  return { screeningData, isLoading, isError };
+}
 
 export function useFetchScreening(jobPostId?: string) {
   const [data, setData] = useState<ScreeningDetails | null>(null);
