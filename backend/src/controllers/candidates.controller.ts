@@ -171,3 +171,23 @@ export async function getCV(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+
+/**
+ * Removes a candidate.
+ *
+ * Path params:
+ * - id: number (candidate id)
+ * 
+ *  * Responses:
+ * - 200: `{ ok: true }` on success
+ */
+export async function remove(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number(req.params.id);
+    const r = await pool.query("delete from candidates where id=$1", [id])
+    if(r.rowCount === 0) return res.status(400).json({ error: "Candidate not found" })
+    res.status(200).json({ message: "Candidate was deleted" })
+  } catch (e) {
+    next(e);
+  }
+}
