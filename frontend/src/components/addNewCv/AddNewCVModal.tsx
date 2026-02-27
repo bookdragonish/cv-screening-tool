@@ -105,7 +105,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
+        <Button className="bg-(--color-primary) cursor-pointer hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
           <PlusIcon className="size-6" />
           Legg til CV
         </Button>
@@ -231,6 +231,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
           <Button
             type="button"
             variant="secondary"
+            className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
             onClick={() => setOpen(false)}
             disabled={form.formState.isSubmitting}
           >
@@ -239,7 +240,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
           <Button
             type="submit"
             form="add-cv-form"
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "Lagrer..." : "Legg til"}

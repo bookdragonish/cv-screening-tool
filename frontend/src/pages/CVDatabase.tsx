@@ -66,7 +66,7 @@ function CVDatabase() {
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
-      <section className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white --color-primary rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Search */}
         <article className="px-5 py-4 border-b border-gray-100">
           <div className="relative">
