@@ -17,7 +17,8 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<Home />} />
             <Route  path="GeminiTestPage" element={<GeminiTestPage />}/>
             <Route path="/screening" element={<Screening />} />
-            <Route path="/screening-history" element={<ScreeningHistory />} />
+            <Route path="/screening-historikk" element={<ScreeningHistory />} />
+            <Route path="/screening-historikk/:jobPostId" element={<Screening />} />
             <Route path="/cv-database" element={<CVDatabase />} />
           </Route>
         </Routes>

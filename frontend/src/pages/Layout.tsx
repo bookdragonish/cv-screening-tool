@@ -1,5 +1,4 @@
 import { Link, Outlet, useLocation } from "react-router"
-import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import { FileText, User, Home, Clock } from "lucide-react"
 
 export default function Layout() {
@@ -8,52 +7,50 @@ export default function Layout() {
   const navLinks = [
     { path: "/", label: "Oversikt", icon: Home },
     { path: "/cv-database", label: "CV-database", icon: FileText },
-    { path: "/screening-history", label: "Screeninghistorikk", icon: Clock },
+    { path: "/screening-historikk", label: "Screeninghistorikk", icon: Clock },
   ];
 
   return (
-    <ThemeProvider>
-      <div className="min-h-screen w-full bg-gray-50">
-        {/* Header */}
-        <header className="border-b border-(--color-primary) bg-white px-6 py-4">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-3">
-                {/* Logo */}
-                <div className="rounded-lg bg-(--color-primary) p-2">
-                  <FileText className="h-5 w-5 text-white" />
-                </div>
-                <h1 className="text-xl font-semibold text-(--color-dark)">CV-screening</h1>
+    <div className="min-h-screen w-full bg-gray-50">
+      {/* Header */}
+      <header className="border-b border-(--color-primary) bg-white px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-8">
+            <div className="flex items-center gap-3">
+              {/* Logo */}
+              <div className="rounded-lg bg-(--color-primary) p-2">
+                <FileText className="h-5 w-5 text-white" />
               </div>
-              <nav className="flex items-center gap-6">
-                {navLinks.map((link) => {
-                  const Icon = link.icon;
-                  const isActive = location.pathname === link.path;
-                  return (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      className={`flex items-center gap-2 text-sm font-medium transition-opacity ${
-                        isActive
-                          ? "text-(--color-primary) opacity-100"
-                          : "text-(--color-dark) opacity-60 hover:opacity-100"
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {link.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              <h1 className="text-xl font-semibold text-(--color-dark)">CV-screening</h1>
             </div>
-            <div className="flex items-center gap-2 text-(--color-dark)">
-              <User className="h-5 w-5" />
-              <span className="text-sm font-medium">HR-bruker</span>
-            </div>
+            <nav className="flex flex-wrap items-center gap-4 sm:gap-6">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`flex items-center gap-2 text-sm font-medium transition-opacity ${
+                      isActive
+                        ? "text-(--color-primary) opacity-100"
+                        : "text-(--color-dark) opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
-        </header>
-        <Outlet />
-      </div>
-    </ThemeProvider>
+          <div className="flex items-center gap-2 text-(--color-dark) sm:self-auto">
+            <User className="h-5 w-5" />
+            <span className="text-sm font-medium">HR-bruker</span>
+          </div>
+        </div>
+      </header>
+      <Outlet />
+    </div>
   )
 }
