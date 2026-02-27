@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 
+/**
+ * List all screening results.
+ * 
+ * Response:
+ * - 200: JSON array of screening results
+ */
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
@@ -12,6 +18,15 @@ export async function list(_req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Gets single screening result by job post id and candidate id.
+ * 
+ * Request should include 'jobPostId' and 'candidateId'.
+ *
+ * Responses:
+ * - 200: JSON object of the screening result
+ * - 404: If no screening result with the given job post id and candidate id exists
+ */
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const job_post_id = Number(req.params.jobPostId);
@@ -27,6 +42,15 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Creates a new screening result.
+ * 
+ * Request should include 'job_post_id', 'candidate_id', 'rank', 'score', 'qualified', 'qualifications_met', and 'qualifications_missing'. 'summary' is optional.
+ *
+ * Responses:
+ * - 201: JSON object of the created screening result
+ * - 400: If any required fields are missing
+ */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const {
@@ -85,6 +109,12 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Gets screening history for all job posts that have been screened, including the top 3 candidates for each job post.
+ * 
+ * Response:
+ * - 200: JSON array of screening history, where each item includes 'jobPostId', 'title', 'screenedAt', and 'candidates' (array of top 3 candidates with their screening results)
+ */
 export async function getScreeningHistory(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
@@ -118,6 +148,15 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
   }
 }
 
+/**
+ * Gets all candidates that have been screened for a specific job post.
+ * 
+ * Request should include 'jobPostId' as a URL parameter.
+ *
+ * Responses:
+ * - 200: JSON object including 'jobPostId', 'title', 'screenedAt', and 'candidates' (array of all candidates with their screening results)
+ * - 404: If no job post with the given id exists
+ */
 export async function getScreeningByJobPostId(req: Request, res: Response, next: NextFunction) {
   try {
     const job_post_id = Number(req.params.jobPostId);
@@ -153,6 +192,15 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
   }
 }
 
+/**
+ * Deletes a screening result by job post id and candidate id combined as the primary key.
+ * 
+ * Request should include 'jobPostId' and 'candidateId' as URL parameters.
+ * 
+ * Responses:
+ * - 204: If the screening result was successfully deleted
+ * - 404: If no screening result with the given job post id and candidate id exists
+ */
 export async function deleteById(req: Request, res: Response, next: NextFunction) {
   try {
     const job_post_id = Number(req.params.jobPostId);
