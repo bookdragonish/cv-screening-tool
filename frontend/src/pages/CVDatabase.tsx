@@ -7,9 +7,6 @@ import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 function handleDelete(id: number) {
   console.log("Delete", id);
 }
-function handleCreate() {
-  console.log("Create");
-}
 function handleEdit(id: number) {
   console.log("Edit", id);
 }

@@ -81,7 +81,7 @@ function ScreeningHistory() {
 
 			<div className="space-y-4">
 			{filteredHistory.map((screening) => (
-				<div key={screening.jobPostId} className="rounded-lg border border-(--color-primary) bg-(--color-white) p-6 shadow-sm transition-colors hover:bg-(--color-light)/40">
+				<div key={screening.jobPostId} className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40">
 				<div className="flex items-start justify-between">
 					<div className="flex-1">
 					<div className="flex items-start space-x-3">
@@ -116,7 +116,7 @@ function ScreeningHistory() {
 
                     <Link
                         to={`/screening-historikk/${screening.jobPostId}`}
-                        className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-(--color-white) transition-opacity hover:opacity-90"
+                        className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-white transition-opacity hover:opacity-90"
                     >
                         Se resultater
                     </Link>
@@ -126,7 +126,7 @@ function ScreeningHistory() {
             </div>
 
 			{!isLoading && filteredHistory.length === 0 && (
-			<div className="rounded-lg border border-(--color-primary) bg-(--color-white) p-12 text-center shadow-sm">
+			<div className="rounded-lg border border-(--color-primary) bg-white  p-12 text-center shadow-sm">
 				<FileText className="mx-auto mb-4 h-16 w-16 text-(--color-primary) opacity-60" />
 				<h3 className="mb-2 text-lg font-semibold text-(--color-dark)">Ingen screeningresultater funnet for søket ditt</h3>
 				<p className="text-sm text-(--color-dark) opacity-75">Prøv å justere søket ditt</p>

@@ -68,6 +68,6 @@ export function useFetchCandidate(id: string) {
       }
     }
     APIFetch();
-  }, []);
+  }, [id]);
   return { data, isError, isLoading };
 }
