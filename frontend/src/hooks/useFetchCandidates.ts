@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
  * @returns An object containing the data, loading state, and error state
  */
 
-export function useFetchCandidates() {
+export function useFetchCandidates(reloadKey: number = 0) {
   const [data, setData] = useState<Candidate[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
@@ -38,7 +38,7 @@ export function useFetchCandidates() {
       }
     }
     APIFetch();
-  }, []);
+  }, [reloadKey]);
   return { data, isError, isLoading };
 }
 

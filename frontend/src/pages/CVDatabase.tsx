@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
-
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
 import { Link } from "react-router";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 
 function handleDelete(id: number) {
   console.log("Delete", id);
@@ -16,7 +15,9 @@ function handleEdit(id: number) {
 }
 
 function CVDatabase() {
-  const { data, isError, isLoading } = useFetchCandidates();
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const { data, isError, isLoading } = useFetchCandidates(reloadKey);
   const [search, setSearch] = useState("");
 
   // From this
@@ -48,32 +49,21 @@ function CVDatabase() {
   }));
 
   return (
-    <main className="min-h-screen bg-gray-50 px-8 py-6">
+    <main className="bg-gray-50 px-4 py-6 sm:px-8">
       <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
         <Link to="/" className="hover:text-gray-600 cursor-pointer">Hjem</Link>
         <span>›</span>
         <span className="text-gray-600">CV Database</span>
       </nav>
 
-      <section className="flex items-start justify-between mb-6">
+      <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <article>
           <h1 className="text-2xl font-bold text-gray-900">CV Database</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Administrer ansattes CV-er for screening.
           </p>
         </article>
-        <Button
-          onClick={handleCreate}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm"
-        >
-          <img
-            src="src/assets/icons/plus-white.svg"
-            alt="plus icon"
-            width="20px"
-            height="20px"
-          />
-          Legg til CV
-        </Button>
+        <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
       <section className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -96,85 +86,87 @@ function CVDatabase() {
         </article>
 
         {/* Table */}
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Navn
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Sist endret
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
-                Pdf
-              </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">
-                Handlinger
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {filtered.map((candidate) => (
-              <tr
-                key={candidate.id}
-                className="hover:bg-gray-50 transition-colors duration-100"
-              >
-                <td className="px-5 py-3.5 text-sm font-medium text-gray-800">
-                  {candidate.name ?? candidate.id}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-130 text-left">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Navn
+                </th>
+                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Sist endret
+                </th>
+                <th className="px-5 py-3 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
+                  Pdf
+                </th>
+                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">
+                  Handlinger
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {filtered.map((candidate) => (
+                <tr
+                  key={candidate.id}
+                  className="hover:bg-gray-50 transition-colors duration-100"
+                >
+                  <td className="px-5 py-3.5 text-sm font-medium text-gray-800">
+                    {candidate.name ?? candidate.id}
+                  </td>
 
-                <td className="px-5 py-3.5 text-sm text-gray-500">
-                  {new Intl.DateTimeFormat(navigator.language, {
-                    dateStyle: "medium",
-                  }).format(new Date(candidate.created_at))}
-                </td>
+                  <td className="px-5 py-3.5 text-sm text-gray-500">
+                    {new Intl.DateTimeFormat(navigator.language, {
+                      dateStyle: "medium",
+                    }).format(new Date(candidate.created_at))}
+                  </td>
 
-                {candidate.cv_pdf ? (
-                  <td className="py-3 text-center">
+                  {candidate.cv_pdf ? (
+                    <td className="py-3 text-center">
+                      <button
+                        onClick={() => showPreview(candidate.id)}
+                        className="cursor-pointer"
+                      >
+                        <img
+                          src="src/assets/icons/file-pdf-solid.svg"
+                          alt="open pdf"
+                          className="w-5 h-5 opacity-70 hover:opacity-100"
+                        />
+                      </button>
+                    </td>
+                  ) : (
+                    <td></td>
+                  )}
+
+                  <td className="px-5 py-3.5 text-right">
                     <button
-                      onClick={() => showPreview(candidate.id)}
-                      className="cursor-pointer"
+                      onClick={() => handleEdit(candidate.id)}
+                      className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md hover:bg-grey-700 transition-colors duration-150"
+                      title="Delete candidate"
                     >
                       <img
-                        src="src/assets/icons/file-pdf-solid.svg"
-                        alt="open pdf"
+                        src="src/assets/icons/edit-solid.svg"
+                        alt="edit candidate"
+                        className="w-5 h-5 opacity-70 hover:opacity-100"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(candidate.id)}
+                      className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
+                      title="Delete candidate"
+                    >
+                      <img
+                        src="src/assets/icons/trash-alt-solid.svg"
+                        alt="delete candidate"
                         className="w-5 h-5 opacity-70 hover:opacity-100"
                       />
                     </button>
                   </td>
-                ) : (
-                  <td></td>
-                )}
-
-                <td className="px-5 py-3.5 text-right">
-                  <button
-                    onClick={() => handleEdit(candidate.id)}
-                    className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md hover:bg-grey-700 transition-colors duration-150"
-                    title="Delete candidate"
-                  >
-                    <img
-                      src="src/assets/icons/edit-solid.svg"
-                      alt="edit candidate"
-                      className="w-5 h-5 opacity-70 hover:opacity-100"
-                    />
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(candidate.id)}
-                    className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
-                    title="Delete candidate"
-                  >
-                    <img
-                      src="src/assets/icons/trash-alt-solid.svg"
-                      alt="delete candidate"
-                      className="w-5 h-5 opacity-70 hover:opacity-100"
-                    />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Footer */}
         <article className="px-5 py-3 border-t border-gray-100 bg-gray-50">
