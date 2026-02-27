@@ -5,7 +5,7 @@ import {
   type Part,
   createPartFromUri,
 } from "@google/genai";
-import type { UploadedGeminiFile } from "./multipleFileUpload";
+import type { UploadedGeminiFile } from "@/api/gemini/multipleFileUpload";
 
 export async function generateFromGeminiOnFiles(params: {
   ai: GoogleGenAI;

@@ -5,24 +5,24 @@ import { GoogleGenAI } from "@google/genai";
 import {
   uploadMultipleFilesToGemini,
   type UploadedGeminiFile,
-} from "@/api/multipleFileUpload";
+} from "@/api/gemini/multipleFileUpload";
 
-import { generateFromGeminiOnFiles, deleteGeminiFiles } from "@/api/geminiGenerate";
-import { generateFromGeminiText } from "@/api/geminiText";
+import { generateFromGeminiOnFiles, deleteGeminiFiles } from "@/api/gemini/geminiGenerate";
+import { generateFromGeminiText } from "@/api/gemini/geminiText";
 
 import {
   buildJobAdProfilePrompt,
   buildCandidateEvalPrompt,
   buildRankingPrompt,
-} from "@/api/prompts";
+} from "@/api/gemini/prompts/prompts";
 
 import {
   parseJobProfile,
   parseCandidateEval,
   parseRanking,
-} from "@/api/schemas";
+} from "@/api/gemini/lib/schemas";
 
-import type { CandidateEval, Ranking } from "@/api/types";
+import type { CandidateEval, Ranking } from "@/api/gemini/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";

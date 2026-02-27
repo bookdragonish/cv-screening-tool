@@ -1,4 +1,4 @@
-import type { CandidateEval, JobProfile } from "@/api/types";
+import type { CandidateEval, JobProfile } from "@/api/gemini/lib/types";
 
 const RULES = `
 Rules:

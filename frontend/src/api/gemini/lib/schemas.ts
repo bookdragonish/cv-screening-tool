@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CandidateEval, JobProfile, Ranking } from "@/api/types";
+import type { CandidateEval, JobProfile, Ranking } from "@/api/gemini/lib/types";
 
 const ImpactSchema = z.preprocess(
   (val) => (typeof val === "string" ? val.trim().toLowerCase() : val),
