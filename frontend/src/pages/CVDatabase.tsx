@@ -3,6 +3,7 @@ import { useState } from "react";
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
 import { Link } from "react-router";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
+import { Spinner } from "@/components/ui/spinner";
 
 function handleDelete(id: number) {
   console.log("Delete", id);
@@ -26,12 +27,12 @@ function CVDatabase() {
 
   // To this is needed now for preview + rendering
 
-  if (isError || !data) {
+  if (isError ) {
     return <div>Error.</div>;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading || !data) {
+    return <main className="flex justify-center items-center h-170"><Spinner /></main>;
   }
 
   const filtered = data.filter((c) =>

@@ -15,6 +15,7 @@ function Home() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
 
+
   React.useEffect(() => {
     async function fetchHistory() {
       try {
@@ -31,6 +32,14 @@ function Home() {
 
     fetchHistory();
   }, []);
+
+  //   if (isLoading || !screeningActivities) {
+  //   return (
+  //     <main className="flex justify-center items-center h-170">
+  //       <Spinner />
+  //     </main>
+  //   );
+  // }
 
   const formatDate = (dateValue: string) =>
     new Intl.DateTimeFormat("nb-NO", {

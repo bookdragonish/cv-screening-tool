@@ -1,4 +1,8 @@
-import { getScreeningByJobPostId, type ScreeningDetails } from "@/api/fetchScreenings";
+import {
+  getScreeningByJobPostId,
+  type ScreeningDetails,
+} from "@/api/fetchScreenings";
+import { Spinner } from "@/components/ui/spinner";
 import { Clock, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
@@ -8,6 +12,14 @@ function Screening() {
   const [data, setData] = useState<ScreeningDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+
+  if (isLoading || !data) {
+    return (
+      <main className="flex justify-center items-center h-170">
+        <Spinner />
+      </main>
+    );
+  }
 
   useEffect(() => {
     async function fetchDetails() {
@@ -22,7 +34,6 @@ function Screening() {
         setIsLoading(false);
       }
     }
-
     fetchDetails();
   }, [jobPostId]);
 
@@ -36,7 +47,10 @@ function Screening() {
   return (
     <main className="min-h-screen px-8 py-6">
       <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link to="/" className="cursor-pointer transition-opacity hover:opacity-75">
+        <Link
+          to="/"
+          className="cursor-pointer transition-opacity hover:opacity-75"
+        >
           Hjem
         </Link>
         <span>›</span>
@@ -73,7 +87,9 @@ function Screening() {
       {!isLoading && !isError && data && (
         <div className="space-y-4">
           <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            <h1 className="text-3xl font-semibold text-(--color-dark)">{data.title}</h1>
+            <h1 className="text-3xl font-semibold text-(--color-dark)">
+              {data.title}
+            </h1>
             <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
               <Clock className="h-4 w-4" />
               <span>{formatDate(data.screenedAt)}</span>
