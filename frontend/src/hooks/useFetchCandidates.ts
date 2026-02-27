@@ -22,24 +22,24 @@ export function useFetchCandidates() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
 
-  // This useffect runs whenever the arguments passed in changes (when we want to get someting else)
-  useEffect(() => {
-    async function APIFetch() {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-
-        const response = await getAllCandidates();
-        setData(response);
-      } catch {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
+  const refetchData = async () => {
+    try {
+      setIsLoading(true);
+      setIsError(false);
+      const response = await getAllCandidates();
+      setData(response);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
-    APIFetch();
+  };
+  // This useeffect performs the initial fetch of all candidates when the component mounts
+  useEffect(() => {
+    refetchData();
   }, []);
-  return { data, isError, isLoading };
+  
+  return { data, isError, isLoading, refetch: refetchData };
 }
 
 export function useFetchCandidate(id: string) {
@@ -71,3 +71,5 @@ export function useFetchCandidate(id: string) {
   }, []);
   return { data, isError, isLoading };
 }
+
+

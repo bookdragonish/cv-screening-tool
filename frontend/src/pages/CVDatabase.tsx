@@ -3,10 +3,9 @@ import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
+import { deleteCandidate } from "@/api/candidateActions";
 
-function handleDelete(id: number) {
-  console.log("Delete", id);
-}
+
 function handleCreate() {
   console.log("Create");
 }
@@ -15,7 +14,7 @@ function handleEdit(id: number) {
 }
 
 function CVDatabase() {
-  const { data, isError, isLoading } = useFetchCandidates();
+  const { data, isError, isLoading, refetch } = useFetchCandidates();
   const [search, setSearch] = useState("");
 
   // From this
@@ -45,6 +44,16 @@ function CVDatabase() {
     id: candidate.id,
     name: candidate.name ?? `Candidate ${candidate.id}`,
   }));
+
+  const handleDelete = async (id: number, name: string) => {
+  if (!window.confirm("Er du sikker på at du vil slette " + name + "? Denne handlingen kan ikke angres.")) return;
+  try {
+    await deleteCandidate(id)
+    await refetch()
+  } catch (error) {
+    alert("Feil ved sletting: " + (error as Error).message);
+  }
+}
 
   return (
     <main className="min-h-screen bg-gray-50 px-8 py-6">
@@ -159,7 +168,7 @@ function CVDatabase() {
                   </button>
 
                   <button
-                    onClick={() => handleDelete(candidate.id)}
+                    onClick={() => handleDelete(candidate.id, candidate.name ?? `Kandidat ${candidate.id}`)}
                     className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
                     title="Delete candidate"
                   >
