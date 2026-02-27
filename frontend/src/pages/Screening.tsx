@@ -1,17 +1,12 @@
-import {
-  getScreeningByJobPostId,
-  type ScreeningDetails,
-} from "@/api/fetchScreenings";
+
 import { Spinner } from "@/components/ui/spinner";
+import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { Clock, FileText } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
 function Screening() {
-  const { jobPostId } = useParams();
-  const [data, setData] = useState<ScreeningDetails | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const { jobPostId } = useParams<{ jobPostId: string }>();
+  const { data, isLoading, isError} = useFetchScreening(jobPostId);
 
   if (isLoading || !data) {
     return (
@@ -20,22 +15,6 @@ function Screening() {
       </main>
     );
   }
-
-  useEffect(() => {
-    async function fetchDetails() {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-        const response = await getScreeningByJobPostId(Number(jobPostId));
-        setData(response);
-      } catch {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchDetails();
-  }, [jobPostId]);
 
   const formatDate = (dateValue: string) =>
     new Intl.DateTimeFormat("nb-NO", {

@@ -6,7 +6,6 @@ export async function getAllCandidates() {
     throw new Error(`Response Status: ${response.status}`);
   }
   const result = await response.json();
-  console.log(result);
   return result;
 }
 
@@ -16,7 +15,6 @@ export async function getCandidate(id: string) {
     throw new Error(`Response Status: ${response.status}`);
   }
   const result = await response.json();
-  console.log(result);
   return result;
 }
 
