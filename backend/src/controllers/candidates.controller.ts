@@ -1,6 +1,19 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 
+
+/**
+ * List all candidates.
+ *
+ * Queries the database for all candidates and returns them in descending `id` order.
+ *
+ * Response:
+ * - 200: JSON array of candidates
+ *
+ * Notes:
+ * - This endpoint currently returns `cv_pdf` in the response, which may be a large binary buffer.
+ *   Consider returning a boolean like `has_cv` instead (or exclude `cv_pdf`) for performance.
+ */
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
@@ -12,6 +25,12 @@ export async function list(_req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Gets single candidate.
+ *
+ *
+ * 
+ */
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number(req.params.id);

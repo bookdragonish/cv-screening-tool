@@ -150,6 +150,8 @@ This should open our application on: http://localhost:5173
 
 Our database is PostgreSQL, follow [their guide](https://www.postgresql.org/) to download the database. Then run the sql scripts in the /assets folder in backend. This configures the tables correctly.
 
+For more installation documents on the database see the [database.md file](./docs/database.md)
+
 ### Endpoints
 
 #### Candidates:
