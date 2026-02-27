@@ -71,3 +71,5 @@ export function useFetchCandidate(id: string) {
   }, []);
   return { data, isError, isLoading };
 }
+
+
