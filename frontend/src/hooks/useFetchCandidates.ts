@@ -17,29 +17,29 @@ import { useEffect, useState } from "react";
  * @returns An object containing the data, loading state, and error state
  */
 
-export function useFetchCandidates() {
+export function useFetchCandidates(reloadKey: number = 0) {
   const [data, setData] = useState<Candidate[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
 
-  const refetchData = async () => {
-    try {
-      setIsLoading(true);
-      setIsError(false);
-      const response = await getAllCandidates();
-      setData(response);
-    } catch {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  // This useeffect performs the initial fetch of all candidates when the component mounts
+  // This useffect runs whenever the arguments passed in changes (when we want to get someting else)
   useEffect(() => {
-    refetchData();
-  }, []);
-  
-  return { data, isError, isLoading, refetch: refetchData };
+    async function APIFetch() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+
+        const response = await getAllCandidates();
+        setData(response);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    APIFetch();
+  }, [reloadKey]);
+  return { data, isError, isLoading };
 }
 
 export function useFetchCandidate(id: string) {
