@@ -14,8 +14,12 @@ export const JobProfileSchema = z.object({
 export const CandidateEvalSchema = z.object({
   candidate_id: z.string(),
   candidate_label: z.string(),
+  candidate_role: z.string().optional(),
+  contact_phone: z.string().optional(),
   qualified: z.boolean(),
   overall_score: z.number(),
+  experience_highlights: z.array(z.string()).optional(),
+  education: z.array(z.string()).optional(),
   strengths: z.array(z.object({ point: z.string(), evidence: z.string() })),
   gaps: z.array(z.object({ point: z.string(), evidence: z.string(), impact: ImpactSchema })),
   unknowns: z.array(z.string()),
