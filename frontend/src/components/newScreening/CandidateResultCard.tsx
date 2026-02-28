@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { CheckIcon, XIcon } from "lucide-react";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ function CandidateResultCard({ candidate, candidateHref }: CandidateResultCardPr
             <ul className="space-y-1 text-slate-600">
               {candidate.met.map((item) => (
                 <li key={`${candidate.id}-met-${item}`} className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  <CheckIcon className="h-3.5 w-3.5 text-emerald-500" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -74,7 +74,7 @@ function CandidateResultCard({ candidate, candidateHref }: CandidateResultCardPr
             <ul className="space-y-1 text-slate-600">
               {candidate.missing.map((item) => (
                 <li key={`${candidate.id}-missing-${item}`} className="flex items-center gap-2">
-                  <X className="h-3.5 w-3.5 text-orange-500" />
+                  <XIcon className="h-3.5 w-3.5 text-orange-500" />
                   <span>{item}</span>
                 </li>
               ))}

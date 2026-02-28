@@ -7,7 +7,7 @@ function ScreeningResultsPage() {
   const { canGoToResults, jobTitle, analyzedAt, screeningCandidates } = useScreeningOutlet();
 
   if (!canGoToResults) {
-    return <Navigate to="/screening-flow/new-screening" replace />;
+    return <Navigate to="/screening/new-screening" replace />;
   }
 
   return (
@@ -15,7 +15,7 @@ function ScreeningResultsPage() {
       jobTitle={jobTitle}
       analyzedAt={analyzedAt}
       candidates={screeningCandidates}
-      candidateBaseHref="/screening-flow/results"
+      candidateBaseHref="/screening/results"
     />
   );
 }

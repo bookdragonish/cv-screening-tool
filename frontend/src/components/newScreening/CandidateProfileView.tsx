@@ -1,4 +1,11 @@
-import { ArrowLeft, Check, CheckCircle2, Download, FileText, X } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  CheckCircle2Icon,
+  CheckIcon,
+  DownloadIcon,
+  FileTextIcon,
+  XIcon,
+} from "lucide-react";
 import { Link } from "react-router";
 
 import ScreeningBreadcrumbs from "@/components/newScreening/ScreeningBreadcrumbs";
@@ -46,7 +53,7 @@ function CandidateProfileView({
               aria-label="Tilbake til resultater"
             >
               <Link to={backHref}>
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeftIcon className="h-4 w-4" />
               </Link>
             </Button>
             <div>
@@ -60,7 +67,7 @@ function CandidateProfileView({
               Match: {candidate.score}%
             </span>
             <Button variant="outline" className="border-slate-300 bg-white">
-              <Download className="mr-2 h-4 w-4" />
+              <DownloadIcon className="mr-2 h-4 w-4" />
               Last ned CV
             </Button>
           </div>
@@ -71,7 +78,7 @@ function CandidateProfileView({
         <Card className="gap-0 border-slate-200 bg-white py-0">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="flex items-center gap-2 text-2xl text-slate-900">
-              <FileText className="h-5 w-5 text-blue-600" />
+              <FileTextIcon className="h-5 w-5 text-blue-600" />
               Kandidat-CV
             </CardTitle>
           </CardHeader>
@@ -130,7 +137,7 @@ function CandidateProfileView({
         <Card className="gap-0 border-slate-200 bg-white py-0">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="flex items-center gap-2 text-2xl text-slate-900">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+              <CheckCircle2Icon className="h-5 w-5 text-emerald-600" />
               Stillingsbeskrivelse
             </CardTitle>
           </CardHeader>
@@ -163,7 +170,7 @@ function CandidateProfileView({
         <CardContent className="grid gap-6 pb-6 sm:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-semibold text-slate-700">
-              <Check className="mr-1 inline h-3.5 w-3.5 text-emerald-600" />
+              <CheckIcon className="mr-1 inline h-3.5 w-3.5 text-emerald-600" />
               Kvalifikasjoner oppfylt ({candidate.met.length})
             </p>
             <ul className="space-y-1 text-sm text-slate-700">
@@ -178,7 +185,7 @@ function CandidateProfileView({
 
           <div>
             <p className="mb-2 text-sm font-semibold text-slate-700">
-              <X className="mr-1 inline h-3.5 w-3.5 text-orange-500" />
+              <XIcon className="mr-1 inline h-3.5 w-3.5 text-orange-500" />
               Kvalifikasjoner som mangler ({candidate.missing.length})
             </p>
             <ul className="space-y-1 text-sm text-slate-700">

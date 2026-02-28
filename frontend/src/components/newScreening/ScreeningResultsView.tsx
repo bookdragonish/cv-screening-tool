@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { FileTextIcon } from "lucide-react";
 
 import CandidateResultCard from "@/components/newScreening/CandidateResultCard";
 import ScreeningBreadcrumbs from "@/components/newScreening/ScreeningBreadcrumbs";
@@ -33,7 +33,7 @@ function ScreeningResultsView({
           </div>
 
           <Button variant="outline" className="border-slate-300 bg-white">
-            <FileText className="mr-2 h-4 w-4" />
+            <FileTextIcon className="mr-2 h-4 w-4" />
             Vis stillingsbeskrivelse
           </Button>
         </CardContent>

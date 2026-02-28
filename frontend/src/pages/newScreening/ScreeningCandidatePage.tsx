@@ -8,19 +8,19 @@ function ScreeningCandidatePage() {
   const { canGoToResults, jobTitle, screeningCandidates, requiredSkills } = useScreeningOutlet();
 
   if (!canGoToResults) {
-    return <Navigate to="/screening-flow/new-screening" replace />;
+    return <Navigate to="/screening/new-screening" replace />;
   }
 
   const parsedCandidateId = Number(candidateId);
 
   if (!candidateId || Number.isNaN(parsedCandidateId)) {
-    return <Navigate to="/screening-flow/results" replace />;
+    return <Navigate to="/screening/results" replace />;
   }
 
   const candidate = screeningCandidates.find((item) => item.id === parsedCandidateId);
 
   if (!candidate) {
-    return <Navigate to="/screening-flow/results" replace />;
+    return <Navigate to="/screening/results" replace />;
   }
 
   return (
@@ -28,7 +28,7 @@ function ScreeningCandidatePage() {
       candidate={candidate}
       jobTitle={jobTitle}
       requiredSkills={requiredSkills}
-      backHref="/screening-flow/results"
+      backHref="/screening/results"
     />
   );
 }

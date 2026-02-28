@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileText, Upload } from "lucide-react";
+import { FileTextIcon, UploadIcon } from "lucide-react";
 import { useEffect, useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -167,12 +167,12 @@ function UploadJobDescriptionCard({
                   />
 
                   <div className="rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center transition">
-                    <Upload className="mx-auto h-14 w-14 text-slate-400" />
+                    <UploadIcon className="mx-auto h-14 w-14 text-slate-400" />
 
                     {selectedFile ? (
                       <div className="mt-4 text-center">
                         <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-700">
-                          <FileText className="h-4 w-4 text-blue-600" />
+                          <FileTextIcon className="h-4 w-4 text-blue-600" />
                           {selectedFile.name}
                         </p>
                         <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile.size)}</p>

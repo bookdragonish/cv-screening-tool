@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
@@ -31,7 +31,7 @@ function StepNode({
       <div
         className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold ${containerClassName}`}
       >
-        {status === "completed" ? <Check className="h-4 w-4" /> : number}
+        {status === "completed" ? <CheckIcon className="h-4 w-4" /> : number}
       </div>
       <p className="mt-2 text-center text-sm text-slate-600">{label}</p>
     </div>

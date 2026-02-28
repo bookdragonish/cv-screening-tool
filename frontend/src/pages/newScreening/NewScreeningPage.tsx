@@ -1,4 +1,4 @@
-import NewScreeningFlowView from "@/components/newScreening/NewScreeningFlowView";
+import NewScreening from "@/components/newScreening/NewScreening";
 import { runScreeningWithGemini } from "@/components/newScreening/newScreeningLib/runScreeningWithGemini";
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
 import { useScreeningOutlet } from "@/components/newScreening/newScreeningLib/screeningContext";
@@ -21,7 +21,7 @@ function NewScreeningPage() {
   const resultsStatus: StepStatus = flowState === "complete" ? "active" : "upcoming";
 
   return (
-    <NewScreeningFlowView
+    <NewScreening
       view={flowState === "upload" ? "upload" : "processing"}
       isProcessingComplete={flowState === "complete"}
       jobDescriptionInput={jobDescriptionInput}
@@ -29,7 +29,7 @@ function NewScreeningPage() {
       uploadStatus={uploadStatus}
       processingStatus={processingStatus}
       resultsStatus={resultsStatus}
-      resultsHref="/screening-flow/results"
+      resultsHref="/screening/results"
       onCancel={() => {
         setJobDescriptionInput(null);
         setScreeningCandidates([]);

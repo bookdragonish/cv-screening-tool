@@ -5,7 +5,7 @@ import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressS
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
 import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
 
-type NewScreeningFlowViewProps = {
+type NewScreeningProps = {
   view: "upload" | "processing";
   isProcessingComplete: boolean;
   jobDescriptionInput: JobDescriptionInput | null;
@@ -19,7 +19,7 @@ type NewScreeningFlowViewProps = {
   onStartNew: () => void;
 };
 
-function NewScreeningFlowView({
+function NewScreening({
   view,
   isProcessingComplete,
   jobDescriptionInput,
@@ -31,7 +31,7 @@ function NewScreeningFlowView({
   onCancel,
   onStartProcessing,
   onStartNew,
-}: NewScreeningFlowViewProps) {
+}: NewScreeningProps) {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8">
       <NewScreeningHeader canGoToResults={canGoToResults} />
@@ -59,4 +59,4 @@ function NewScreeningFlowView({
   );
 }
 
-export default NewScreeningFlowView;
+export default NewScreening;

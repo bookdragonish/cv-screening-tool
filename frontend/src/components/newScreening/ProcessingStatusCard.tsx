@@ -1,4 +1,4 @@
-import { CheckCircle2, LoaderCircle } from "lucide-react";
+import { CheckCircle2Icon, LoaderCircleIcon } from "lucide-react";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ function ProcessingStatusCard({
       <CardContent className="p-6">
         {!isProcessingComplete ? (
           <div className="flex min-h-[320px] flex-col items-center justify-center text-center">
-            <LoaderCircle className="h-14 w-14 animate-spin text-blue-600" />
+            <LoaderCircleIcon className="h-14 w-14 animate-spin text-blue-600" />
             <p className="mt-6 text-3xl font-semibold text-slate-900">Analyserer stillingskrav</p>
             <p className="mt-2 text-base text-slate-500">
               Matcher kandidater fra CV-databasen...
@@ -28,7 +28,7 @@ function ProcessingStatusCard({
           </div>
         ) : (
           <div className="rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center">
-            <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-600" />
+            <CheckCircle2Icon className="mx-auto h-14 w-14 text-emerald-600" />
             <p className="mt-4 text-2xl font-semibold text-slate-900">Behandling fullført</p>
             <p className="mt-2 text-base text-slate-500">
               Kandidatmatchene er klare. Velg hva du vil gjøre videre.
