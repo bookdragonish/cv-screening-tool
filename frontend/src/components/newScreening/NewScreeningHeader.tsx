@@ -1,4 +1,4 @@
-import ScreeningBreadcrumbs from "@/components/screening/ScreeningBreadcrumbs";
+import ScreeningBreadcrumbs from "@/components/newScreening/ScreeningBreadcrumbs";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 
 type NewScreeningHeaderProps = {
