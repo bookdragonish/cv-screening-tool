@@ -1,4 +1,4 @@
-import { API_URL } from "./fetchCandidates";
+import { API_URL } from "@/utils/variables";
 
 export async function deleteCandidate(id: number) {
   const response = await fetch( API_URL + "/api/candidates/" + id, {
