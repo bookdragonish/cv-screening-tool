@@ -3,6 +3,7 @@ import { Clock, FileText, Search } from "lucide-react";
 import React from "react";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
+import ErrorBox from "@/components/ErrorBox";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -17,7 +18,14 @@ function ScreeningHistory() {
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <section className="w-full flex justify-center my-10">
+        <ErrorBox
+          title={"Kan ikke hente screeninghistorikk"}
+          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+        />
+      </section>
+    );
   }
 
   const filteredHistory = screeningData.filter((item) =>

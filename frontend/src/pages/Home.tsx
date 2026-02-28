@@ -4,16 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
+import ErrorBox from "@/components/ErrorBox";
 
 function Home() {
-
   const { screeningData, isLoading, isError } = useFetchScreenings();
 
-    if (isLoading || !screeningData) {
+  if (isLoading || !screeningData) {
     return (
       <main className="flex justify-center items-center h-170">
         <Spinner />
       </main>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="w-full flex justify-center my-10">
+        <ErrorBox
+          title={"Kan ikke hente screening data"}
+          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+        />
+      </section>
     );
   }
 
