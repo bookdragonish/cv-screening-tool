@@ -1,0 +1,62 @@
+import { RULES } from "@/api/gemini/prompts/rulesAndRubric";
+
+export function buildJobProfileFromTextPrompt(jobAdText: string): string {
+  return `
+<role>You are a job requirements parser.</role>
+
+<task>
+Extract a job profile from the job advertisement.
+</task>
+
+<constraints>
+${RULES}
+</constraints>
+
+<output_format>
+Return ONLY valid JSON with this schema:
+{
+  "role_title": string,
+  "must_haves": string[],
+  "nice_to_haves": string[]
+}
+</output_format>
+
+<context>
+<job_ad>
+${jobAdText}
+</job_ad>
+</context>
+
+Final output:
+JSON:
+`.trim();
+}
+
+export function buildJobProfileFromPdfPrompt(): string {
+  return `
+<role>You are a job requirements parser.</role>
+
+<task>
+Extract a structured job profile from the attached job description PDF.
+</task>
+
+<constraints>
+${RULES}
+</constraints>
+
+<output_format>
+Return ONLY valid JSON with this schema:
+{
+  "role_title": string,
+  "must_haves": string[],
+  "nice_to_haves": string[]
+}
+</output_format>
+
+Final output:
+JSON:
+`.trim();
+}
+
+export const buildJobAdProfilePrompt = buildJobProfileFromTextPrompt;
+
