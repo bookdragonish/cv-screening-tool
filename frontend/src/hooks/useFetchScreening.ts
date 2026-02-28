@@ -1,8 +1,8 @@
 import {
   getScreeningByJobPostId,
   getScreeningHistory,
-  type ScreeningDetails,
 } from "@/api/fetchScreenings";
+import type { ScreeningDetails } from "@/types/screening";
 import { useEffect, useState } from "react";
 
 /**

@@ -2,44 +2,20 @@ import { Link } from "react-router";
 import { FileText, Plus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import React from "react";
-import {
-  getScreeningHistory,
-  type ScreeningDetails,
-} from "@/api/fetchScreenings";
+import { useFetchScreenings } from "@/hooks/useFetchScreening";
+import { Spinner } from "@/components/ui/spinner";
 
 function Home() {
-  const [screeningActivities, setScreeningActivities] = React.useState<
-    ScreeningDetails[]
-  >([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isError, setIsError] = React.useState(false);
 
+  const { screeningData, isLoading, isError } = useFetchScreenings();
 
-  React.useEffect(() => {
-    async function fetchHistory() {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-        const response = await getScreeningHistory();
-        setScreeningActivities(response);
-      } catch {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchHistory();
-  }, []);
-
-  //   if (isLoading || !screeningActivities) {
-  //   return (
-  //     <main className="flex justify-center items-center h-170">
-  //       <Spinner />
-  //     </main>
-  //   );
-  // }
+    if (isLoading || !screeningData) {
+    return (
+      <main className="flex justify-center items-center h-170">
+        <Spinner />
+      </main>
+    );
+  }
 
   const formatDate = (dateValue: string) =>
     new Intl.DateTimeFormat("nb-NO", {
@@ -76,7 +52,7 @@ function Home() {
             </div>
             {/* Screening activity list */}
             <div className="divide-y divide-(--color-primary)">
-              {screeningActivities.slice(0, 5).map((activity) => (
+              {screeningData.slice(0, 5).map((activity) => (
                 <div
                   key={activity.jobPostId}
                   className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"

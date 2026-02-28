@@ -1,4 +1,5 @@
-export const API_URL = "http://localhost:3000";
+import { API_URL } from "@/utils/variables";
+
 
 export async function getAllCandidates() {
   const response = await fetch(API_URL + "/api/candidates");

@@ -6,3 +6,9 @@ export type Candidate = {
     cv_pdf?: string | null,
     created_at: string
 }
+
+export type CandidatePreview = {
+  id: number;
+  name: string;
+};
+

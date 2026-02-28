@@ -1,5 +1,4 @@
 import { AddNewCvSchema, type AddNewCvValues } from "@/components/addNewCv/AddNewCvSchema"
-import { API_URL } from "@/api/fetchCandidates"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "lucide-react"
 import { useId, useState } from "react"
@@ -22,6 +21,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { API_URL } from "@/utils/variables"
 
 type AddNewCVModalProps = {
   onCreated?: () => void

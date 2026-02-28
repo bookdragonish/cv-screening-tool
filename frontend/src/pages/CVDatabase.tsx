@@ -6,13 +6,8 @@ import { deleteCandidate } from "@/api/candidateActions";
 import { Link } from "react-router";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
+import type { CandidatePreview } from "@/types/candidate";
 
-function handleDelete(id: number) {
-  console.log("Delete", id);
-}
-function handleCreate() {
-  console.log("Create");
-}
 function handleEdit(id: number) {
   console.log("Edit", id);
 }
@@ -22,48 +17,58 @@ function CVDatabase() {
   const { data, isError, isLoading } = useFetchCandidates(reloadKey);
   const [search, setSearch] = useState("");
 
-  // From this
+  // Needed now for preview + rendering
   const [previewId, setPreviewId] = useState<number | null>(null);
-
   function showPreview(id: number) {
     setPreviewId(id);
   }
 
-  // To this is needed now for preview + rendering
-
-  if (isError ) {
+  if (isError) {
     return <div>Error.</div>;
   }
 
   if (isLoading || !data) {
-    return <main className="flex justify-center items-center h-170"><Spinner /></main>;
+    return (
+      <main className="flex justify-center items-center h-170">
+        <Spinner />
+      </main>
+    );
   }
 
   const filtered = data.filter((c) =>
     (c.name ?? c.id.toString()).toLowerCase().includes(search.toLowerCase()),
   );
 
-  const candidates = filtered
-  // only include candidates that actually have a CV
-  .map((candidate) => ({
-    id: candidate.id,
-    name: candidate.name ?? `Candidate ${candidate.id}`,
-  }));
+  const candidates: CandidatePreview[] = filtered
+    // only include candidates that actually have a CV
+    .map((candidate) => ({
+      id: candidate.id,
+      name: candidate.name ?? `Candidate ${candidate.id}`,
+    }));
 
   const handleDelete = async (id: number, name: string) => {
-  if (!window.confirm("Er du sikker på at du vil slette " + name + "? Denne handlingen kan ikke angres.")) return;
-  try {
-    await deleteCandidate(id)
-    setReloadKey(prev => prev + 1);
-  } catch (error) {
-    alert("Feil ved sletting: " + (error as Error).message);
-  }
-}
+    if (
+      !window.confirm(
+        "Er du sikker på at du vil slette " +
+          name +
+          "? Denne handlingen kan ikke angres.",
+      )
+    )
+      return;
+    try {
+      await deleteCandidate(id);
+      setReloadKey((prev) => prev + 1);
+    } catch (error) {
+      alert("Feil ved sletting: " + (error as Error).message);
+    }
+  };
 
   return (
     <main className="bg-gray-50 px-4 py-6 sm:px-8">
       <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
-        <Link to="/" className="hover:text-gray-600 cursor-pointer">Hjem</Link>
+        <Link to="/" className="hover:text-gray-600 cursor-pointer">
+          Hjem
+        </Link>
         <span>›</span>
         <span className="text-gray-600">CV Database</span>
       </nav>
@@ -163,7 +168,12 @@ function CVDatabase() {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(candidate.id, candidate.name ?? `Kandidat ${candidate.id}`)}
+                      onClick={() =>
+                        handleDelete(
+                          candidate.id,
+                          candidate.name ?? `Kandidat ${candidate.id}`,
+                        )
+                      }
                       className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
                       title="Delete candidate"
                     >

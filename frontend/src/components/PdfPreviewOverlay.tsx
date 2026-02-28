@@ -1,13 +1,9 @@
 import { useFetchPDF } from "@/hooks/useFetchPDF";
+import type { CandidatePreview } from "@/types/candidate";
 import { useMemo, useState } from "react";
 
-type Candidate = {
-  id: number;
-  name: string;
-};
-
 type PdfPreviewOverlayProps = {
-  candidates: Candidate[];
+  candidates: CandidatePreview[];
   initialId: number;
   onClose: () => void;
 };
