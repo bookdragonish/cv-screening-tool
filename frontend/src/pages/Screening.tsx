@@ -1,9 +1,7 @@
-import PdfPreviewOverlay from "@/components/PdfPreviewOverlay";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { Clock, FileText } from "lucide-react";
-import { useState } from "react";
 import { Link, useParams } from "react-router";
 
 function Screening() {

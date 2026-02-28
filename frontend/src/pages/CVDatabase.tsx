@@ -136,7 +136,7 @@ function CVDatabase() {
                     }).format(new Date(candidate.created_at))}
                   </td>
 
-                  {candidate.cv_pdf ? (
+                  {candidate.has_pdf ? (
                     <td className="py-3 text-center">
                       <button
                         onClick={() => showPreview(candidate.id)}

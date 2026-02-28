@@ -4,6 +4,7 @@ export type Candidate = {
     name: string,
     email: string,
     cv_pdf?: string | null,
+    has_pdf: boolean,
     created_at: string
 }
 
