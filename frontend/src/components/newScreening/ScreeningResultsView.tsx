@@ -32,7 +32,7 @@ function ScreeningResultsView({
             </p>
           </div>
 
-          <Button variant="outline" className="border-slate-300 bg-white">
+          <Button variant="outline" className="border-slate-300 bg-primary hover:bg-primary/80 text-white">
             <FileTextIcon className="mr-2 h-4 w-4" />
             Vis stillingsbeskrivelse
           </Button>

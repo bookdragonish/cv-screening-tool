@@ -20,7 +20,7 @@ function ProcessingStatusCard({
       <CardContent className="p-6">
         {!isProcessingComplete ? (
           <div className="flex min-h-[320px] flex-col items-center justify-center text-center">
-            <LoaderCircleIcon className="h-14 w-14 animate-spin text-blue-600" />
+            <LoaderCircleIcon className="h-14 w-14 animate-spin text-primary" />
             <p className="mt-6 text-3xl font-semibold text-slate-900">Analyserer stillingskrav</p>
             <p className="mt-2 text-base text-slate-500">
               Matcher kandidater fra CV-databasen...
@@ -34,10 +34,10 @@ function ProcessingStatusCard({
               Kandidatmatchene er klare. Velg hva du vil gjøre videre.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Button variant="outline" className="border-slate-300 bg-white" onClick={onStartNew}>
+              <Button variant="outline" className="border-slate-300 bg-white hover:bg-slate-500" onClick={onStartNew}>
                 Start ny screening
               </Button>
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
+              <Button asChild className="bg-primary hover:bg-primary/80">
                 <Link to={resultsHref}>Gå til resultater</Link>
               </Button>
             </div>

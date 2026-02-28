@@ -36,7 +36,7 @@ function CandidateResultCard({ candidate, candidateHref }: CandidateResultCardPr
             <h3 className="text-xl font-semibold text-slate-900">{candidate.name}</h3>
           </div>
 
-          <Button asChild className="bg-blue-600 hover:bg-blue-700">
+          <Button asChild className="bg-primary hover:bg-primary/80">
             <Link to={candidateHref}>Se CV</Link>
           </Button>
         </div>

@@ -117,7 +117,7 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "pdf" ? "default" : "outline"}
-              className={mode === "pdf" ? "bg-blue-600 hover:bg-blue-700" : "border-slate-300 bg-white"}
+              className={mode === "pdf" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-500"}
               onClick={() => setMode("pdf")}
             >
               PDF
@@ -126,7 +126,7 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "text" ? "default" : "outline"}
-              className={mode === "text" ? "bg-blue-600 hover:bg-blue-700" : "border-slate-300 bg-white"}
+              className={mode === "text" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-500"}
               onClick={() => setMode("text")}
             >
               Tekst
@@ -166,13 +166,13 @@ function UploadJobDescriptionCard({
                     }}
                   />
 
-                  <div className="rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center transition">
-                    <UploadIcon className="mx-auto h-14 w-14 text-slate-400" />
+                  <div className="rounded-lg border border-dashed border-slate-300 px-6 min-h-52 mt-7 py-12 text-center transition">
+                    <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
                     {selectedFile ? (
                       <div className="mt-4 text-center">
                         <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-700">
-                          <FileTextIcon className="h-4 w-4 text-blue-600" />
+                          <FileTextIcon className="h-4 w-4 text-primary" />
                           {selectedFile.name}
                         </p>
                         <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile.size)}</p>
@@ -199,11 +199,11 @@ function UploadJobDescriptionCard({
 
                   <FieldDescription className="mt-2">Kun PDF</FieldDescription>
 
-                  {fieldState.invalid ? (
+                  {fieldState.invalid && (
                     <div id={fileErrorId}>
                       <FieldError errors={[fieldState.error]} className="mt-3" />
                     </div>
-                  ) : null}
+                  ) }
                 </Field>
               )}
             />
@@ -217,7 +217,7 @@ function UploadJobDescriptionCard({
                   <Textarea
                     {...field}
                     id={textAreaId}
-                    className="min-h-52 text-foreground"
+                    className="min-h-52 text-foreground rounder-lg"
                     placeholder="Lim inn stillingsbeskrivelsen her..."
                     maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
                     aria-invalid={fieldState.invalid}
@@ -228,11 +228,11 @@ function UploadJobDescriptionCard({
                     {MAX_JOB_DESCRIPTION_TEXT_LENGTH.toLocaleString()} tegn.
                   </FieldDescription>
 
-                  {fieldState.invalid ? (
+                  {fieldState.invalid && (
                     <div id={textErrorId}>
                       <FieldError errors={[fieldState.error]} className="mt-1" />
                     </div>
-                  ) : null}
+                  )}
                 </Field>
               )}
             />
@@ -242,7 +242,7 @@ function UploadJobDescriptionCard({
             <Button
               type="button"
               variant="outline"
-              className="border-slate-300 bg-white"
+              className="border-slate-300 bg-white hover:bg-slate-500"
               onClick={() => {
                 setPickedFile(undefined);
                 form.setValue("jobDescriptionText", "", {
@@ -260,7 +260,7 @@ function UploadJobDescriptionCard({
             >
               Avbryt
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitDisabled}>
+            <Button type="submit" className="bg-primary hover:bg-primary/80" disabled={isSubmitDisabled}>
               Neste
             </Button>
           </div>

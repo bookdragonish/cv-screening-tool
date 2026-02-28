@@ -24,7 +24,7 @@ function StepNode({
   const containerClassName =
     status === "upcoming"
       ? "border-slate-300 bg-slate-100 text-slate-500"
-      : "border-blue-600 bg-blue-600 text-white";
+      : "border-primary bg-primary text-white";
 
   return (
     <div className={`flex flex-col items-center ${STEP_WIDTH_CLASS}`}>
@@ -57,7 +57,7 @@ function ScreeningProgressSteps({
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(processingStatus)}
-                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-blue-600"
+                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-primary"
               />
             </div>
           </div>
@@ -68,7 +68,7 @@ function ScreeningProgressSteps({
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(resultsStatus)}
-                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-blue-600"
+                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-primary"
               />
             </div>
           </div>

@@ -42,20 +42,14 @@ function CandidateProfileView({
         candidateName={candidate.name}
       />
 
-      <Card className="gap-0 border-slate-200 bg-white py-0">
-        <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="gap-0 border-slate-200 bg-white ">
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <Button
-              asChild
-              variant="ghost"
-              size="icon-sm"
-              className="text-slate-600"
-              aria-label="Tilbake til resultater"
-            >
-              <Link to={backHref}>
-                <ArrowLeftIcon className="h-4 w-4" />
+
+              <Link to={backHref} aria-label="Tilbake til resultater" className="text-primary h-full w-10 mr-5 hover:primary/80">
+                <ArrowLeftIcon size={30} className="" />
               </Link>
-            </Button>
+
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{candidate.name}</h1>
               <p className="mt-1 text-sm text-slate-500">Kandidatprofil</p>
@@ -66,7 +60,7 @@ function CandidateProfileView({
             <span className={`rounded-full px-4 py-2 text-xl font-semibold ${badgeClassName}`}>
               Match: {candidate.score}%
             </span>
-            <Button variant="outline" className="border-slate-300 bg-white">
+            <Button variant="outline" className="border-slate-300 bg-white hover:bg-slate-500">
               <DownloadIcon className="mr-2 h-4 w-4" />
               Last ned CV
             </Button>
@@ -75,15 +69,15 @@ function CandidateProfileView({
       </Card>
 
       <section className="mt-4 grid gap-4 lg:grid-cols-2">
-        <Card className="gap-0 border-slate-200 bg-white py-0">
+        <Card className="gap-0 border-slate-200 bg-white py-4">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="flex items-center gap-2 text-2xl text-slate-900">
-              <FileTextIcon className="h-5 w-5 text-blue-600" />
+              <FileTextIcon size={22} className="text-blue-primary" />
               Kandidat-CV
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="space-y-5 p-6 text-base text-slate-700">
+          <CardContent className="space-y-5 text-base py-5 text-slate-700">
             <div>
               <p className="text-xl font-semibold text-slate-900">{candidate.name}</p>
               <p>{candidate.role}</p>
@@ -134,7 +128,7 @@ function CandidateProfileView({
           </CardContent>
         </Card>
 
-        <Card className="gap-0 border-slate-200 bg-white py-0">
+        <Card className="gap-0 border-slate-200 bg-white py-4">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="flex items-center gap-2 text-2xl text-slate-900">
               <CheckCircle2Icon className="h-5 w-5 text-emerald-600" />
@@ -164,7 +158,7 @@ function CandidateProfileView({
       </section>
 
       <Card className="mt-4 gap-0 border-slate-200 bg-white py-0">
-        <CardHeader>
+        <CardHeader className="py-5">
           <CardTitle className="text-2xl text-slate-900">Matchoppsummering</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6 pb-6 sm:grid-cols-2">
