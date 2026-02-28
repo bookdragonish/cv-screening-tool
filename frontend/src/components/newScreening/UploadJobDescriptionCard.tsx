@@ -1,0 +1,273 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FileText, Upload } from "lucide-react";
+import { useEffect, useId } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+import {
+  MAX_JOB_DESCRIPTION_TEXT_LENGTH,
+  UploadJobDescriptionSchema,
+  type JobDescriptionInput,
+  type UploadJobDescriptionValues,
+  toJobDescriptionInput,
+} from "@/components/newScreening/newScreeningLib/UploadJobDescriptionSchema";
+import { formatBytes } from "@/components/newScreening/newScreeningLib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldDescription, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+type UploadJobDescriptionCardProps = {
+  initialInput: JobDescriptionInput | null;
+  onCancel: () => void;
+  onStartProcessing: (input: JobDescriptionInput) => void | Promise<void>;
+};
+
+function UploadJobDescriptionCard({
+  initialInput,
+  onCancel,
+  onStartProcessing,
+}: UploadJobDescriptionCardProps) {
+  const form = useForm<UploadJobDescriptionValues>({
+    resolver: zodResolver(UploadJobDescriptionSchema),
+    mode: "onTouched",
+    shouldFocusError: true,
+    defaultValues: {
+      mode: initialInput?.mode ?? "pdf",
+      jobDescriptionFile: initialInput?.mode === "pdf" ? initialInput.file : undefined,
+      jobDescriptionText: initialInput?.mode === "text" ? initialInput.text : "",
+    },
+  });
+
+  useEffect(() => {
+    form.reset({
+      mode: initialInput?.mode ?? "pdf",
+      jobDescriptionFile: initialInput?.mode === "pdf" ? initialInput.file : undefined,
+      jobDescriptionText: initialInput?.mode === "text" ? initialInput.text : "",
+    });
+  }, [initialInput, form]);
+
+  const mode = form.watch("mode");
+  const selectedFile = form.watch("jobDescriptionFile");
+  const jobDescriptionText = form.watch("jobDescriptionText") ?? "";
+
+  const uid = useId();
+  const fileInputId = `screening-job-description-file-${uid}`;
+  const fileErrorId = `screening-job-description-file-error-${uid}`;
+  const textAreaId = `screening-job-description-text-${uid}`;
+  const textErrorId = `screening-job-description-text-error-${uid}`;
+
+  const setPickedFile = (file: File | undefined) => {
+    form.setValue("jobDescriptionFile", file, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
+  const setMode = (nextMode: "pdf" | "text") => {
+    if (nextMode === mode) return;
+
+    form.setValue("mode", nextMode, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: false,
+    });
+
+    if (nextMode === "pdf") {
+      form.setValue("jobDescriptionText", "", {
+        shouldDirty: true,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    } else {
+      form.setValue("jobDescriptionFile", undefined, {
+        shouldDirty: true,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    }
+
+    form.clearErrors();
+  };
+
+  const isSubmitDisabled =
+    mode === "pdf" ? !selectedFile : jobDescriptionText.trim().length === 0;
+
+  return (
+    <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
+      <CardHeader>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle className="text-3xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
+            <CardDescription className="text-base text-slate-500">
+              Last opp en PDF eller lim inn stillingsbeskrivelsen for å starte screeningprosessen.
+            </CardDescription>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant={mode === "pdf" ? "default" : "outline"}
+              className={mode === "pdf" ? "bg-blue-600 hover:bg-blue-700" : "border-slate-300 bg-white"}
+              onClick={() => setMode("pdf")}
+            >
+              PDF
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={mode === "text" ? "default" : "outline"}
+              className={mode === "text" ? "bg-blue-600 hover:bg-blue-700" : "border-slate-300 bg-white"}
+              onClick={() => setMode("text")}
+            >
+              Tekst
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-6 pt-0">
+        <form
+          noValidate
+          onSubmit={form.handleSubmit((values) => {
+            onStartProcessing(toJobDescriptionInput(values));
+          })}
+        >
+          {mode === "pdf" ? (
+            <Controller
+              name="jobDescriptionFile"
+              control={form.control}
+              render={({ fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <Label htmlFor={fileInputId} className="sr-only">
+                    Stillingsbeskrivelse PDF
+                  </Label>
+
+                  <Input
+                    id={fileInputId}
+                    type="file"
+                    accept="application/pdf"
+                    className="sr-only"
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={fieldState.invalid ? fileErrorId : undefined}
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      setPickedFile(file);
+                      event.target.value = "";
+                    }}
+                  />
+
+                  <div className="rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center transition">
+                    <Upload className="mx-auto h-14 w-14 text-slate-400" />
+
+                    {selectedFile ? (
+                      <div className="mt-4 text-center">
+                        <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-700">
+                          <FileText className="h-4 w-4 text-blue-600" />
+                          {selectedFile.name}
+                        </p>
+                        <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile.size)}</p>
+                        <button
+                          type="button"
+                          className="mt-2 text-sm text-red-500 hover:text-red-600"
+                          onClick={() => setPickedFile(undefined)}
+                        >
+                          Fjern fil
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="mt-4 text-sm text-slate-600">
+                        Velg en PDF-fil, eller{" "}
+                        <Label
+                          htmlFor={fileInputId}
+                          className="inline cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                          bla gjennom filer
+                        </Label>
+                      </p>
+                    )}
+                  </div>
+
+                  <FieldDescription className="mt-2">Kun PDF</FieldDescription>
+
+                  {fieldState.invalid ? (
+                    <div id={fileErrorId}>
+                      <FieldError errors={[fieldState.error]} className="mt-3" />
+                    </div>
+                  ) : null}
+                </Field>
+              )}
+            />
+          ) : (
+            <Controller
+              name="jobDescriptionText"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <Label htmlFor={textAreaId}>Stillingsbeskrivelse (tekst)</Label>
+                  <Textarea
+                    {...field}
+                    id={textAreaId}
+                    className="min-h-52 text-foreground"
+                    placeholder="Lim inn stillingsbeskrivelsen her..."
+                    maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={fieldState.invalid ? textErrorId : undefined}
+                  />
+                  <FieldDescription>
+                    Lim inn hele stillingsbeskrivelsen. Minst 40 tegn, maks{" "}
+                    {MAX_JOB_DESCRIPTION_TEXT_LENGTH.toLocaleString()} tegn.
+                  </FieldDescription>
+
+                  {fieldState.invalid ? (
+                    <div id={textErrorId}>
+                      <FieldError errors={[fieldState.error]} className="mt-1" />
+                    </div>
+                  ) : null}
+                </Field>
+              )}
+            />
+          )}
+
+          <div className="mt-6 flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="border-slate-300 bg-white"
+              onClick={() => {
+                setPickedFile(undefined);
+                form.setValue("jobDescriptionText", "", {
+                  shouldDirty: true,
+                  shouldTouch: false,
+                  shouldValidate: false,
+                });
+                form.setValue("mode", "pdf", {
+                  shouldDirty: true,
+                  shouldTouch: false,
+                  shouldValidate: false,
+                });
+                onCancel();
+              }}
+            >
+              Avbryt
+            </Button>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitDisabled}>
+              Neste
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default UploadJobDescriptionCard;
