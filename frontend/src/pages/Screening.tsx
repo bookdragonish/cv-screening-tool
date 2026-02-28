@@ -1,12 +1,14 @@
-
+import PdfPreviewOverlay from "@/components/PdfPreviewOverlay";
+import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { Clock, FileText } from "lucide-react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
-  const { data, isLoading, isError} = useFetchScreening(jobPostId);
+  const { data, isLoading, isError } = useFetchScreening(jobPostId);
 
   if (isLoading || !data) {
     return (
@@ -16,8 +18,8 @@ function Screening() {
     );
   }
 
-  if(isError){
-    return(<div>Error</div>)
+  if (isError) {
+    return <div>Error</div>;
   }
 
   const formatDate = (dateValue: string) =>
@@ -93,15 +95,23 @@ function Screening() {
                     <h2 className="text-lg font-semibold text-(--color-dark)">
                       #{candidate.rank} {candidate.candidateName}
                     </h2>
-                    <p className="mt-1 text-sm text-(--color-dark) opacity-75">
-                      Matchscore: {Math.round(candidate.score)}%
-                    </p>
                   </div>
                 </div>
                 <span className="rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)">
                   {candidate.qualified ? "Kvalifisert" : "Ikke kvalifisert"}
                 </span>
               </div>
+
+              <article className="flex justify-between">
+                <p className="mt-1 text-sm text-(--color-dark) opacity-75">
+                  Matchscore:
+                </p>
+                <p className="mt-1 text-sm text-(--color-dark) opacity-75">
+                  {" "}
+                  {Math.round(candidate.score)}%
+                </p>
+              </article>
+              <Progress value={Math.round(candidate.score)} />
 
               {candidate.summary && (
                 <p className="mt-4 text-sm text-(--color-dark) opacity-90">
@@ -112,6 +122,7 @@ function Screening() {
           ))}
         </div>
       )}
+
     </main>
   );
 }

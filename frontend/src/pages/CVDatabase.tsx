@@ -2,7 +2,6 @@ import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
 import { deleteCandidate } from "@/api/candidateActions";
-
 import { Link } from "react-router";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
