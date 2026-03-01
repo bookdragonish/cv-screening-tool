@@ -3,8 +3,10 @@ import NewScreening from "@/components/newScreening/NewScreening";
 import { runScreeningWithGemini } from "@/components/newScreening/newScreeningLib/runScreeningWithGemini";
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
 import { useScreeningOutlet } from "@/components/newScreening/newScreeningLib/screeningContext";
+import { useState } from "react";
 
 function NewScreeningPage() {
+  const [savedScreeningJobPostId, setSavedScreeningJobPostId] = useState<number | null>(null);
   const {
     flowState,
     setFlowState,
@@ -31,8 +33,13 @@ function NewScreeningPage() {
       uploadStatus={uploadStatus}
       processingStatus={processingStatus}
       resultsStatus={resultsStatus}
-      resultsHref="/screening/results"
+      resultsHref={
+        savedScreeningJobPostId
+          ? `/screening-historikk/${savedScreeningJobPostId}`
+          : "/new-screening/results"
+      }
       onCancel={() => {
+        setSavedScreeningJobPostId(null);
         setJobDescriptionInput(null);
         setJobTitleValue(null);
         setScreeningCandidates([]);
@@ -40,6 +47,7 @@ function NewScreeningPage() {
         setFlowState("upload");
       }}
       onStartProcessing={async (input) => {
+        setSavedScreeningJobPostId(null);
         setJobDescriptionInput(input);
         setJobTitleValue(null);
         setFlowState("processing");
@@ -53,6 +61,7 @@ function NewScreeningPage() {
           try {
             const savedScreening = await saveScreeningRun(result.screeningRecord);
             analyzedAt = savedScreening.screenedAt;
+            setSavedScreeningJobPostId(savedScreening.jobPostId);
           } catch (saveError) {
             console.error("Kunne ikke lagre screeninghistorikk:", saveError);
             window.alert("Screeningen ble fullført, men kunne ikke lagres i historikken.");
@@ -74,6 +83,7 @@ function NewScreeningPage() {
         }
       }}
       onStartNew={() => {
+        setSavedScreeningJobPostId(null);
         setJobDescriptionInput(null);
         setJobTitleValue(null);
         setScreeningCandidates([]);
