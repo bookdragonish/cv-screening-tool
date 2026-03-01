@@ -16,7 +16,7 @@ import { pool } from "../db/pool.js";
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
-      "select id, name, email, created_at, cv_pdf from candidates order by id desc",
+      "select id, name, email, created_at, (cv_pdf IS NOT NULL) as has_pdf from candidates order by id desc",
     );
     res.json(r.rows);
   } catch (e) {
@@ -27,7 +27,7 @@ export async function list(_req: Request, res: Response, next: NextFunction) {
 /**
  * Gets single candidate.
  *
- * Path params: 
+ * Path params:
  *  - id: number (candidate id)
  *
  *  * Responses:
@@ -38,7 +38,7 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number(req.params.id);
     const r = await pool.query(
-      "select id, name, email, created_at from candidates where id=$1",
+      "select id, name, email, created_at, (cv_pdf IS NOT NULL) as has_pdf from candidates where id=$1",
       [id],
     );
     if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
@@ -66,17 +66,16 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
  */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, email, cv_pdf } = req.body as {
+    const { name, email } = req.body as {
       name?: string;
       email?: string;
-      cv_pdf: File;
     };
     if (!name || !email)
       return res.status(400).json({ error: "name and email are required" });
 
     const r = await pool.query(
-      "insert into candidates(name, email, cv_pdf) values($1, $2, $3) returning id, name, email, cv_pdf, created_at",
-      [name, email, cv_pdf],
+      "insert into candidates(name, email) values($1, $2) returning id, name, email, (cv_pdf IS NOT NULL) as has_pdf, created_at",
+      [name, email],
     );
 
     res.status(201).json(r.rows[0]);
@@ -136,7 +135,6 @@ export async function uploadCV(req: Request, res: Response) {
   res.json({ ok: true });
 }
 
-
 /**
  * View a candidate's CV PDF.
  *
@@ -176,16 +174,17 @@ export async function getCV(req: Request, res: Response, next: NextFunction) {
  *
  * Path params:
  * - id: number (candidate id)
- * 
+ *
  *  * Responses:
  * - 200: `{ ok: true }` on success
  */
 export async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number(req.params.id);
-    const r = await pool.query("delete from candidates where id=$1", [id])
-    if(r.rowCount === 0) return res.status(400).json({ error: "Candidate not found" })
-    res.status(200).json({ message: "Candidate was deleted" })
+    const r = await pool.query("delete from candidates where id=$1", [id]);
+    if (r.rowCount === 0)
+      return res.status(400).json({ error: "Candidate not found" });
+    res.status(200).json({ message: "Candidate was deleted" });
   } catch (e) {
     next(e);
   }

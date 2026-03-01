@@ -25,14 +25,13 @@ function PdfPreviewOverlay({
 
   const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidate.id);
 
-  if (isError || !documentURL) {
+  if (isError) {
     return <div>Error.</div>;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading || !documentURL) {
+    return;
   }
-
 
   function nextPdfPreview() {
     if (selectedIndex < candidates.length - 1) {

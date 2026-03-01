@@ -6,6 +6,7 @@ import { Link } from "react-router";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
+import ErrorBox from "@/components/ErrorBox";
 
 function handleEdit(id: number) {
   console.log("Edit", id);
@@ -23,7 +24,14 @@ function CVDatabase() {
   }
 
   if (isError) {
-    return <div>Error.</div>;
+    return (
+      <section className="w-full flex justify-center my-10">
+        <ErrorBox
+          title={"Kan ikke hente kandidater"}
+          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+        />
+      </section>
+    );
   }
 
   if (isLoading || !data) {
@@ -136,7 +144,7 @@ function CVDatabase() {
                     }).format(new Date(candidate.created_at))}
                   </td>
 
-                  {candidate.cv_pdf ? (
+                  {candidate.has_pdf ? (
                     <td className="py-3 text-center">
                       <button
                         onClick={() => showPreview(candidate.id)}

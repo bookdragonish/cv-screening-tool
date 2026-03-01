@@ -1,9 +1,8 @@
-import PdfPreviewOverlay from "@/components/PdfPreviewOverlay";
+import ErrorBox from "@/components/ErrorBox";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { Clock, FileText } from "lucide-react";
-import { useState } from "react";
 import { Link, useParams } from "react-router";
 
 function Screening() {
@@ -19,7 +18,14 @@ function Screening() {
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <section className="w-full flex justify-center my-10">
+        <ErrorBox
+          title={"Kan ikke hente resultatet med id " + jobPostId}
+          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+        />
+      </section>
+    );
   }
 
   const formatDate = (dateValue: string) =>
@@ -52,20 +58,6 @@ function Screening() {
       {isLoading && (
         <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
           Laster screeningresultat...
-        </div>
-      )}
-
-      {!isLoading && (isError || !data) && (
-        <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-          <h1 className="text-xl font-semibold text-(--color-dark)">
-            Fant ikke screeningresultatet
-          </h1>
-          <Link
-            to="/screening-historikk"
-            className="mt-4 inline-block rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-white"
-          >
-            Tilbake
-          </Link>
         </div>
       )}
 
@@ -122,7 +114,6 @@ function Screening() {
           ))}
         </div>
       )}
-
     </main>
   );
 }
