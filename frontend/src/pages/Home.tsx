@@ -123,7 +123,7 @@ function Home() {
               className="w-full border-2 border-white bg-transparent font-medium text-white transition-all hover:bg-white hover:text-(--color-primary)"
             >
               <Link
-                to="/screening"
+                to="/new-screening"
                 className="flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />

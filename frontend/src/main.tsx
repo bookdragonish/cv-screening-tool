@@ -21,14 +21,13 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<Home />} />
             <Route  path="GeminiTestPage" element={<GeminiTestPage />}/>
 
-            <Route path="/screening" element={<ScreeningFlowPage />}>
-              <Route index element={<Navigate to="new-screening" replace />} />
-              <Route path="new-screening" element={<NewScreeningPage />} />
+            <Route path="/new-screening" element={<ScreeningFlowPage />}>
+              <Route index element={<NewScreeningPage />} />
               <Route path="results" element={<ScreeningResultsPage />} />
               <Route path="results/:candidateId" element={<ScreeningCandidatePage />} />
             </Route>
 
-            {/*<Route path="/screening" element={<Screening />} /> */}
+            <Route path="/screening" element={<Screening />} />
             <Route path="/screening-historikk" element={<ScreeningHistory />} />
             <Route path="/screening-historikk/:jobPostId" element={<Screening />} />
             <Route path="/cv-database" element={<CVDatabase />} />

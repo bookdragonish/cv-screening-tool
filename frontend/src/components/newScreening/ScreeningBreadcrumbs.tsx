@@ -36,7 +36,7 @@ function ScreeningBreadcrumbs({
             <BreadcrumbPage className="font-medium text-slate-700">Ny screening</BreadcrumbPage>
           ) : (
             <BreadcrumbLink asChild className="hover:text-slate-700">
-              <Link to="/screening/new-screening">Ny screening</Link>
+              <Link to="/new-screening">Ny screening</Link>
             </BreadcrumbLink>
           )}
         </BreadcrumbItem>
@@ -48,7 +48,7 @@ function ScreeningBreadcrumbs({
             <BreadcrumbPage className="font-medium text-slate-700">Resultater</BreadcrumbPage>
           ) : canGoToResults ? (
             <BreadcrumbLink asChild className="hover:text-slate-700">
-              <Link to="/screening/results">Resultater</Link>
+              <Link to="/new-screening/results">Resultater</Link>
             </BreadcrumbLink>
           ) : (
             <BreadcrumbPage className="text-slate-400">Resultater</BreadcrumbPage>
