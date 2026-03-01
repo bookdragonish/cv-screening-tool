@@ -1,4 +1,4 @@
-import { API_URL } from "./fetchCandidates";
+import { API_URL } from "@/utils/variables";
 
 export async function getPDFBlob(id: string): Promise<Blob | null> {
   const response = await fetch(API_URL + "/api/candidates/" + id + "/cv");

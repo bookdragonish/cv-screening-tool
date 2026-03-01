@@ -1,13 +1,9 @@
 import { useFetchPDF } from "@/hooks/useFetchPDF";
+import type { CandidatePreview } from "@/types/candidate";
 import { useMemo, useState } from "react";
 
-type Candidate = {
-  id: number;
-  name: string;
-};
-
 type PdfPreviewOverlayProps = {
-  candidates: Candidate[];
+  candidates: CandidatePreview[];
   initialId: number;
   onClose: () => void;
 };
@@ -29,25 +25,21 @@ function PdfPreviewOverlay({
 
   const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidate.id);
 
-  if (isError || !documentURL) {
+  if (isError) {
     return <div>Error.</div>;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading || !documentURL) {
+    return;
   }
 
-  console.log(candidates);
-
   function nextPdfPreview() {
-    console.log(selectedCandidate, isError);
     if (selectedIndex < candidates.length - 1) {
       setSelectedIndex((prev) => prev + 1);
     }
   }
 
   function prevPdfPreview() {
-    console.log(selectedCandidate, isError);
     if (selectedIndex > 0) {
       setSelectedIndex((prev) => prev - 1);
     }

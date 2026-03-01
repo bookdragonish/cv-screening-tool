@@ -1,9 +1,7 @@
 import {
   type Content,
-  type ContentListUnion,
   GoogleGenAI,
   type Part,
-  createPartFromUri,
 } from "@google/genai";
 import type { UploadedGeminiFile } from "@/api/gemini/multipleFileUpload";
 

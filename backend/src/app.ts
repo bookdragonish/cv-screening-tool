@@ -1,6 +1,5 @@
 import express from "express";
 import routes from "./routes/index.js";
-import multer from "multer";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
@@ -15,11 +14,6 @@ app.use(
 
 app.use(express.json());
 app.use("/api", routes);
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
 
 app.get("/api", (_req, res) => {
   res.json({

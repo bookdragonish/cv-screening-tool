@@ -22,7 +22,7 @@ import {
   parseRanking,
 } from "@/api/gemini/lib/schemas";
 
-import type { CandidateEval, Ranking } from "@/api/gemini/lib/types";
+import type { CandidateEval } from "@/api/gemini/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -36,8 +36,8 @@ function GeminiTestPage() {
   const [loading, setLoading] = useState(false);
 
   // for senere bruk, hvis bi skal bruke geminis output
-  const [candidateEvals, setCandidateEvals] = useState<CandidateEval[]>([]);
-  const [ranking, setRanking] = useState<Ranking | null>(null);
+  // const [candidateEvals, setCandidateEvals] = useState<CandidateEval[]>([]);
+  // const [ranking, setRanking] = useState<Ranking | null>(null);
 
   const ai = useMemo(() => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -145,7 +145,7 @@ function GeminiTestPage() {
         <Field>
           <FieldLabel>Jobbannonse</FieldLabel>
           <Textarea
-            className="border rounded p-2 min-h-[120px]"
+            className="border rounded p-2"
             placeholder="Lim inn jobbannonse her..."
             value={ jobAdText }
             onChange={ (e) => setJobAdText(e.target.value) }
