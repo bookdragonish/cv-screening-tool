@@ -5,8 +5,15 @@ import type { StepStatus } from "@/components/newScreening/newScreeningLib/types
 import { useScreeningOutlet } from "@/components/newScreening/newScreeningLib/screeningContext";
 import { useState } from "react";
 
+type NewScreeningError = {
+  title: string;
+  message: string;
+};
+
 function NewScreeningPage() {
+  const [errorBox, setErrorBox] = useState<NewScreeningError | null>(null);
   const [savedScreeningJobPostId, setSavedScreeningJobPostId] = useState<number | null>(null);
+  const [hasProcessingError, setHasProcessingError] = useState(false);
   const {
     flowState,
     setFlowState,
@@ -33,12 +40,16 @@ function NewScreeningPage() {
       uploadStatus={uploadStatus}
       processingStatus={processingStatus}
       resultsStatus={resultsStatus}
+      errorBox={errorBox}
+      showRetryLabel={hasProcessingError}
       resultsHref={
         savedScreeningJobPostId
           ? `/screening-historikk/${savedScreeningJobPostId}`
           : "/new-screening/results"
       }
       onCancel={() => {
+        setErrorBox(null);
+        setHasProcessingError(false);
         setSavedScreeningJobPostId(null);
         setJobDescriptionInput(null);
         setJobTitleValue(null);
@@ -47,6 +58,8 @@ function NewScreeningPage() {
         setFlowState("upload");
       }}
       onStartProcessing={async (input) => {
+        setErrorBox(null);
+        setHasProcessingError(false);
         setSavedScreeningJobPostId(null);
         setJobDescriptionInput(input);
         setJobTitleValue(null);
@@ -64,7 +77,10 @@ function NewScreeningPage() {
             setSavedScreeningJobPostId(savedScreening.jobPostId);
           } catch (saveError) {
             console.error("Kunne ikke lagre screeninghistorikk:", saveError);
-            window.alert("Screeningen ble fullført, men kunne ikke lagres i historikken.");
+            setErrorBox({
+              title: "Screeningen ble ikke lagret i historikken",
+              message: "Screeningen ble fullfort, men kunne ikke lagres i historikken.",
+            });
           }
 
           setScreeningCandidates(result.candidates);
@@ -74,15 +90,20 @@ function NewScreeningPage() {
           setFlowState("complete");
         } catch (error) {
           console.error("Screening med Gemini feilet:", error);
-          window.alert(
-            error instanceof Error
-              ? error.message
-              : "Screening feilet. Prøv igjen om et øyeblikk.",
-          );
+          setHasProcessingError(true);
+          setErrorBox({
+            title: "Screening feilet",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Screening feilet. Prov igjen om et oyeblikk.",
+          });
           setFlowState("upload");
         }
       }}
       onStartNew={() => {
+        setErrorBox(null);
+        setHasProcessingError(false);
         setSavedScreeningJobPostId(null);
         setJobDescriptionInput(null);
         setJobTitleValue(null);

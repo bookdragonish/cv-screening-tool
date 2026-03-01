@@ -26,12 +26,14 @@ import { Textarea } from "@/components/ui/textarea";
 
 type UploadJobDescriptionCardProps = {
   initialInput: JobDescriptionInput | null;
+  showRetryLabel: boolean;
   onCancel: () => void;
   onStartProcessing: (input: JobDescriptionInput) => void | Promise<void>;
 };
 
 function UploadJobDescriptionCard({
   initialInput,
+  showRetryLabel,
   onCancel,
   onStartProcessing,
 }: UploadJobDescriptionCardProps) {
@@ -261,7 +263,7 @@ function UploadJobDescriptionCard({
               Avbryt
             </Button>
             <Button type="submit" className="bg-primary hover:bg-primary/80" disabled={isSubmitDisabled}>
-              Neste
+              {showRetryLabel ? "Prøv igjen" : "Neste"}
             </Button>
           </div>
         </form>

@@ -1,9 +1,15 @@
+import ErrorBox from "@/components/ErrorBox";
 import NewScreeningHeader from "@/components/newScreening/NewScreeningHeader";
 import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/components/newScreening/newScreeningLib/UploadJobDescriptionSchema";
 import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
 import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
+
+type NewScreeningError = {
+  title: string;
+  message: string;
+};
 
 type NewScreeningProps = {
   view: "upload" | "processing";
@@ -14,6 +20,8 @@ type NewScreeningProps = {
   processingStatus: StepStatus;
   resultsStatus: StepStatus;
   resultsHref: string;
+  errorBox: NewScreeningError | null;
+  showRetryLabel: boolean;
   onCancel: () => void;
   onStartProcessing: (input: JobDescriptionInput) => void | Promise<void>;
   onStartNew: () => void;
@@ -28,6 +36,8 @@ function NewScreening({
   processingStatus,
   resultsStatus,
   resultsHref,
+  errorBox,
+  showRetryLabel,
   onCancel,
   onStartProcessing,
   onStartNew,
@@ -42,9 +52,16 @@ function NewScreening({
         resultsStatus={resultsStatus}
       />
 
+      {errorBox ? (
+        <div className="mt-6">
+          <ErrorBox title={errorBox.title} message={errorBox.message} />
+        </div>
+      ) : null}
+
       {view === "upload" ? (
         <UploadJobDescriptionCard
           initialInput={jobDescriptionInput}
+          showRetryLabel={showRetryLabel}
           onCancel={onCancel}
           onStartProcessing={onStartProcessing}
         />
