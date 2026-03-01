@@ -1,3 +1,4 @@
+import { saveScreeningRun } from "@/api/fetchScreenings";
 import NewScreening from "@/components/newScreening/NewScreening";
 import { runScreeningWithGemini } from "@/components/newScreening/newScreeningLib/runScreeningWithGemini";
 import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
@@ -9,6 +10,7 @@ function NewScreeningPage() {
     setFlowState,
     jobDescriptionInput,
     setJobDescriptionInput,
+    setJobTitleValue,
     setScreeningCandidates,
     setRequiredSkills,
     setAnalyzedAtValue,
@@ -32,22 +34,34 @@ function NewScreeningPage() {
       resultsHref="/screening/results"
       onCancel={() => {
         setJobDescriptionInput(null);
+        setJobTitleValue(null);
         setScreeningCandidates([]);
         setRequiredSkills([]);
         setFlowState("upload");
       }}
       onStartProcessing={async (input) => {
         setJobDescriptionInput(input);
+        setJobTitleValue(null);
         setFlowState("processing");
 
         try {
           const result = await runScreeningWithGemini({
             jobDescriptionInput: input,
           });
+          let analyzedAt = new Date().toISOString();
+
+          try {
+            const savedScreening = await saveScreeningRun(result.screeningRecord);
+            analyzedAt = savedScreening.screenedAt;
+          } catch (saveError) {
+            console.error("Kunne ikke lagre screeninghistorikk:", saveError);
+            window.alert("Screeningen ble fullført, men kunne ikke lagres i historikken.");
+          }
 
           setScreeningCandidates(result.candidates);
           setRequiredSkills(result.requiredSkills);
-          setAnalyzedAtValue(new Date().toISOString());
+          setJobTitleValue(result.screeningRecord.title);
+          setAnalyzedAtValue(analyzedAt);
           setFlowState("complete");
         } catch (error) {
           console.error("Screening med Gemini feilet:", error);
@@ -61,6 +75,7 @@ function NewScreeningPage() {
       }}
       onStartNew={() => {
         setJobDescriptionInput(null);
+        setJobTitleValue(null);
         setScreeningCandidates([]);
         setRequiredSkills([]);
         setFlowState("upload");

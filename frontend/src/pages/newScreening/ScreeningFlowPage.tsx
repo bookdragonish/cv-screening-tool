@@ -17,6 +17,7 @@ const DEFAULT_TEXT_JOB_TITLE = "Innlimt_stillingsbeskrivelse";
 function ScreeningFlowPage() {
   const [flowState, setFlowState] = useState<FlowState>("upload");
   const [jobDescriptionInput, setJobDescriptionInput] = useState<JobDescriptionInput | null>(null);
+  const [jobTitleValue, setJobTitleValue] = useState<string | null>(null);
   const [screeningCandidates, setScreeningCandidates] = useState<ScreeningCandidate[]>([]);
   const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
   const [analyzedAtValue, setAnalyzedAtValue] = useState(() => "2026-02-03T15:08:00");
@@ -25,18 +26,20 @@ function ScreeningFlowPage() {
 
   const canGoToResults = flowState === "complete";
 
-  const jobTitle =
+  const fallbackJobTitle =
     jobDescriptionInput?.mode === "pdf"
       ? jobDescriptionInput.file.name.replace(/\.pdf$/i, "")
       : jobDescriptionInput?.mode === "text"
         ? DEFAULT_TEXT_JOB_TITLE
         : DEFAULT_JOB_FILE.replace(/\.pdf$/i, "");
+  const jobTitle = jobTitleValue ?? fallbackJobTitle;
 
   const contextValue: ScreeningOutletContext = {
     flowState,
     setFlowState,
     jobDescriptionInput,
     setJobDescriptionInput,
+    setJobTitleValue,
     screeningCandidates,
     setScreeningCandidates,
     requiredSkills,

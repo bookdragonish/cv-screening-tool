@@ -11,6 +11,7 @@ export type ScreeningOutletContext = {
   setFlowState: Dispatch<SetStateAction<FlowState>>;
   jobDescriptionInput: JobDescriptionInput | null;
   setJobDescriptionInput: Dispatch<SetStateAction<JobDescriptionInput | null>>;
+  setJobTitleValue: Dispatch<SetStateAction<string | null>>;
   screeningCandidates: ScreeningCandidate[];
   setScreeningCandidates: Dispatch<SetStateAction<ScreeningCandidate[]>>;
   requiredSkills: string[];

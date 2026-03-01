@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 import { getAllCandidates } from "@/api/fetchCandidates";
 import { getPDFBlob } from "@/api/fetchPDF";
+import type { SaveScreeningRunPayload } from "@/api/fetchScreenings";
 import { generateFromGeminiOnFiles, deleteGeminiFiles } from "@/api/gemini/geminiGenerate";
 import { generateFromGeminiText } from "@/api/gemini/geminiText";
 import { parseCandidateEval, parseJobProfile, parseRanking } from "@/api/gemini/lib/schemas";
@@ -34,10 +35,32 @@ type CandidateWithCv = {
 type RunScreeningResult = {
   candidates: ScreeningCandidate[];
   requiredSkills: string[];
+  screeningRecord: SaveScreeningRunPayload;
 };
 
 const MAX_CANDIDATES_PER_RUN = 20;
 const MODEL_NAME = "gemini-2.5-flash";
+const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";
+
+function normalizeString(value: string | undefined | null): string {
+  return value?.trim() ?? "";
+}
+
+function normalizeStringList(values: string[] | undefined): string[] {
+  if (!values?.length) return [];
+
+  return Array.from(
+    new Set(values.map((value) => normalizeString(value)).filter(Boolean)),
+  );
+}
+
+function getFallbackJobTitle(jobDescriptionInput: JobDescriptionInput): string {
+  if (jobDescriptionInput.mode === "pdf") {
+    return jobDescriptionInput.file.name.replace(/\.pdf$/i, "") || "Screening";
+  }
+
+  return DEFAULT_TEXT_JOB_TITLE;
+}
 
 function createGeminiClient(): GoogleGenAI {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -152,6 +175,66 @@ function mapToScreeningCandidates(params: {
     .sort((a, b) => a.rank - b.rank);
 }
 
+function buildScreeningRecord(params: {
+  jobDescriptionInput: JobDescriptionInput;
+  jobProfile: JobProfile;
+  ranking: ReturnType<typeof parseRanking>;
+  evals: CandidateEval[];
+  candidatesWithCv: CandidateWithCv[];
+}): SaveScreeningRunPayload {
+  const {
+    jobDescriptionInput,
+    jobProfile,
+    ranking,
+    evals,
+    candidatesWithCv,
+  } = params;
+
+  const dbCandidatesById = new Map(
+    candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
+  );
+  const evalByCandidateId = new Map(evals.map((item) => [item.candidate_id, item]));
+
+  const title = normalizeString(jobProfile.role_title) || getFallbackJobTitle(jobDescriptionInput);
+  const hardQualifications = normalizeStringList(jobProfile.must_haves);
+  const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
+  const candidates: SaveScreeningRunPayload["candidates"] = [];
+
+  for (const [index, rankedItem] of ranking.ranking.entries()) {
+    const dbCandidate = dbCandidatesById.get(rankedItem.candidate_id);
+    if (!dbCandidate) continue;
+
+    const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
+    const met = normalizeStringList(evalResult?.strengths.map((item) => item.point));
+    const missing = normalizeStringList(evalResult?.gaps.map((item) => item.point));
+    const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
+
+    candidates.push({
+      candidateId: dbCandidate.id,
+      rank: rankedItem.rank ?? index + 1,
+      score: normalizedScore,
+      qualified: rankedItem.qualified,
+      qualificationsMet: met.length ? met : ["Ingen tydelige kvalifikasjonstreff funnet."],
+      qualificationsMissing: missing,
+      summary: normalizeString(rankedItem.summary) || "Ingen oppsummering tilgjengelig.",
+    });
+  }
+
+  candidates.sort((a, b) => a.rank - b.rank);
+
+  return {
+    title,
+    header: title,
+    description:
+      jobDescriptionInput.mode === "text"
+        ? normalizeString(jobDescriptionInput.text) || `Stillingsbeskrivelse for ${title}`
+        : `Analysert fra opplastet PDF: ${jobDescriptionInput.file.name}`,
+    hardQualifications,
+    softQualifications,
+    candidates,
+  };
+}
+
 export async function runScreeningWithGemini(params: {
   jobDescriptionInput: JobDescriptionInput;
   candidateLimit?: number;
@@ -211,6 +294,17 @@ export async function runScreeningWithGemini(params: {
       evals,
       candidatesWithCv,
     });
+    if (!screeningCandidates.length) {
+      throw new Error("Fant ingen kandidater som kunne matches mot screeningresultatet.");
+    }
+
+    const screeningRecord = buildScreeningRecord({
+      jobDescriptionInput,
+      jobProfile,
+      ranking,
+      evals,
+      candidatesWithCv,
+    });
 
     const requiredSkills = Array.from(
       new Set(
@@ -227,6 +321,7 @@ export async function runScreeningWithGemini(params: {
     return {
       candidates: screeningCandidates,
       requiredSkills,
+      screeningRecord,
     };
   } finally {
     if (uploadedFilesForCleanup.length) {
