@@ -1,4 +1,5 @@
-export const API_URL = "http://localhost:3000";
+import { API_URL } from "@/utils/variables";
+
 
 export async function getAllCandidates() {
   const response = await fetch(API_URL + "/api/candidates");
@@ -6,7 +7,6 @@ export async function getAllCandidates() {
     throw new Error(`Response Status: ${response.status}`);
   }
   const result = await response.json();
-  console.log(result);
   return result;
 }
 
@@ -16,7 +16,6 @@ export async function getCandidate(id: string) {
     throw new Error(`Response Status: ${response.status}`);
   }
   const result = await response.json();
-  console.log(result);
   return result;
 }
 

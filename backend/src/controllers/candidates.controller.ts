@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 
-
 /**
  * List all candidates.
  *
