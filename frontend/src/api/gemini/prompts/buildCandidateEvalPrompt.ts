@@ -19,6 +19,11 @@ ${RULES}
 ${RUBRIC}
 </constraints>
 
+<language_rules>
+- All descriptive fields such as "candidate_role", "experience_highlights", "education", "strengths.point", "strengths.evidence", "gaps.point", "gaps.evidence", and "unknowns" must be written in Norwegian Bokmal.
+- Keep names, company names, technologies, certificates, phone numbers, and email addresses in their original form when needed.
+</language_rules>
+
 <context>
 <job_profile_json>
 ${JSON.stringify(args.jobProfile)}
@@ -49,4 +54,3 @@ Final output:
 JSON:
 `.trim();
 }
-

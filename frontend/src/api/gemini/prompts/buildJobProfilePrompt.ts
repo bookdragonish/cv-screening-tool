@@ -12,6 +12,13 @@ Extract a job profile from the job advertisement.
 ${RULES}
 </constraints>
 
+<role_title_rules>
+- "role_title" MUST include both the job title and the hiring company or organization when the employer is identifiable in the source text.
+- Format "role_title" as "<job title> - <company or organization>".
+- If the employer is not identifiable, use the job title alone.
+- Write the job title portion in Norwegian Bokmal. Keep the company or organization name in its original form.
+</role_title_rules>
+
 <output_format>
 Return ONLY valid JSON with this schema:
 {
@@ -44,6 +51,13 @@ Extract a structured job profile from the attached job description PDF.
 ${RULES}
 </constraints>
 
+<role_title_rules>
+- "role_title" MUST include both the job title and the hiring company or organization when the employer is identifiable in the PDF.
+- Format "role_title" as "<job title> - <company or organization>".
+- If the employer is not identifiable, use the job title alone.
+- Write the job title portion in Norwegian Bokmal. Keep the company or organization name in its original form.
+</role_title_rules>
+
 <output_format>
 Return ONLY valid JSON with this schema:
 {
@@ -59,4 +73,3 @@ JSON:
 }
 
 export const buildJobAdProfilePrompt = buildJobProfileFromTextPrompt;
-

@@ -12,11 +12,16 @@ export function buildRankingPrompt(args: {
 - Rank candidates using ONLY the provided candidate evaluations.
 - Do not re-interpret CVs.
 - Do not invent evidence.
+- Return all descriptive text in Norwegian Bokmal.
 </task>
 
 <constraints>
 ${RULES}
 </constraints>
+
+<role_title_rules>
+- "role_title" MUST match the job title from the provided job profile, including the company or organization name when present there.
+</role_title_rules>
 
 <context>
 <job_profile_json>
@@ -49,4 +54,3 @@ Final output:
 JSON:
 `.trim();
 }
-
