@@ -15,10 +15,10 @@ app.use(
 app.use(express.json());
 app.use("/api", routes);
 
-app.get("/api", (_req, res) => {
+app.get("/", (_req, res) => {
   res.json({
     ok: true,
-    message: "API is running. Write /candidates to get info",
+    message: "API is running. Write /api to get info",
   });
 });
 
