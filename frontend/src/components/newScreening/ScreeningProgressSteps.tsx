@@ -1,7 +1,7 @@
 import { CheckIcon } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
-import type { StepStatus } from "@/components/newScreening/newScreeningLib/types";
+import type { StepStatus } from "@/types/newScreeningTypes";
 
 type ScreeningProgressStepsProps = {
   uploadStatus: StepStatus;

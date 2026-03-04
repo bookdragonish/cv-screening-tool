@@ -17,8 +17,8 @@ import {
   uploadMultipleFilesToGemini,
   type UploadedGeminiFile,
 } from "@/api/gemini/multipleFileUpload";
-import type { JobDescriptionInput } from "@/components/newScreening/newScreeningLib/UploadJobDescriptionSchema";
-import type { ScreeningCandidate } from "@/components/newScreening/newScreeningLib/types";
+import type { JobDescriptionInput } from "@/components/newScreening/UploadJobDescriptionSchema";
+import type { ScreeningCandidate } from "@/types/newScreeningTypes";
 
 type ApiCandidate = {
   id: number;
@@ -65,7 +65,7 @@ function getFallbackJobTitle(jobDescriptionInput: JobDescriptionInput): string {
 function createGeminiClient(): GoogleGenAI {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error("Mangler VITE_GEMINI_API_KEY i frontend-miljøet.");
+    throw new Error("Mangler VITE_GEMINI_API_KEY");
   }
   return new GoogleGenAI({ apiKey });
 }

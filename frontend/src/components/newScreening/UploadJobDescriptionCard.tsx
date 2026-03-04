@@ -9,8 +9,8 @@ import {
   type JobDescriptionInput,
   type UploadJobDescriptionValues,
   toJobDescriptionInput,
-} from "@/components/newScreening/newScreeningLib/UploadJobDescriptionSchema";
-import { formatBytes } from "@/components/newScreening/newScreeningLib/utils";
+} from "@/components/newScreening/UploadJobDescriptionSchema";
+import { formatBytes } from "@/utils/newScreeningUtils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
