@@ -8,7 +8,7 @@ type ErrorProps = {
 
 function ErrorBox({ title, message }: ErrorProps) {
   return (
-    <Alert className="max-w-md border-amber-900 bg-red-100 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
+    <Alert className="max-w-md overflow-auto wrap-anywhere max-h-50 border-amber-900 bg-red-100 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
       <AlertTriangleIcon />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{message}</AlertDescription>

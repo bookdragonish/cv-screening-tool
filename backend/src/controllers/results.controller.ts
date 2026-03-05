@@ -1,6 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 
+function normalizeString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => normalizeString(item))
+    .filter(Boolean);
+}
+
 /**
  * List all screening results.
  * 
@@ -106,6 +118,132 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     res.status(201).json(r.rows[0]);
   } catch (e) {
     next(e);
+  }
+}
+
+/**
+ * Creates a persisted screening run by inserting one job post row and its
+ * candidate result rows in a single transaction.
+ *
+ * Request should include 'title', 'description', 'hardQualifications',
+ * 'softQualifications', and 'candidates'.
+ *
+ * Responses:
+ * - 201: JSON object with the created job post id
+ * - 400: If any required fields are missing or invalid
+ */
+export async function createScreeningRun(req: Request, res: Response, next: NextFunction) {
+  const client = await pool.connect();
+
+  try {
+    const {
+      title,
+      header,
+      description,
+      hardQualifications,
+      softQualifications,
+      candidates,
+    } = req.body as {
+      title?: string;
+      header?: string;
+      description?: string;
+      hardQualifications?: unknown;
+      softQualifications?: unknown;
+      candidates?: Array<{
+        candidateId?: number;
+        rank?: number;
+        score?: number;
+        qualified?: boolean;
+        qualificationsMet?: unknown;
+        qualificationsMissing?: unknown;
+        summary?: string;
+      }>;
+    };
+
+    const normalizedTitle = normalizeString(title);
+    const normalizedHeader = normalizeString(header) || normalizedTitle;
+    const normalizedDescription = normalizeString(description);
+    const normalizedHardQualifications = normalizeStringArray(hardQualifications);
+    const normalizedSoftQualifications = normalizeStringArray(softQualifications);
+
+    if (!normalizedTitle || !normalizedDescription || !Array.isArray(candidates) || !candidates.length) {
+      return res.status(400).json({
+        error: "title, description, and at least one candidate are required",
+      });
+    }
+
+    const normalizedCandidates = candidates.map((candidate) => ({
+      candidateId: Number(candidate.candidateId),
+      rank: Number(candidate.rank),
+      score: Number(candidate.score),
+      qualified: candidate.qualified,
+      qualificationsMet: normalizeStringArray(candidate.qualificationsMet),
+      qualificationsMissing: normalizeStringArray(candidate.qualificationsMissing),
+      summary: normalizeString(candidate.summary),
+    }));
+
+    const hasInvalidCandidate = normalizedCandidates.some((candidate) => (
+      !Number.isInteger(candidate.candidateId) ||
+      candidate.candidateId <= 0 ||
+      !Number.isInteger(candidate.rank) ||
+      candidate.rank <= 0 ||
+      Number.isNaN(candidate.score) ||
+      typeof candidate.qualified !== "boolean"
+    ));
+
+    if (hasInvalidCandidate) {
+      return res.status(400).json({
+        error: "each candidate must include candidateId, rank, score, and qualified",
+      });
+    }
+
+    await client.query("begin");
+
+    const jobPostResult = await client.query(
+      "insert into job_posts(header, title, description, hardQualifications, softQualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
+      [
+        normalizedHeader,
+        normalizedTitle,
+        normalizedDescription,
+        normalizedHardQualifications.join("\n"),
+        normalizedSoftQualifications.join("\n"),
+      ],
+    );
+
+    const createdJobPost = jobPostResult.rows[0] as {
+      id: number;
+      title: string;
+      created_at: string;
+    };
+
+    for (const candidate of normalizedCandidates) {
+      await client.query(
+        "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, summary) values($1, $2, $3, $4, $5, $6, $7, $8)",
+        [
+          createdJobPost.id,
+          candidate.candidateId,
+          candidate.rank,
+          candidate.score,
+          candidate.qualified,
+          candidate.qualificationsMet,
+          candidate.qualificationsMissing,
+          candidate.summary || null,
+        ],
+      );
+    }
+
+    await client.query("commit");
+
+    res.status(201).json({
+      jobPostId: createdJobPost.id,
+      title: createdJobPost.title,
+      screenedAt: createdJobPost.created_at,
+    });
+  } catch (e) {
+    await client.query("rollback").catch(() => undefined);
+    next(e);
+  } finally {
+    client.release();
   }
 }
 

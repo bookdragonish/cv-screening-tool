@@ -5,6 +5,7 @@ import '@/lib/styles/globals.css'
 import Home from '@/pages/Home'
 import Layout from '@/pages/Layout'
 import GeminiTestPage from '@/pages/GeminiTestPage'
+import NewScreeningPage from '@/pages/NewScreeningPage'
 import Screening from '@/pages/Screening'
 import ScreeningHistory from '@/pages/ScreeningHistory'
 import CVDatabase from '@/pages/CVDatabase'
@@ -16,6 +17,9 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<Layout />}>
             <Route index element={<Home />} />
             <Route  path="GeminiTestPage" element={<GeminiTestPage />}/>
+
+            <Route path="/new-screening" element={<NewScreeningPage />} />
+
             <Route path="/screening" element={<Screening />} />
             <Route path="/screening-historikk" element={<ScreeningHistory />} />
             <Route path="/screening-historikk/:jobPostId" element={<Screening />} />

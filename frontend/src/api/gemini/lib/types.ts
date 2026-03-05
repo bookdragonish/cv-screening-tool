@@ -7,10 +7,14 @@ export type JobProfile = {
 export type CandidateEval = {
   candidate_id: string;
   candidate_label: string;
+  candidate_role?: string;
+  contact_phone?: string;
   qualified: boolean;
   overall_score: number;
+  experience_highlights?: string[];
+  education?: string[];
   strengths: Array<{ point: string; evidence: string }>;
-  gaps: Array<{ point: string; evidence: string; }>;
+  gaps: Array<{ point: string; evidence: string; impact: "high" | "medium" | "low" }>;
   unknowns: string[];
 };
 
