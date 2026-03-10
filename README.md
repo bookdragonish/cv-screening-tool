@@ -1,73 +1,191 @@
-# React + TypeScript + Vite
+# CV screening tools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Developed in collaboration with Trondheim Kommune.
 
+## 🔎 Navigation
 Currently, two official plugins are:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation and Setup](#installation-and-setup)
+- [Database](#database-setup)
+- [Endpoints](#endpoints)
+- [AI models](#ai-models)
+- [Security Considerations](#security-considerations)
+- [Testing](#testing)
+- [Collaborators](#collaborators)
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- Upload and store candidate CVs (PDF format)
+- Store CVs securely in PostgreSQL (BYTEA)
+- Extract and process CV content
+- AI-based evaluation against job descriptions
+- Candidate overview dashboard
+- REST API for candidate management
+- File size and type validation
+- Error handling and loading states in UI
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React (Vite)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js
+- Express
+- TypeScript
+- Multer (file upload handling)
+
+### Database
+
+- PostgreSQL
+
+### AI Integration
+
+- Gemeni or
+- NorLLM
+
+### Hosting (Planned)
+
+- Google Cloud Platform
+
+---
+
+## 📁 Project Structure
+
+```
+CV-SCREENING-TOOL/
+├── api/
+├── backend/
+│   ├── node_modules/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── db/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── types/
+│   │   ├── app.ts
+│   │   └── server.ts
+│   ├── venv/
+│   └── .env
+│
+├── docs/
+│
+├── frontend/
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── main.tsx
+│   └── index.html
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Installation and Setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Clone Repository
+
+```bash
+git clone https://github.com/your-username/cv-screening-tool.git
+cd cv-screening-tool
 ```
+
+### backend setup
+
+```bash
+cd backend
+npm install
+```
+
+#### .env file in /backend
+
+In the backend folder add a file called .env with the info
+
+```
+DB_HOST="localhost"
+DB_PORT="5432"
+DB_USER="cv_app_user"
+DB_PASSWORD="your_password"
+DB_NAME="cv_database"
+FRONTEND_HOSTED_LINK="http://localhost:5173"
+```
+
+#### backend start
+
+```bash
+npm run dev
+```
+
+See the link: http://localhost:3000
+
+### frontend setup
+
+In another terminal run:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+This should open our application on: http://localhost:5173
+
+## Database setup
+
+Our database is PostgreSQL, follow [their guide](https://www.postgresql.org/) to download the database. Then run the sql scripts in the /assets folder in backend. This configures the tables correctly.
+
+For more installation documents on the database see the [database.md file](./docs/database.md)
+
+### Endpoints
+
+#### Candidates:
+
+| Description         | Endpoint                | Body                |
+| ------------------- | ----------------------- |--------------------|
+| Get all candidates  | GET /api/candidates     |                  |
+| Get candidate by ID | GET /api/candidates/:id ||
+| Create candidate    | POST /api/candidates    |Content-Type: application/json { "name": "John Doe", "email": "john@examplecom"}|
+|Upload CV | POST /api/candidates/:id/cv | Content-Type: multipart/form-data FormData: cv: <PDF file>
+
+
+## AI models
+
+## Security Considerations
+
+- File upload size limit (10MB)
+- Only PDF file types accepted
+- Environment variables for sensitive keys
+- CORS configuration on backend
+- No production credentials committed to repository
+- Designed for test data during development
+
+## Testing
+
+Not yet implemented unittests and E2E tests.
+
+## Collaborators
+
+- Helene Selvig
+- Marius Brun 
+- Markus Watle
+- Mohammad Kazem Khajeh 
+- Marius Fornes
+- Baris Batur
+- Ingvild Kirkaune Sandven

@@ -1,0 +1,262 @@
+import { AddNewCvSchema, type AddNewCvValues } from "@/components/addNewCv/AddNewCvSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { PlusIcon } from "lucide-react"
+import { useId, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { API_URL } from "@/utils/variables"
+
+type AddNewCVModalProps = {
+  onCreated?: () => void
+}
+
+function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
+  const [open, setOpen] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  const form = useForm<AddNewCvValues>({
+    resolver: zodResolver(AddNewCvSchema),
+    mode: "onTouched",
+    shouldFocusError: true,
+    defaultValues: {
+      name: "",
+      email: "",
+      cv: undefined as unknown as File,
+    },
+  })
+
+  const uid = useId()
+  const nameDescId = `add-cv-name-desc-${uid}`
+  const nameErrId = `add-cv-name-err-${uid}`
+  const emailDescId = `add-cv-email-desc-${uid}`
+  const emailErrId = `add-cv-email-err-${uid}`
+  const cvDescId = `add-cv-pdf-desc-${uid}`
+  const cvErrId = `add-cv-pdf-err-${uid}`
+  const submitErrId = `add-cv-submit-err-${uid}`
+
+  async function onSubmit(values: AddNewCvValues) {
+    setSubmitError(null)
+
+    try {
+      const createRes = await fetch(API_URL + "/api/candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          cv_pdf: null,
+        }),
+      })
+
+      if (!createRes.ok) {
+        const body = await safeJson(createRes)
+        throw new Error(body?.error ?? `Failed to create candidate (${createRes.status})`)
+      }
+
+      const created = (await createRes.json()) as { id: number }
+
+      const fd = new FormData()
+      fd.append("cv", values.cv)
+
+      const uploadRes = await fetch(
+        API_URL + `/api/candidates/${created.id}/cv`,
+        { method: "POST", body: fd },
+      )
+
+      if (!uploadRes.ok) {
+        const body = await safeJson(uploadRes)
+        throw new Error(body?.error ?? `CV opplastning feilet (${uploadRes.status})`)
+      }
+
+      onCreated?.()
+      setOpen(false)
+      form.reset()
+    } catch (e) {
+      setSubmitError(e instanceof Error ? e.message : "Noe gikk galt.")
+    }
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (!next) {
+          setSubmitError(null)
+          form.reset()
+        }
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
+          <PlusIcon className="size-6" />
+          Legg til CV
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent aria-describedby={submitErrId}>
+        <DialogHeader>
+          <DialogTitle>Legg til ny CV</DialogTitle>
+        </DialogHeader>
+
+        <p
+          id={submitErrId}
+          className="sr-only"
+        >
+          Skjema for å legge til ny kandidat med CV. Alle felter er påkrevd.
+        </p>
+
+        <form id="add-cv-form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+          <FieldGroup>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="add-cv-name">
+                    Navn <span aria-hidden="true">*</span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="add-cv-name"
+                    placeholder="F.eks. Ola Nordmann"
+                    autoComplete="name"
+                    required
+                    aria-required="true"
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={`${nameDescId} ${fieldState.invalid ? nameErrId : ""}`.trim()}
+                  />
+                  <FieldDescription id={nameDescId}>
+                    Skriv inn fullt navn.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <div id={nameErrId}>
+                      <FieldError errors={[fieldState.error]} />
+                    </div>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="add-cv-email">
+                    E-post <span aria-hidden="true">*</span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="add-cv-email"
+                    type="email"
+                    placeholder="ola@example.com"
+                    autoComplete="email"
+                    required
+                    aria-required="true"
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={`${emailDescId} ${fieldState.invalid ? emailErrId : ""}`.trim()}
+                  />
+                  <FieldDescription id={emailDescId}>
+                    Må være en gyldig e-postadresse.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <div id={emailErrId}>
+                      <FieldError errors={[fieldState.error]} />
+                    </div>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="cv"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="add-cv-pdf">
+                    CV (PDF) <span aria-hidden="true">*</span>
+                  </FieldLabel>
+                  <Input
+                    id="add-cv-pdf"
+                    type="file"
+                    accept="application/pdf"
+                    required
+                    aria-required="true"
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={`${cvDescId} ${fieldState.invalid ? cvErrId : ""}`.trim()}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      field.onChange(file)
+                    }}
+                  />
+                  <FieldDescription id={cvDescId}>
+                    Påkrevd. PDF, maks 10MB.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <div id={cvErrId}>
+                      <FieldError errors={[fieldState.error]} />
+                    </div>
+                  )}
+                </Field>
+              )}
+            />
+
+            {submitError && (
+              <p className="text-sm text-red-600" role="alert" aria-live="polite">
+                {submitError}
+              </p>
+            )}
+          </FieldGroup>
+        </form>
+
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="secondary"
+            className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
+            onClick={() => setOpen(false)}
+            disabled={form.formState.isSubmitting}
+          >
+            Avbryt
+          </Button>
+          <Button
+            type="submit"
+            form="add-cv-form"
+            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Lagrer..." : "Legg til"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+async function safeJson(res: Response) {
+  try {
+    return await res.json()
+  } catch {
+    return null
+  }
+}
+
+export { AddNewCVModal }
