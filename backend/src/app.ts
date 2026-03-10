@@ -3,6 +3,8 @@ import routes from "./routes/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
+import norLLM from "./norLLM/request.js";
+import { run } from "node:test";
 
 export const app = express();
 
@@ -20,6 +22,15 @@ app.get("/", (_req, res) => {
     ok: true,
     message: "API is running. Write /api to get info",
   });
+});
+
+app.get("/norllm", async (_req, res) => {
+  try {
+    const data = await norLLM();
+    res.json({ ok: true, message: data});
+  } catch (error) {
+    res.status(500).json({ ok: false, message: "Error occurred while fetching NorLLM data" });
+  }
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
