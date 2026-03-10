@@ -1,7 +1,7 @@
 import { saveScreeningRun } from "@/api/fetchScreenings";
 import { runScreeningWithGemini } from "@/api/runScreeningWithGemini";
 import NewScreening from "@/components/newScreening/NewScreening";
-import type { JobDescriptionInput } from "@/components/newScreening/UploadJobDescriptionSchema";
+import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { StepStatus } from "@/types/newScreeningTypes";
 import { useState } from "react";
 

@@ -17,7 +17,7 @@ import {
   uploadMultipleFilesToGemini,
   type UploadedGeminiFile,
 } from "@/api/gemini/multipleFileUpload";
-import type { JobDescriptionInput } from "@/components/newScreening/UploadJobDescriptionSchema";
+import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { ScreeningCandidate } from "@/types/newScreeningTypes";
 
 type ApiCandidate = {
