@@ -1,6 +1,10 @@
+import { parsePdf } from "../middleware/PdfParser.js";
+
 const url = "https://llm.hpc.ntnu.no/v1/chat/completions";
 
-export default async function run() {
+export default async function run(pdfBuffer: Buffer): Promise<unknown> {
+  const cvText = await parsePdf(pdfBuffer);
+
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -12,12 +16,16 @@ export default async function run() {
       messages: [
         {
           role: "user",
-          content: "Hvem er du?"
+          content: `Summarize the key points in this CV:\n\n${cvText}`
         }
       ]
     })
   });
 
-  const data = await response.json();
-  return data;
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(err);
+  }
+
+  return response.json();
 }

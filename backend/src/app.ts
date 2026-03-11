@@ -3,6 +3,7 @@ import routes from "./routes/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
+import { readFile } from "node:fs/promises";
 import norLLM from "./norLLM/request.js";
 import { run } from "node:test";
 
@@ -26,8 +27,9 @@ app.get("/", (_req, res) => {
 
 app.get("/norllm", async (_req, res) => {
   try {
-    const data = await norLLM();
-    res.json({ ok: true, message: data});
+    const buffer = await readFile("src/norLLM/cv.pdf");
+    const data = await norLLM(buffer);
+    res.json({ ok: true, message: data });
   } catch (error) {
     res.status(500).json({ ok: false, message: "Error occurred while fetching NorLLM data" });
   }
