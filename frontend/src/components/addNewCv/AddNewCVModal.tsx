@@ -1,9 +1,8 @@
 import { AddNewCvSchema, type AddNewCvValues } from "@/components/addNewCv/AddNewCvSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "lucide-react"
-import { useId, useState } from "react"
+import { useId, useState, useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
-
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,26 +21,40 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { API_URL } from "@/utils/variables"
-
+type Candidate = {
+  id: number
+  name: string
+  email: string
+}
 type AddNewCVModalProps = {
   onCreated?: () => void
+  candidateToEdit?: Candidate
+  customTrigger?: React.ReactNode
 }
-
-function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
+function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVModalProps) {
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
-
+  const isEditing = !!candidateToEdit
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
     mode: "onTouched",
     shouldFocusError: true,
     defaultValues: {
-      name: "",
-      email: "",
+      name: candidateToEdit ? candidateToEdit.name : "",
+      email: candidateToEdit ? candidateToEdit.email : "",
       cv: undefined as unknown as File,
     },
   })
-
+  useEffect(() => {
+    if (candidateToEdit) {
+      form.reset({
+        name: candidateToEdit.name,
+        email: candidateToEdit.email,
+        cv: undefined,
+      })
+    }
+  }, [candidateToEdit, form]
+  )
   const uid = useId()
   const nameDescId = `add-cv-name-desc-${uid}`
   const nameErrId = `add-cv-name-err-${uid}`
@@ -50,41 +63,58 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
   const cvDescId = `add-cv-pdf-desc-${uid}`
   const cvErrId = `add-cv-pdf-err-${uid}`
   const submitErrId = `add-cv-submit-err-${uid}`
-
   async function onSubmit(values: AddNewCvValues) {
     setSubmitError(null)
-
+    if (!isEditing && !values.cv) {
+      form.setError("cv", { message: "Du må laste opp CV for nye kandidater" })
+      return
+    }
     try {
-      const createRes = await fetch(API_URL + "/api/candidates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          cv_pdf: null,
-        }),
-      })
-
-      if (!createRes.ok) {
-        const body = await safeJson(createRes)
-        throw new Error(body?.error ?? `Failed to create candidate (${createRes.status})`)
+      let targetId: number;
+      if (isEditing && candidateToEdit) {
+        const updateRes = await fetch(API_URL + `/api/candidates/${candidateToEdit.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+          }),
+        })
+        if (!updateRes.ok) {
+          const body = await safeJson(updateRes)
+          throw new Error(body?.error ?? `Klarte ikke å oppdatere kandidaten (${updateRes.status})`)
+        }
+        targetId = candidateToEdit.id;
       }
-
-      const created = (await createRes.json()) as { id: number }
-
-      const fd = new FormData()
-      fd.append("cv", values.cv)
-
-      const uploadRes = await fetch(
-        API_URL + `/api/candidates/${created.id}/cv`,
-        { method: "POST", body: fd },
-      )
-
-      if (!uploadRes.ok) {
-        const body = await safeJson(uploadRes)
-        throw new Error(body?.error ?? `CV opplastning feilet (${uploadRes.status})`)
+      else {
+        const createRes = await fetch(API_URL + "/api/candidates", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            cv_pdf: null,
+          }),
+        })
+        if (!createRes.ok) {
+          const body = await safeJson(createRes)
+          throw new Error(body?.error ?? `Failed to create candidate (${createRes.status})`)
+        }
+        const created = (await createRes.json()) as { id: number }
+        targetId = created.id;
       }
-
+      if (values.cv) {
+        const fd = new FormData()
+        fd.append("cv", values.cv)
+        const uploadRes = await fetch(
+          API_URL + `/api/candidates/${targetId}/cv`,
+          { method: "POST", body: fd },
+        )
+        if (!uploadRes.ok) {
+          const body = await safeJson(uploadRes)
+          throw new Error(body?.error ?? `CV opplastning feilet (${uploadRes.status})`)
+        }
+      }
       onCreated?.()
       setOpen(false)
       form.reset()
@@ -92,7 +122,6 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
       setSubmitError(e instanceof Error ? e.message : "Noe gikk galt.")
     }
   }
-
   return (
     <Dialog
       open={open}
@@ -105,24 +134,27 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
-          <PlusIcon className="size-6" />
-          Legg til CV
-        </Button>
+        {customTrigger ? (
+          customTrigger
+        ) : (
+          <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
+            <PlusIcon className="size-6" />
+            Legg til CV
+          </Button>
+        )}
       </DialogTrigger>
-
       <DialogContent aria-describedby={submitErrId}>
         <DialogHeader>
-          <DialogTitle>Legg til ny CV</DialogTitle>
+          <DialogTitle>{isEditing ? "Rediger kandidat" : "Legg til ny CV"}</DialogTitle>
         </DialogHeader>
-
         <p
           id={submitErrId}
           className="sr-only"
         >
-          Skjema for å legge til ny kandidat med CV. Alle felter er påkrevd.
+          {isEditing
+            ? "Skjema for å redigere eksisterende kandidat."
+            : "Skjema for å legge til ny kandidat med CV. Alle felter er påkrevd."}
         </p>
-
         <form id="add-cv-form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <FieldGroup>
             <Controller
@@ -154,7 +186,6 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                 </Field>
               )}
             />
-
             <Controller
               name="email"
               control={form.control}
@@ -185,21 +216,26 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                 </Field>
               )}
             />
-
             <Controller
               name="cv"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="add-cv-pdf">
-                    CV (PDF) <span aria-hidden="true">*</span>
+                    CV (PDF)
+                    {!isEditing && <span aria-hidden="true">*</span>}
                   </FieldLabel>
+                  {isEditing && (
+                    <p className="text-sm text-gray-500 mb-2">
+                      Kandidaten har allerede en CV lagret. Velg en ny fil kun hvis du ønsker å ersatte den.
+                    </p>
+                  )}
                   <Input
                     id="add-cv-pdf"
                     type="file"
                     accept="application/pdf"
-                    required
-                    aria-required="true"
+                    required={!isEditing}
+                    aria-required={!isEditing ? "true" : "false"}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${cvDescId} ${fieldState.invalid ? cvErrId : ""}`.trim()}
                     onChange={(e) => {
@@ -208,7 +244,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                     }}
                   />
                   <FieldDescription id={cvDescId}>
-                    Påkrevd. PDF, maks 10MB.
+                    {isEditing ? "Valgfritt, maks 10MB." : "Påkrevd. PDF, maks 10MB."}
                   </FieldDescription>
                   {fieldState.invalid && (
                     <div id={cvErrId}>
@@ -218,7 +254,6 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                 </Field>
               )}
             />
-
             {submitError && (
               <p className="text-sm text-red-600" role="alert" aria-live="polite">
                 {submitError}
@@ -226,7 +261,6 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
             )}
           </FieldGroup>
         </form>
-
         <DialogFooter>
           <Button
             type="button"
@@ -243,14 +277,13 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
             className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? "Lagrer..." : "Legg til"}
+            {form.formState.isSubmitting ? "Lagrer..." : (isEditing ? "Oppdater" : "Legg til")}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-
 async function safeJson(res: Response) {
   try {
     return await res.json()
@@ -258,5 +291,5 @@ async function safeJson(res: Response) {
     return null
   }
 }
-
 export { AddNewCVModal }
+

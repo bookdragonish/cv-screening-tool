@@ -57,8 +57,8 @@ function CVDatabase() {
     if (
       !window.confirm(
         "Er du sikker på at du vil slette " +
-          name +
-          "? Denne handlingen kan ikke angres.",
+        name +
+        "? Denne handlingen kan ikke angres.",
       )
     )
       return;
@@ -162,17 +162,26 @@ function CVDatabase() {
                   )}
 
                   <td className="px-5 py-3.5 text-right">
-                    <button
-                      onClick={() => handleEdit(candidate.id)}
-                      className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md hover:bg-grey-700 transition-colors duration-150"
-                      title="Delete candidate"
-                    >
-                      <img
-                        src="src/assets/icons/edit-solid.svg"
-                        alt="edit candidate"
-                        className="w-5 h-5 opacity-70 hover:opacity-100"
-                      />
-                    </button>
+                    <AddNewCVModal
+                      candidateToEdit={{
+                        id: candidate.id,
+                        name: candidate.name ?? "",
+                        email: candidate.email ?? "",
+                      }}
+                      onCreated={() => setReloadKey((prev) => prev + 1)}
+                      customTrigger={
+                        <button
+                          className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md transition-colors duration-150"
+                          title="Rediger kandidat"
+                        >
+                          <img
+                            src="src/assets/icons/edit-solid.svg"
+                            alt="edit candidate"
+                            className="w-5 h-5 opacity-70 hover:opacity-100"
+                          />
+                        </button>
+                      }
+                    />
 
                     <button
                       onClick={() =>
