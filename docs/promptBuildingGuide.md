@@ -1,85 +1,82 @@
 ## Endringer i Gemini-prompts
 
-Når du endrer Gemini-prompts, er det ett spørsmål som er viktig først:
+Når du endrer Gemini-prompts, start med dette spørsmålet:
 
-**Endrer du bare hvordan modellen skal oppføre seg, eller endrer du selve JSON-strukturen den skal returnere?**
+**Endrer du bare hvordan modellen svarer, eller endrer du JSON-strukturen den returnerer?**
 
-### Endringer i oppførsel
+## 1) Hvis du bare endrer oppførsel
 
-Hvis du bare justerer formuleringer, regler eller stil, holder det som regel å endre promptene.
+Dette er endringer som:
+- språk/stil
+- strenghet i vurdering
+- hvordan modellen prioriterer informasjon
+- små justeringer i formuleringer
 
-Typiske eksempler:
-- "Skriv på norsk"
-- "Ta med firmanavn i stillingstittelen"
-- "Vær strengere på det som er uklart eller mangler"
-- "Ikke gi poeng for ting som ikke er eksplisitt dokumentert"
+Da holder det som regel å oppdatere promptfilene:
+- `backend/src/services/llm/gemini/prompts/buildJobProfilePrompt.ts`
+- `backend/src/services/llm/gemini/prompts/buildCandidateEvalPrompt.ts`
+- `backend/src/services/llm/gemini/prompts/buildRankingPrompt.ts`
+- `backend/src/services/llm/gemini/prompts/rulesAndRubric.ts`
 
-Slike endringer krever som regel **ikke** endringer andre steder i koden, så lenge Gemini fortsatt returnerer samme JSON-felter med samme navn og type.
+Så lenge JSON-feltene og typene er like, trenger du vanligvis ikke endre schema/typer.
 
-### Endringer i JSON-outputen som vi får fra Gemini
+## 2) Hvis du endrer JSON-strukturen
 
-Hvis du endrer strukturen på JSON-en Gemini returnerer, må du som regel oppdatere flere steder i koden.
-
-Det gjelder for eksempel hvis du:
+Dette gjelder når du:
+- legger til et nytt felt
 - fjerner et felt
-- gir et felt nytt navn
-- legger til et nytt obligatorisk felt
-- endrer typen på et felt
+- bytter feltnavn
+- endrer datatype
 
-Da bør du gå gjennom dette:
+Da må du oppdatere flere steder.
 
-1. Prompten
-   JSON-eksempelet i prompten må oppdateres.
+### To-do ved strukturendring
 
-2. Zod-schema
-   Fil: `frontend/src/api/gemini/lib/schemas.ts`
+1. Oppdater prompten
+- Oppdater JSON-eksempelet i riktig promptfil i `backend/src/services/llm/gemini/prompts/`.
 
-3. TypeScript-typer
-   Fil: `frontend/src/api/gemini/lib/types.ts`
+2. Oppdater Zod-schema
+- Fil: `backend/src/services/llm/gemini/schemas.ts`
 
-4. Kode som bruker responsen
-   Typisk: `frontend/src/components/newScreening/newScreeningLib/runScreeningWithGemini.ts`
+3. Oppdater TypeScript-typer
+- Fil: `backend/src/types/GeminiTypes.ts`
 
-5. Eventuelle komponenter eller sider som viser dataene
-   Dette avhenger av hvilket felt du har endret.
+4. Oppdater backend-logikk som bruker feltene
+- Fil: `backend/src/controllers/geminiScreening.controller.ts`
+- Sjekk spesielt mapping, fallback-verdier og hvilke felt som sendes videre.
 
-### Eksempel: Fjerne `role_title`
+5. Oppdater API/persistens hvis payloaden endres
+- Fil: `backend/src/controllers/results.controller.ts`
+- Fil: `backend/src/assets/dbSqlResults.sql` (hvis DB-kolonner må endres)
 
-Hvis du fjerner `role_title` fra jobprofilen, må du sannsynligvis oppdatere:
+6. Oppdater frontend hvis respons-/lagringsfelt er endret
+- API-kall: `frontend/src/api/runScreeningWithGemini.ts` (kaller backend-endepunkt)
+- Typer for visning: `frontend/src/types/newScreeningTypes.ts`
+- Typer for lagring/historikk: `frontend/src/api/fetchScreenings.ts` og `frontend/src/types/screening.ts`
 
-- JSON-eksempelet i prompten
-- `JobProfile` i `types.ts`
-- `JobProfileSchema` i `schemas.ts`
-- all kode som bruker `jobProfile.role_title`
-- logikken som setter jobbtittel i screeningflyten og resultatvisningene
+## Hvordan flyten er nå (viktig)
 
-### Eksempel: Gi `must_haves` nytt navn
+- Frontend kaller backend-endepunkt: `POST /api/results/screenings/run`
+- Backend snakker med Gemini
+- Frontend har ikke egen Gemini-key eller direkte Gemini-kall
 
-Hvis du bytter `must_haves` til `requirements`, må du oppdatere:
+Det betyr at prompt-, schema- og parsing-endringer først og fremst skal gjøres i backend.
 
-- JSON-eksempelet i prompten
-- `JobProfile` i `types.ts`
-- `JobProfileSchema` i `schemas.ts`
-- alle steder som bruker `jobProfile.must_haves`
-- eventuell logikk som bygger opp kravlister eller lagrer screeningdata
+## Enkel sjekkliste før du er ferdig
 
-### Enkel sjekkliste
+1. Kjør en manuell test med både:
+- innlimt tekst
+- opplastet PDF
 
-Hvis du bare har endret oppførsel:
-- oppdater prompten
-- kjør en manuell test
-- sjekk at Gemini fortsatt returnerer gyldig JSON i samme format
+2. Sjekk at Gemini fortsatt returnerer gyldig JSON.
 
-Hvis du har endret JSON-strukturen:
-- oppdater JSON-eksempelet i prompten
-- oppdater `types.ts`
-- oppdater `schemas.ts`
-- oppdater kode som parser eller mapper responsen
-- oppdater eventuell UI som bruker feltet
+3. Sjekk at resultatet vises riktig i UI.
 
-### Kort sagt
+4. Hvis felter er endret: sjekk at lagring til historikk fortsatt fungerer.
 
-Prompten bestemmer hva Gemini **skal** returnere.
-Schemaet bestemmer hva appen **godtar**.
-Typene bestemmer hva koden **forventer**.
-Resten av koden bestemmer hvordan dataene **brukes**.
+## Kort oppsummert
+
+- Prompten bestemmer hva Gemini blir bedt om å returnere.
+- Schemaet bestemmer hva backend godtar.
+- Typene bestemmer hva koden forventer.
+- Controlleren og resten av flyten bestemmer hvordan dataene brukes og sendes videre.

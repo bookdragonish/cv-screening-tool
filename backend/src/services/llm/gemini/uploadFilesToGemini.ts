@@ -1,5 +1,8 @@
 import { GoogleGenAI, type File as GeminiFile } from "@google/genai";
 
+/**
+ * Metadata we keep for each file after it is uploaded to Gemini.
+ */
 export type UploadedGeminiFile = {
   displayName: string;
   uri: string;
@@ -7,10 +10,16 @@ export type UploadedGeminiFile = {
   uploadId: string;
 };
 
+/**
+ * Waits for a short amount of time.
+ */
 function sleep(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Polls Gemini until an uploaded file is ready to be used.
+ */
 async function waitForGeminiFileReady(
   ai: GoogleGenAI,
   uploadId: string,
@@ -41,7 +50,11 @@ async function waitForGeminiFileReady(
   return getFile;
 }
 
-export async function uploadMultipleFilesToGemini(
+/**
+ * Uploads one or more files to Gemini and returns file metadata needed for
+ * later model calls.
+ */
+export async function uploadFilesToGemini(
   ai: GoogleGenAI,
   files: File[],
   opts?: { pollMs?: number; timeoutMs?: number }

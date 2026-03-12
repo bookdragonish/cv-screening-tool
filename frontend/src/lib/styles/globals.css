@@ -28,6 +28,9 @@
   --color-dark: oklch(0.145 0 0);
   --color-light: oklch(0.9447 0.0145 244.72);
   --color-white: oklch(1 0 0);
+  --status-qual-met: oklch(0.627 0.164 144.2);
+  --status-qual-not-met: oklch(0.637 0.237 25.3);
+  --status-unknown: oklch(0.769 0.168 81.6);
 }
 
 @theme inline {

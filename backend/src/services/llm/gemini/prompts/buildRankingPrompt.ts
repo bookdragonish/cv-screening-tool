@@ -1,6 +1,9 @@
-import type { CandidateEval, JobProfile } from "@/api/gemini/lib/types";
-import { RULES } from "@/api/gemini/prompts/rulesAndRubric";
+import type { CandidateEval, JobProfile } from "../../../../types/GeminiTypes.js";
+import { RULES } from "./rulesAndRubric.js";
 
+/**
+ * Builds the prompt used to rank all candidates from completed evaluations.
+ */
 export function buildRankingPrompt(args: {
   jobProfile: JobProfile;
   evals: CandidateEval[];
