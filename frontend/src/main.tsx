@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import '@/lib/styles/globals.css'
 import Home from '@/pages/Home'
 import Layout from '@/pages/Layout'
-import GeminiTestPage from '@/pages/GeminiTestPage'
 import NewScreeningPage from '@/pages/NewScreeningPage'
 import Screening from '@/pages/Screening'
 import ScreeningHistory from '@/pages/ScreeningHistory'
@@ -16,7 +15,6 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
-            <Route  path="GeminiTestPage" element={<GeminiTestPage />}/>
 
             <Route path="/new-screening" element={<NewScreeningPage />} />
 

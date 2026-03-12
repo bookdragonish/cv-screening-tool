@@ -1,5 +1,8 @@
-import { RULES } from "@/api/gemini/prompts/rulesAndRubric";
+import { RULES } from "./rulesAndRubric.js";
 
+/**
+ * Builds the prompt used to extract a job profile from pasted job text.
+ */
 export function buildJobProfileFromTextPrompt(jobAdText: string): string {
   return `
 <role>You are a job requirements parser.</role>
@@ -39,6 +42,9 @@ JSON:
 `.trim();
 }
 
+/**
+ * Builds the prompt used to extract a job profile from an uploaded PDF.
+ */
 export function buildJobProfileFromPdfPrompt(): string {
   return `
 <role>You are a job requirements parser.</role>
@@ -72,4 +78,7 @@ JSON:
 `.trim();
 }
 
+/**
+ * Backward-compatible alias for job-ad text prompt builder.
+ */
 export const buildJobAdProfilePrompt = buildJobProfileFromTextPrompt;
