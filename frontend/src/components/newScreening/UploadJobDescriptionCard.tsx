@@ -205,7 +205,7 @@ function UploadJobDescriptionCard({
                     )}
                   </div>
 
-                  {!fieldState.invalid && <FieldDescription className="mt-2">Kun PDF-filer er tillat</FieldDescription>}
+                  {!fieldState.invalid && <FieldDescription className="mt-2">Kun PDF-filer er tillatt</FieldDescription>}
 
                   {fieldState.invalid && (
                     <div id={fileErrorId}>
