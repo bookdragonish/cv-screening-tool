@@ -73,7 +73,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       qualified,
       qualifications_met,
       qualifications_missing,
-      unknowns,
+      unknowns = [],
       summary,
     } = req.body as {
       job_post_id: number;
@@ -83,7 +83,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       qualified: boolean;
       qualifications_met: string[];
       qualifications_missing: string[];
-      unknowns: string[];
+      unknowns?: string[];
       summary?: string;
     };
 
@@ -94,14 +94,13 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       score === null || score === undefined ||
       qualified === null || qualified === undefined ||
       !Array.isArray(qualifications_met) ||
-      !Array.isArray(qualifications_missing) ||
-      !Array.isArray(unknowns)
+      !Array.isArray(qualifications_missing)
     )
       return res
         .status(400)
         .json({
           error:
-            "job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, and unknowns are required",
+            "job_post_id, candidate_id, rank, score, qualified, qualifications_met, and qualifications_missing are required",
         });
 
     const r = await pool.query(
