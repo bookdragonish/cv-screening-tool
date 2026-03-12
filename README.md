@@ -3,6 +3,7 @@
 Developed in collaboration with Trondheim Kommune.
 
 ## 🔎 Navigation
+Currently, two official plugins are:
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
