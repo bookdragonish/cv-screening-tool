@@ -207,6 +207,7 @@ function buildScreeningRecord(params: {
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
     const met = normalizeStringList(evalResult?.strengths.map((item) => item.point));
     const missing = normalizeStringList(evalResult?.gaps.map((item) => item.point));
+    const unknowns = normalizeStringList(evalResult?.unknowns);
     const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
 
     candidates.push({
@@ -216,6 +217,7 @@ function buildScreeningRecord(params: {
       qualified: rankedItem.qualified,
       qualificationsMet: met.length ? met : ["Ingen tydelige kvalifikasjonstreff funnet."],
       qualificationsMissing: missing,
+      unknowns,
       summary: normalizeString(rankedItem.summary) || "Ingen oppsummering tilgjengelig.",
     });
   }

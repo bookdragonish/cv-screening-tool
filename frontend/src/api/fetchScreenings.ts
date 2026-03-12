@@ -15,6 +15,7 @@ export type SaveScreeningRunPayload = {
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    unknowns: string[];
     summary?: string;
   }>;
 };

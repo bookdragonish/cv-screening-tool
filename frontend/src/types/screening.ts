@@ -10,6 +10,7 @@ export type ScreeningDetails = {
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    unknowns: string[];
     summary?: string;
     createdAt: string;
   }>;
