@@ -13,27 +13,6 @@ export function formatBytes(sizeInBytes: number): string {
   return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
 
-export function getScoreStyles(score: number) {
-  if (score > 80) {
-    return {
-      barClassName: "bg-emerald-500",
-      badgeClassName: "bg-emerald-100 text-emerald-700",
-    };
-  }
-
-  if (score >= 40) {
-    return {
-      barClassName: "bg-amber-500",
-      badgeClassName: "bg-amber-100 text-amber-700",
-    };
-  }
-
-  return {
-    barClassName: "bg-red-500",
-    badgeClassName: "bg-red-100 text-red-700",
-  };
-}
-
 export function formatAnalyzedDate(dateValue: string) {
   return new Intl.DateTimeFormat("nb-NO", {
     day: "numeric",

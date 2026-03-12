@@ -1,3 +1,6 @@
+/**
+ * Shared rules included in Gemini prompts to keep outputs consistent and safe.
+ */
 const RULES = `
 Rules:
 - Evidence-based only (quote CV snippets as evidence).
@@ -10,6 +13,9 @@ Rules:
 - The total score MUST be based on the scoring rubric.
 `.trim();
 
+/**
+ * Shared scoring weights used when Gemini evaluates candidates.
+ */
 const RUBRIC = `
 Scoring rubric (0–100):
 - Must-have match (0–70)

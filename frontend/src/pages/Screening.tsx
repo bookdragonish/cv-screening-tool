@@ -2,7 +2,7 @@ import ErrorBox from "@/components/ErrorBox";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
-import { Clock, FileText } from "lucide-react";
+import { CheckCircle2, CircleHelp, Clock, FileText, XCircle } from "lucide-react";
 import { Link, useParams } from "react-router";
 
 function Screening() {
@@ -110,6 +110,91 @@ function Screening() {
                   {candidate.summary}
                 </p>
               )}
+
+              <div
+                className={`mt-5 grid gap-3 ${
+                  candidate.unknowns.length ? "lg:grid-cols-3" : "md:grid-cols-2"
+                }`}
+              >
+                <section className="py-1">
+                  <div className="mb-3">
+                    <h3 className="text-sm font-semibold text-(--color-dark)">
+                      Oppnådde kvalifikasjoner:
+                    </h3>
+                  </div>
+                  {(() => {
+                    const fallbackMet = "Ingen kvalifikasjoner oppnådd.";
+                    const metItems = candidate.qualificationsMet.length
+                      ? candidate.qualificationsMet
+                      : [fallbackMet];
+
+                    return (
+                  <ul className="space-y-2 text-sm text-(--color-dark)">
+                    {metItems.map((item, index) => (
+                      <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
+                        {item !== fallbackMet ? (
+                          <CheckCircle2
+                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                            style={{ color: "var(--status-qual-met)" }}
+                          />
+                        ) : null}
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                    );
+                  })()}
+                </section>
+
+                <section className="py-1">
+                  <div className="mb-3">
+                    <h3 className="text-sm font-semibold text-(--color-dark)">
+                      Manglende kvalifikasjoner:
+                    </h3>
+                  </div>
+                  {(() => {
+                    const fallbackMissing = "Ingen manglende kvalifikasjoner";
+                    const missingItems = candidate.qualificationsMissing.length
+                      ? candidate.qualificationsMissing
+                      : [fallbackMissing];
+
+                    return (
+                  <ul className="space-y-2 text-sm text-(--color-dark)">
+                    {missingItems.map((item, index) => (
+                      <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
+                        {item !== fallbackMissing ? (
+                          <XCircle
+                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                            style={{ color: "var(--status-qual-not-met)" }}
+                          />
+                        ) : null}
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                    );
+                  })()}
+                </section>
+
+                {candidate.unknowns.length ? (
+                  <section className="py-1">
+                    <div className="mb-3">
+                      <h3 className="text-sm font-semibold text-(--color-dark)">Usikkerheter:</h3>
+                    </div>
+                    <ul className="space-y-2 text-sm text-(--color-dark)">
+                      {candidate.unknowns.map((item, index) => (
+                        <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
+                          <CircleHelp
+                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                            style={{ color: "var(--status-unknown)" }}
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>

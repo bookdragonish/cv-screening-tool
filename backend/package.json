@@ -10,11 +10,13 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@google/genai": "^1.38.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "multer": "^2.0.2",
-    "pg": "^8.17.2"
+    "pg": "^8.17.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
