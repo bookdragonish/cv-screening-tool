@@ -1,5 +1,5 @@
 import type { SaveScreeningRunPayload } from "@/api/fetchScreenings";
-import type { JobDescriptionInput } from "@/components/newScreening/UploadJobDescriptionSchema";
+import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { ScreeningCandidate } from "@/types/newScreeningTypes";
 import { API_URL } from "@/utils/variables";
 

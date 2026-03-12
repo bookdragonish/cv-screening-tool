@@ -4,12 +4,13 @@ import { useEffect, useId } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
+  MAX_JOB_DESCRIPTION_PDF_BYTES,
   MAX_JOB_DESCRIPTION_TEXT_LENGTH,
   UploadJobDescriptionSchema,
   type JobDescriptionInput,
   type UploadJobDescriptionValues,
   toJobDescriptionInput,
-} from "@/components/newScreening/UploadJobDescriptionSchema";
+} from "@/validations/UploadJobDescriptionSchema";
 import { formatBytes } from "@/utils/newScreeningUtils";
 import { Button } from "@/components/ui/button";
 import {
@@ -59,6 +60,10 @@ function UploadJobDescriptionCard({
   const mode = form.watch("mode");
   const selectedFile = form.watch("jobDescriptionFile");
   const jobDescriptionText = form.watch("jobDescriptionText") ?? "";
+  const isPdfSelectionValid =
+    selectedFile !== undefined &&
+    selectedFile.type === "application/pdf" &&
+    selectedFile.size <= MAX_JOB_DESCRIPTION_PDF_BYTES;
 
   const uid = useId();
   const fileInputId = `screening-job-description-file-${uid}`;
@@ -101,7 +106,7 @@ function UploadJobDescriptionCard({
   };
 
   const isSubmitDisabled =
-    mode === "pdf" ? !selectedFile : jobDescriptionText.trim().length === 0;
+    mode === "pdf" ? !isPdfSelectionValid : jobDescriptionText.trim().length === 0;
 
   return (
     <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
@@ -157,7 +162,7 @@ function UploadJobDescriptionCard({
                   <Input
                     id={fileInputId}
                     type="file"
-                    accept="application/pdf"
+                    accept="application/pdf, .pdf"
                     className="sr-only"
                     aria-invalid={fieldState.invalid}
                     aria-describedby={fieldState.invalid ? fileErrorId : undefined}
@@ -171,20 +176,21 @@ function UploadJobDescriptionCard({
                   <div className="rounded-lg border border-dashed border-slate-300 px-6 min-h-52 mt-7 py-12 text-center transition">
                     <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
-                    {selectedFile ? (
+                    {isPdfSelectionValid ? (
                       <div className="mt-4 text-center">
                         <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-700">
                           <FileTextIcon className="h-4 w-4 text-primary" />
-                          {selectedFile.name}
+                          {selectedFile?.name}
                         </p>
-                        <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile.size)}</p>
-                        <button
+                        <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile?.size ?? 0)}</p>
+                        <Button
+                          variant="ghost"
                           type="button"
                           className="mt-2 text-sm text-red-500 hover:text-red-600"
                           onClick={() => setPickedFile(undefined)}
                         >
                           Fjern fil
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <p className="mt-4 text-sm text-slate-600">
@@ -199,7 +205,7 @@ function UploadJobDescriptionCard({
                     )}
                   </div>
 
-                  <FieldDescription className="mt-2">Kun PDF</FieldDescription>
+                  {!fieldState.invalid && <FieldDescription className="mt-2">Kun PDF-filer er tillatt</FieldDescription>}
 
                   {fieldState.invalid && (
                     <div id={fileErrorId}>

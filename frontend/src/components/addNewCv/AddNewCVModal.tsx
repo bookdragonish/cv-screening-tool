@@ -1,4 +1,9 @@
-import { AddNewCvSchema, type AddNewCvValues } from "@/components/addNewCv/AddNewCvSchema"
+import {
+  AddNewCvSchema,
+  MAX_PDF_BYTES,
+  isPdfFile,
+  type AddNewCvValues,
+} from "@/validations/AddNewCvSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "lucide-react"
 import { useId, useState } from "react"
@@ -41,6 +46,11 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
       cv: undefined as unknown as File,
     },
   })
+  const selectedCv = form.watch("cv")
+  const isCvSelectionValid =
+    selectedCv instanceof File &&
+    isPdfFile(selectedCv) &&
+    selectedCv.size <= MAX_PDF_BYTES
 
   const uid = useId()
   const nameDescId = `add-cv-name-desc-${uid}`
@@ -197,7 +207,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                   <Input
                     id="add-cv-pdf"
                     type="file"
-                    accept="application/pdf"
+                    accept="application/pdf, .pdf"
                     required
                     aria-required="true"
                     aria-invalid={fieldState.invalid}
@@ -205,11 +215,17 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       field.onChange(file)
+                      if (file && (!isPdfFile(file) || file.size > MAX_PDF_BYTES)) {
+                        e.target.value = ""
+                      }
+                      void form.trigger("cv")
                     }}
                   />
+                  {!fieldState.invalid &&
                   <FieldDescription id={cvDescId}>
                     Påkrevd. PDF, maks 10MB.
                   </FieldDescription>
+                  }
                   {fieldState.invalid && (
                     <div id={cvErrId}>
                       <FieldError errors={[fieldState.error]} />
@@ -241,7 +257,7 @@ function AddNewCVModal({ onCreated }: AddNewCVModalProps) {
             type="submit"
             form="add-cv-form"
             className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || !isCvSelectionValid}
           >
             {form.formState.isSubmitting ? "Lagrer..." : "Legg til"}
           </Button>
