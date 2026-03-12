@@ -1,6 +1,9 @@
-import type { JobProfile } from "@/api/gemini/lib/types";
-import { RULES, RUBRIC } from "@/api/gemini/prompts/rulesAndRubric";
+import type { JobProfile } from "../../../../types/GeminiTypes.js";
+import { RULES, RUBRIC } from "./rulesAndRubric.js";
 
+/**
+ * Builds the prompt used to score one candidate CV against a job profile.
+ */
 export function buildCandidateEvalPrompt(args: {
   jobProfile: JobProfile;
   candidateId: string;

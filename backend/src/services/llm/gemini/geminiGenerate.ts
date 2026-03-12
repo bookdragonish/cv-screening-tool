@@ -3,8 +3,13 @@ import {
   GoogleGenAI,
   type Part,
 } from "@google/genai";
-import type { UploadedGeminiFile } from "@/api/gemini/multipleFileUpload";
+import type { UploadedGeminiFile } from "./uploadFilesToGemini.js";
 
+/**
+ * Sends a prompt and one or more uploaded files to Gemini.
+ *
+ * Returns only the first text response from Gemini.
+ */
 export async function generateFromGeminiOnFiles(params: {
   ai: GoogleGenAI;
   model: string;
@@ -41,6 +46,9 @@ export async function generateFromGeminiOnFiles(params: {
   return text ?? "Tom respons, noe feilet";
 }
 
+/**
+ * Deletes uploaded Gemini files after processing.
+ */
 export async function deleteGeminiFiles(
   ai: GoogleGenAI,
   files: UploadedGeminiFile[]

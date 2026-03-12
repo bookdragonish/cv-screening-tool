@@ -1,6 +1,9 @@
 import type { Content } from "@google/genai";
 import { GoogleGenAI } from "@google/genai";
 
+/**
+ * Sends a text-only prompt to Gemini and returns the first text response.
+ */
 export async function generateFromGeminiText(params: {
   ai: GoogleGenAI;
   model: string;
