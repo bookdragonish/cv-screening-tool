@@ -29,3 +29,76 @@ export type Ranking = {
     summary: string;
   }>;
 };
+
+export type ApiCandidate = {
+  id: number;
+  name?: string | null;
+  email?: string | null;
+  created_at?: string;
+  cv_pdf: Buffer;
+};
+
+export type CandidateWithCvText = {
+  candidate: ApiCandidate;
+  cvText: string;
+};
+
+export type CandidateWithCv = {
+  candidate: ApiCandidate;
+  file: File;
+};
+
+export type ScreeningCandidate = {
+  id: number;
+  rank: number;
+  name: string;
+  role: string;
+  score: number;
+  met: string[];
+  missing: string[];
+  summary: string;
+  experience: string[];
+  education: string[];
+  email: string;
+  phone: string;
+};
+
+export type SaveScreeningRunPayload = {
+  title: string;
+  header: string;
+  description: string;
+  hardQualifications: string[];
+  softQualifications: string[];
+  candidates: Array<{
+    candidateId: number;
+    rank: number;
+    score: number;
+    qualified: boolean;
+    qualificationsMet: string[];
+    qualificationsMissing: string[];
+    summary?: string;
+  }>;
+};
+
+export type RunScreeningResponse = {
+  screeningRecord: SaveScreeningRunPayload;
+  requiredSkills: string[];
+  candidates: ScreeningCandidate[];
+};
+
+export type JobDescriptionInput =
+  | { mode: "text"; text: string }
+  | { mode: "pdf"; file: Buffer; originalName: string };
+
+export type JobDescriptionInputFile =
+  | { mode: "text"; text: string }
+  | { mode: "pdf"; file: File; originalName: string };
+
+
+export type NorLlmResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string;
+    };
+  }>;
+};

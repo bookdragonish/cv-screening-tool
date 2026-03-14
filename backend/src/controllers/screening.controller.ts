@@ -5,69 +5,9 @@ import { parsePdf } from "../middleware/PdfParser.js";
 import { pool } from "../db/pool.js";
 import { buildCandidateEvalPrompt, buildJobProfileFromTextPrompt, buildRankingPrompt } from "../services/llm/gemini/prompts/prompts.js";
 import { parseCandidateEval, parseJobProfile, parseRanking } from "../services/llm/gemini/schemas.js";
-import type { CandidateEval, JobProfile } from "../types/GeminiTypes.js";
+import type { ApiCandidate, CandidateEval, CandidateWithCvText, JobDescriptionInput, JobProfile, NorLlmResponse, RunScreeningResponse, SaveScreeningRunPayload, ScreeningCandidate } from "../types/GeminiTypes.js";
 
-type ApiCandidate = {
-  id: number;
-  name?: string | null;
-  email?: string | null;
-  cv_pdf: Buffer;
-};
 
-type CandidateWithCvText = {
-  candidate: ApiCandidate;
-  cvText: string;
-};
-
-type ScreeningCandidate = {
-  id: number;
-  rank: number;
-  name: string;
-  role: string;
-  score: number;
-  met: string[];
-  missing: string[];
-  summary: string;
-  experience: string[];
-  education: string[];
-  email: string;
-  phone: string;
-};
-
-type SaveScreeningRunPayload = {
-  title: string;
-  header: string;
-  description: string;
-  hardQualifications: string[];
-  softQualifications: string[];
-  candidates: Array<{
-    candidateId: number;
-    rank: number;
-    score: number;
-    qualified: boolean;
-    qualificationsMet: string[];
-    qualificationsMissing: string[];
-    summary?: string;
-  }>;
-};
-
-type RunScreeningResponse = {
-  screeningRecord: SaveScreeningRunPayload;
-  requiredSkills: string[];
-  candidates: ScreeningCandidate[];
-};
-
-type JobDescriptionInput =
-  | { mode: "text"; text: string }
-  | { mode: "pdf"; file: Buffer; originalName: string };
-
-type NorLlmResponse = {
-  choices?: Array<{
-    message?: {
-      content?: string;
-    };
-  }>;
-};
 
 const MAX_CANDIDATES_PER_RUN = 20;
 const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";

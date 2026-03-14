@@ -2,10 +2,26 @@ import { GoogleGenAI } from "@google/genai";
 import type { NextFunction, Request, Response } from "express";
 
 import { pool } from "../db/pool.js";
-import { deleteGeminiFiles, generateFromGeminiOnFiles } from "../services/llm/gemini/geminiGenerate.js";
+import {
+  deleteGeminiFiles,
+  generateFromGeminiOnFiles,
+} from "../services/llm/gemini/geminiGenerate.js";
 import { generateFromGeminiText } from "../services/llm/gemini/geminiText.js";
-import { parseCandidateEval, parseJobProfile, parseRanking } from "../services/llm/gemini/schemas.js";
-import type { CandidateEval, JobProfile } from "../types/GeminiTypes.js";
+import {
+  parseCandidateEval,
+  parseJobProfile,
+  parseRanking,
+} from "../services/llm/gemini/schemas.js";
+import type {
+  ApiCandidate,
+  CandidateEval,
+  CandidateWithCv,
+  JobDescriptionInputFile as JobDescriptionInput,
+  JobProfile,
+  RunScreeningResponse,
+  SaveScreeningRunPayload,
+  ScreeningCandidate,
+} from "../types/GeminiTypes.js";
 import {
   type UploadedGeminiFile,
   uploadFilesToGemini,
@@ -16,95 +32,23 @@ import {
   buildJobProfileFromPdfPrompt,
   buildRankingPrompt,
 } from "../services/llm/gemini/prompts/prompts.js";
-
-type ApiCandidate = {
-  id: number;
-  name?: string | null;
-  email?: string | null;
-  created_at?: string;
-  cv_pdf: Buffer;
-};
-
-type CandidateWithCv = {
-  candidate: ApiCandidate;
-  file: File;
-};
-
-type ScreeningCandidate = {
-  id: number;
-  rank: number;
-  name: string;
-  role: string;
-  score: number;
-  met: string[];
-  missing: string[];
-  summary: string;
-  experience: string[];
-  education: string[];
-  email: string;
-  phone: string;
-};
-
-type SaveScreeningRunPayload = {
-  title: string;
-  header: string;
-  description: string;
-  hardQualifications: string[];
-  softQualifications: string[];
-  candidates: Array<{
-    candidateId: number;
-    rank: number;
-    score: number;
-    qualified: boolean;
-    qualificationsMet: string[];
-    qualificationsMissing: string[];
-    summary?: string;
-  }>;
-};
-
-type RunScreeningResponse = {
-  screeningRecord: SaveScreeningRunPayload;
-  requiredSkills: string[];
-  candidates: ScreeningCandidate[];
-};
-
-type JobDescriptionInput =
-  | { mode: "text"; text: string }
-  | { mode: "pdf"; file: File; originalName: string };
+import {
+  normalizeString,
+  normalizeStringArray,
+} from "../utils/normailizers.js";
 
 const MAX_CANDIDATES_PER_RUN = 20;
 const MODEL_NAME = "gemini-2.5-flash";
 const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";
 
 /**
- * Returns a clean string.
- *
- * - Trims whitespace
- * - Returns empty string if value is null/undefined
- */
-function normalizeString(value: string | undefined | null): string {
-  return value?.trim() ?? "";
-}
-
-/**
- * Cleans a list of strings.
- *
- * - Trims each item
- * - Removes empty items
- * - Removes duplicates
- */
-function normalizeStringList(values: string[] | undefined): string[] {
-  if (!values?.length) return [];
-
-  return Array.from(new Set(values.map((value) => normalizeString(value)).filter(Boolean)));
-}
-
-/**
  * Returns a fallback title if Gemini does not provide one.
  */
 function getFallbackJobTitle(jobDescriptionInput: JobDescriptionInput): string {
   if (jobDescriptionInput.mode === "pdf") {
-    return jobDescriptionInput.originalName.replace(/\.pdf$/i, "") || "Screening";
+    return (
+      jobDescriptionInput.originalName.replace(/\.pdf$/i, "") || "Screening"
+    );
   }
 
   return DEFAULT_TEXT_JOB_TITLE;
@@ -146,7 +90,9 @@ async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCv[]> {
       const pdfBuffer = candidate.cv_pdf;
       if (!Buffer.isBuffer(pdfBuffer) || !pdfBuffer.length) return null;
 
-      const baseName = sanitizeFileName(candidate.name?.trim() || `candidate-${candidate.id}`);
+      const baseName = sanitizeFileName(
+        candidate.name?.trim() || `candidate-${candidate.id}`,
+      );
       const file = new File([Uint8Array.from(pdfBuffer)], `${baseName}.pdf`, {
         type: "application/pdf",
       });
@@ -176,7 +122,9 @@ async function createJobProfile(
     return parseJobProfile(jobProfileText);
   }
 
-  const uploadedJobFiles = await uploadFilesToGemini(ai, [jobDescriptionInput.file]);
+  const uploadedJobFiles = await uploadFilesToGemini(ai, [
+    jobDescriptionInput.file,
+  ]);
   const uploadedJobFile = uploadedJobFiles[0];
   if (!uploadedJobFile) {
     throw new Error("Kunne ikke laste opp stillingsbeskrivelsen til Gemini.");
@@ -210,7 +158,9 @@ function mapToScreeningCandidates(params: {
   const dbCandidatesById = new Map(
     candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
   );
-  const evalByCandidateId = new Map(evals.map((item) => [item.candidate_id, item]));
+  const evalByCandidateId = new Map(
+    evals.map((item) => [item.candidate_id, item]),
+  );
 
   return ranking.ranking
     .map((rankedItem, index) => {
@@ -218,12 +168,19 @@ function mapToScreeningCandidates(params: {
       if (!dbCandidate) return null;
 
       const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
-      const met = evalResult?.strengths.map((item) => item.point).filter(Boolean) ?? [];
-      const missing = evalResult?.gaps.map((item) => item.point).filter(Boolean) ?? [];
-      const experience = evalResult?.strengths.map((item) => item.evidence).filter(Boolean) ?? [];
+      const met =
+        evalResult?.strengths.map((item) => item.point).filter(Boolean) ?? [];
+      const missing =
+        evalResult?.gaps.map((item) => item.point).filter(Boolean) ?? [];
+      const experience =
+        evalResult?.strengths.map((item) => item.evidence).filter(Boolean) ??
+        [];
       const unknowns = evalResult?.unknowns.filter(Boolean) ?? [];
 
-      const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
+      const normalizedScore = Math.max(
+        0,
+        Math.min(100, Math.round(rankedItem.overall_score)),
+      );
 
       return {
         id: dbCandidate.id,
@@ -262,16 +219,21 @@ function buildScreeningRecord(params: {
   evals: CandidateEval[];
   candidatesWithCv: CandidateWithCv[];
 }): SaveScreeningRunPayload {
-  const { jobDescriptionInput, jobProfile, ranking, evals, candidatesWithCv } = params;
+  const { jobDescriptionInput, jobProfile, ranking, evals, candidatesWithCv } =
+    params;
 
   const dbCandidatesById = new Map(
     candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
   );
-  const evalByCandidateId = new Map(evals.map((item) => [item.candidate_id, item]));
+  const evalByCandidateId = new Map(
+    evals.map((item) => [item.candidate_id, item]),
+  );
 
-  const title = normalizeString(jobProfile.role_title) || getFallbackJobTitle(jobDescriptionInput);
-  const hardQualifications = normalizeStringList(jobProfile.must_haves);
-  const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
+  const title =
+    normalizeString(jobProfile.role_title) ||
+    getFallbackJobTitle(jobDescriptionInput);
+  const hardQualifications = normalizeStringArray(jobProfile.must_haves);
+  const softQualifications = normalizeStringArray(jobProfile.nice_to_haves);
   const candidates: SaveScreeningRunPayload["candidates"] = [];
 
   for (const [index, rankedItem] of ranking.ranking.entries()) {
@@ -279,18 +241,29 @@ function buildScreeningRecord(params: {
     if (!dbCandidate) continue;
 
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
-    const met = normalizeStringList(evalResult?.strengths.map((item) => item.point));
-    const missing = normalizeStringList(evalResult?.gaps.map((item) => item.point));
-    const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
+    const met = normalizeStringArray(
+      evalResult?.strengths.map((item) => item.point),
+    );
+    const missing = normalizeStringArray(
+      evalResult?.gaps.map((item) => item.point),
+    );
+    const normalizedScore = Math.max(
+      0,
+      Math.min(100, Math.round(rankedItem.overall_score)),
+    );
 
     candidates.push({
       candidateId: dbCandidate.id,
       rank: rankedItem.rank ?? index + 1,
       score: normalizedScore,
       qualified: rankedItem.qualified,
-      qualificationsMet: met.length ? met : ["Ingen tydelige kvalifikasjonstreff funnet."],
+      qualificationsMet: met.length
+        ? met
+        : ["Ingen tydelige kvalifikasjonstreff funnet."],
       qualificationsMissing: missing,
-      summary: normalizeString(rankedItem.summary) || "Ingen oppsummering tilgjengelig.",
+      summary:
+        normalizeString(rankedItem.summary) ||
+        "Ingen oppsummering tilgjengelig.",
     });
   }
 
@@ -301,7 +274,8 @@ function buildScreeningRecord(params: {
     header: title,
     description:
       jobDescriptionInput.mode === "text"
-        ? normalizeString(jobDescriptionInput.text) || `Stillingsbeskrivelse for ${title}`
+        ? normalizeString(jobDescriptionInput.text) ||
+          `Stillingsbeskrivelse for ${title}`
         : `Analysert fra opplastet PDF: ${jobDescriptionInput.originalName}`,
     hardQualifications,
     softQualifications,
@@ -329,13 +303,21 @@ function parseCandidateLimit(value: unknown): number {
  * - JobDescriptionInput on success
  * - { error, status } on validation failure
  */
-function parseJobDescriptionInput(req: Request): JobDescriptionInput | { error: string; status: number } {
+function parseJobDescriptionInput(
+  req: Request,
+): JobDescriptionInput | { error: string; status: number } {
   const mode = typeof req.body.mode === "string" ? req.body.mode : "";
 
   if (mode === "text") {
-    const text = typeof req.body.jobDescriptionText === "string" ? req.body.jobDescriptionText.trim() : "";
+    const text =
+      typeof req.body.jobDescriptionText === "string"
+        ? req.body.jobDescriptionText.trim()
+        : "";
     if (!text) {
-      return { error: "jobDescriptionText er påkrevd når mode er 'text'.", status: 400 };
+      return {
+        error: "jobDescriptionText er påkrevd når mode er 'text'.",
+        status: 400,
+      };
     }
 
     return { mode: "text", text };
@@ -347,7 +329,10 @@ function parseJobDescriptionInput(req: Request): JobDescriptionInput | { error: 
     }
 
     if (req.file.mimetype !== "application/pdf") {
-      return { error: "Kun PDF-filer er støttet for jobDescriptionFile.", status: 415 };
+      return {
+        error: "Kun PDF-filer er støttet for jobDescriptionFile.",
+        status: 415,
+      };
     }
 
     const originalName = req.file.originalname || "job-description.pdf";
@@ -375,7 +360,11 @@ function parseJobDescriptionInput(req: Request): JobDescriptionInput | { error: 
  * - 400: Invalid input, no CV candidates, or no matchable ranking result
  * - 415: Unsupported job description file type
  */
-export async function runScreeningWithGemini(req: Request, res: Response, next: NextFunction) {
+export async function runScreeningWithGemini(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const parsedInput = parseJobDescriptionInput(req);
   if ("error" in parsedInput) {
     return res.status(parsedInput.status).json({ error: parsedInput.error });
@@ -388,10 +377,16 @@ export async function runScreeningWithGemini(req: Request, res: Response, next: 
   try {
     const candidatesWithCv = await loadCandidatesWithCv(candidateLimit);
     if (!candidatesWithCv.length) {
-      return res.status(400).json({ error: "Fant ingen kandidater med tilgjengelig CV i databasen." });
+      return res.status(400).json({
+        error: "Fant ingen kandidater med tilgjengelig CV i databasen.",
+      });
     }
 
-    const jobProfile = await createJobProfile(ai, parsedInput, uploadedFilesForCleanup);
+    const jobProfile = await createJobProfile(
+      ai,
+      parsedInput,
+      uploadedFilesForCleanup,
+    );
 
     const uploadedCandidateFiles = await uploadFilesToGemini(
       ai,
@@ -442,9 +437,10 @@ export async function runScreeningWithGemini(req: Request, res: Response, next: 
     });
 
     if (!candidates.length) {
-      return res
-        .status(400)
-        .json({ error: "Fant ingen kandidater som kunne matches mot screeningresultatet." });
+      return res.status(400).json({
+        error:
+          "Fant ingen kandidater som kunne matches mot screeningresultatet.",
+      });
     }
 
     const screeningRecord = buildScreeningRecord({
