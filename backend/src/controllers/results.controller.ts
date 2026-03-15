@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
-import { normalizeString, normalizeStringArray } from "../utils/normailizers.js";
+import { normalizeString, normalizeStringList as normalizeStringArray } from "../utils/normailizers.js";
 
 
 /**

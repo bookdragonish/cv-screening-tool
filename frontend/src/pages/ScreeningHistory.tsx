@@ -79,7 +79,7 @@ function ScreeningHistory() {
               key={screening.jobPostId}
               className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <div className="flex items-start space-x-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">

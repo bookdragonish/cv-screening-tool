@@ -34,7 +34,7 @@ import {
 } from "../services/llm/gemini/prompts/prompts.js";
 import {
   normalizeString,
-  normalizeStringArray,
+  normalizeStringList as normalizeStringArray,
 } from "../utils/normailizers.js";
 
 const MAX_CANDIDATES_PER_RUN = 20;

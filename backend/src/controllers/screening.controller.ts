@@ -3,11 +3,27 @@ import type { NextFunction, Request, Response } from "express";
 import { runScreeningWithGemini } from "./geminiScreening.controller.js";
 import { parsePdf } from "../middleware/PdfParser.js";
 import { pool } from "../db/pool.js";
-import { buildCandidateEvalPrompt, buildJobProfileFromTextPrompt, buildRankingPrompt } from "../services/llm/gemini/prompts/prompts.js";
-import { parseCandidateEval, parseJobProfile, parseRanking } from "../services/llm/gemini/schemas.js";
-import type { ApiCandidate, CandidateEval, CandidateWithCvText, JobDescriptionInput, JobProfile, NorLlmResponse, RunScreeningResponse, SaveScreeningRunPayload, ScreeningCandidate } from "../types/GeminiTypes.js";
-
-
+import {
+  buildCandidateEvalPrompt,
+  buildJobProfileFromTextPrompt,
+  buildRankingPrompt,
+} from "../services/llm/gemini/prompts/prompts.js";
+import {
+  parseCandidateEval,
+  parseJobProfile,
+  parseRanking,
+} from "../services/llm/gemini/schemas.js";
+import type {
+  ApiCandidate,
+  CandidateEval,
+  CandidateWithCvText,
+  JobDescriptionInput,
+  JobProfile,
+  NorLlmResponse,
+  RunScreeningResponse,
+  SaveScreeningRunPayload,
+  ScreeningCandidate,
+} from "../types/GeminiTypes.js";
 
 const MAX_CANDIDATES_PER_RUN = 20;
 const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";
@@ -15,14 +31,21 @@ const NORLLM_URL = "https://llm.hpc.ntnu.no/v1/chat/completions";
 const NORLLM_MODEL = "NorwAI/NorwAI-Magistral-24B-reasoning";
 
 function stripCodeFences(s: string): string {
-  return s.replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+  return s
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/i, "")
+    .trim();
 }
 
 function extractJsonObjectCandidates(text: string): string[] {
   const s = stripCodeFences(text);
 
   const candidates: string[] = [];
-  for (let start = s.indexOf("{"); start !== -1; start = s.indexOf("{", start + 1)) {
+  for (
+    let start = s.indexOf("{");
+    start !== -1;
+    start = s.indexOf("{", start + 1)
+  ) {
     let depth = 0;
     for (let i = start; i < s.length; i += 1) {
       if (s[i] === "{") depth += 1;
@@ -42,8 +65,7 @@ function parseFirstJsonObject(text: string): unknown {
   for (const candidate of candidates) {
     try {
       return JSON.parse(candidate);
-    } catch {
-    }
+    } catch {}
   }
 
   throw new Error("Could not parse any JSON object from response.");
@@ -108,8 +130,7 @@ function fixCandidateEval(params: {
     try {
       const parsed = parseFirstJsonObject(text);
       raw = pickLikelyJsonRoot(parsed);
-    } catch {
-    }
+    } catch {}
 
     const score = toScore(raw.overall_score);
     const strengthsRaw = Array.isArray(raw.strengths) ? raw.strengths : [];
@@ -119,19 +140,32 @@ function fixCandidateEval(params: {
       .map((item) => {
         if (!item || typeof item !== "object") return null;
         const record = item as Record<string, unknown>;
-        const point = normalizeString(typeof record.point === "string" ? record.point : "");
-        const evidence = normalizeString(typeof record.evidence === "string" ? record.evidence : "");
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const evidence = normalizeString(
+          typeof record.evidence === "string" ? record.evidence : "",
+        );
         if (!point && !evidence) return null;
-        return { point: point || "Uspesifisert styrke", evidence: evidence || "Ikke oppgitt" };
+        return {
+          point: point || "Uspesifisert styrke",
+          evidence: evidence || "Ikke oppgitt",
+        };
       })
-      .filter((item): item is { point: string; evidence: string } => item !== null);
+      .filter(
+        (item): item is { point: string; evidence: string } => item !== null,
+      );
 
     const gaps = gapsRaw
       .map((item) => {
         if (!item || typeof item !== "object") return null;
         const record = item as Record<string, unknown>;
-        const point = normalizeString(typeof record.point === "string" ? record.point : "");
-        const evidence = normalizeString(typeof record.evidence === "string" ? record.evidence : "");
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const evidence = normalizeString(
+          typeof record.evidence === "string" ? record.evidence : "",
+        );
         if (!point && !evidence) return null;
         return {
           point: point || "Uspesifisert gap",
@@ -139,21 +173,41 @@ function fixCandidateEval(params: {
           impact: normalizeImpact(record.impact),
         };
       })
-      .filter((item): item is { point: string; evidence: string; impact: "high" | "medium" | "low" } => item !== null);
+      .filter(
+        (
+          item,
+        ): item is {
+          point: string;
+          evidence: string;
+          impact: "high" | "medium" | "low";
+        } => item !== null,
+      );
 
     return {
       candidate_id:
-        normalizeString(typeof raw.candidate_id === "string" ? raw.candidate_id : "") || fallbackCandidateId,
+        normalizeString(
+          typeof raw.candidate_id === "string" ? raw.candidate_id : "",
+        ) || fallbackCandidateId,
       candidate_label:
-        normalizeString(typeof raw.candidate_label === "string" ? raw.candidate_label : "") ||
-        fallbackCandidateLabel,
-      candidate_role: normalizeString(typeof raw.candidate_role === "string" ? raw.candidate_role : "") || "Kandidat",
-      contact_phone: normalizeString(typeof raw.contact_phone === "string" ? raw.contact_phone : "") || "Ikke oppgitt",
-      qualified: typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
+        normalizeString(
+          typeof raw.candidate_label === "string" ? raw.candidate_label : "",
+        ) || fallbackCandidateLabel,
+      candidate_role:
+        normalizeString(
+          typeof raw.candidate_role === "string" ? raw.candidate_role : "",
+        ) || "Kandidat",
+      contact_phone:
+        normalizeString(
+          typeof raw.contact_phone === "string" ? raw.contact_phone : "",
+        ) || "Ikke oppgitt",
+      qualified:
+        typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
       overall_score: score,
       experience_highlights: toNonEmptyStringArray(raw.experience_highlights),
       education: toNonEmptyStringArray(raw.education),
-      strengths: strengths.length ? strengths : [{ point: "Ingen tydelige styrker", evidence: "Ikke oppgitt" }],
+      strengths: strengths.length
+        ? strengths
+        : [{ point: "Ingen tydelige styrker", evidence: "Ikke oppgitt" }],
       gaps,
       unknowns: toNonEmptyStringArray(raw.unknowns),
     };
@@ -170,11 +224,12 @@ function fixRanking(text: string): ReturnType<typeof parseRanking> {
     let raw: Record<string, unknown> = {};
     try {
       raw = pickLikelyJsonRoot(parseFirstJsonObject(text));
-    } catch {
-    }
+    } catch {}
 
     const roleTitle =
-      normalizeString(typeof raw.role_title === "string" ? raw.role_title : "") || "Screening";
+      normalizeString(
+        typeof raw.role_title === "string" ? raw.role_title : "",
+      ) || "Screening";
     const rankingRaw = Array.isArray(raw.ranking) ? raw.ranking : [];
 
     const normalizedRanking = rankingRaw
@@ -187,8 +242,11 @@ function fixRanking(text: string): ReturnType<typeof parseRanking> {
         if (!candidateId) return null;
 
         const candidateLabel =
-          normalizeString(typeof record.candidate_label === "string" ? record.candidate_label : "") ||
-          `Kandidat ${candidateId}`;
+          normalizeString(
+            typeof record.candidate_label === "string"
+              ? record.candidate_label
+              : "",
+          ) || `Kandidat ${candidateId}`;
 
         return {
           rank:
@@ -198,14 +256,20 @@ function fixRanking(text: string): ReturnType<typeof parseRanking> {
           candidate_id: candidateId,
           candidate_label: candidateLabel,
           overall_score: toScore(record.overall_score),
-          qualified: typeof record.qualified === "boolean" ? record.qualified : toScore(record.overall_score) >= 50,
+          qualified:
+            typeof record.qualified === "boolean"
+              ? record.qualified
+              : toScore(record.overall_score) >= 50,
           summary:
-            normalizeString(typeof record.summary === "string" ? record.summary : "") ||
-            "Ingen oppsummering tilgjengelig.",
+            normalizeString(
+              typeof record.summary === "string" ? record.summary : "",
+            ) || "Ingen oppsummering tilgjengelig.",
         };
       })
       .filter(
-        (item): item is {
+        (
+          item,
+        ): item is {
           rank: number;
           candidate_id: string;
           candidate_label: string;
@@ -234,7 +298,9 @@ function buildFallbackRankingFromEvals(params: {
 }): ReturnType<typeof parseRanking> {
   const { jobProfile, evals, candidatesWithCv } = params;
 
-  const candidateById = new Map(candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]));
+  const candidateById = new Map(
+    candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
+  );
 
   const ranking = evals
     .map((evaluation) => {
@@ -256,12 +322,17 @@ function buildFallbackRankingFromEvals(params: {
         candidate_id: String(candidate.id),
         candidate_label: label,
         overall_score: score,
-        qualified: typeof evaluation.qualified === "boolean" ? evaluation.qualified : score >= 50,
+        qualified:
+          typeof evaluation.qualified === "boolean"
+            ? evaluation.qualified
+            : score >= 50,
         summary,
       };
     })
     .filter(
-      (item): item is {
+      (
+        item,
+      ): item is {
         candidate_id: string;
         candidate_label: string;
         overall_score: number;
@@ -285,12 +356,16 @@ function normalizeString(value: string | undefined | null): string {
 function normalizeStringList(values: string[] | undefined): string[] {
   if (!values?.length) return [];
 
-  return Array.from(new Set(values.map((value) => normalizeString(value)).filter(Boolean)));
+  return Array.from(
+    new Set(values.map((value) => normalizeString(value)).filter(Boolean)),
+  );
 }
 
 function getFallbackJobTitle(jobDescriptionInput: JobDescriptionInput): string {
   if (jobDescriptionInput.mode === "pdf") {
-    return jobDescriptionInput.originalName.replace(/\.pdf$/i, "") || "Screening";
+    return (
+      jobDescriptionInput.originalName.replace(/\.pdf$/i, "") || "Screening"
+    );
   }
 
   return DEFAULT_TEXT_JOB_TITLE;
@@ -302,11 +377,16 @@ function parseCandidateLimit(value: unknown): number {
   return Math.max(1, Math.min(MAX_CANDIDATES_PER_RUN, Math.floor(parsed)));
 }
 
-function parseJobDescriptionInput(req: Request): JobDescriptionInput | { error: string; status: number } {
+function parseJobDescriptionInput(
+  req: Request,
+): JobDescriptionInput | { error: string; status: number } {
   const mode = typeof req.body.mode === "string" ? req.body.mode : "";
 
   if (mode === "text") {
-    const text = typeof req.body.jobDescriptionText === "string" ? req.body.jobDescriptionText.trim() : "";
+    const text =
+      typeof req.body.jobDescriptionText === "string"
+        ? req.body.jobDescriptionText.trim()
+        : "";
     if (!text) {
       return { error: "Stillingsbeskrivelse er påkrevd.", status: 400 };
     }
@@ -320,7 +400,10 @@ function parseJobDescriptionInput(req: Request): JobDescriptionInput | { error: 
     }
 
     if (req.file.mimetype !== "application/pdf") {
-      return { error: "Kun PDF-filer er støttet for stillingsbeskrivelse.", status: 415 };
+      return {
+        error: "Kun PDF-filer er støttet for stillingsbeskrivelse.",
+        status: 415,
+      };
     }
 
     return {
@@ -396,7 +479,9 @@ async function parseNorLlmJsonWithRepair<T>(params: {
   }
 }
 
-async function loadCandidatesWithCvText(limit: number): Promise<CandidateWithCvText[]> {
+async function loadCandidatesWithCvText(
+  limit: number,
+): Promise<CandidateWithCvText[]> {
   const r = await pool.query(
     "select id, name, email, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
     [limit],
@@ -421,22 +506,30 @@ async function loadCandidatesWithCvText(limit: number): Promise<CandidateWithCvT
   return result;
 }
 
-async function getJobDescriptionText(jobDescriptionInput: JobDescriptionInput): Promise<string> {
+async function getJobDescriptionText(
+  jobDescriptionInput: JobDescriptionInput,
+): Promise<string> {
   if (jobDescriptionInput.mode === "text") {
     return jobDescriptionInput.text;
   }
 
   const parsedText = await parsePdf(jobDescriptionInput.file);
   if (!parsedText.trim()) {
-    throw new Error("Kunne ikke lese tekst fra opplastet stillingsbeskrivelse.");
+    throw new Error(
+      "Kunne ikke lese tekst fra opplastet stillingsbeskrivelse.",
+    );
   }
 
   return parsedText;
 }
 
-async function createJobProfileFromNorLlm(jobDescriptionText: string): Promise<JobProfile> {
+async function createJobProfileFromNorLlm(
+  jobDescriptionText: string,
+): Promise<JobProfile> {
   const prompt = buildJobProfileFromTextPrompt(jobDescriptionText);
   const responseText = await callNorLlm(prompt);
+  console.log("NorLLM raw job profile response:");
+  console.log(responseText);
   return parseNorLlmJsonWithRepair({
     rawText: responseText,
     schemaDescription: `{
@@ -502,7 +595,9 @@ function mapToScreeningCandidates(params: {
   const dbCandidatesById = new Map(
     candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
   );
-  const evalByCandidateId = new Map(evals.map((item) => [item.candidate_id, item]));
+  const evalByCandidateId = new Map(
+    evals.map((item) => [item.candidate_id, item]),
+  );
 
   return ranking.ranking
     .map((rankedItem, index) => {
@@ -510,12 +605,19 @@ function mapToScreeningCandidates(params: {
       if (!dbCandidate) return null;
 
       const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
-      const met = evalResult?.strengths.map((item) => item.point).filter(Boolean) ?? [];
-      const missing = evalResult?.gaps.map((item) => item.point).filter(Boolean) ?? [];
-      const experience = evalResult?.strengths.map((item) => item.evidence).filter(Boolean) ?? [];
+      const met =
+        evalResult?.strengths.map((item) => item.point).filter(Boolean) ?? [];
+      const missing =
+        evalResult?.gaps.map((item) => item.point).filter(Boolean) ?? [];
+      const experience =
+        evalResult?.strengths.map((item) => item.evidence).filter(Boolean) ??
+        [];
       const unknowns = evalResult?.unknowns.filter(Boolean) ?? [];
 
-      const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
+      const normalizedScore = Math.max(
+        0,
+        Math.min(100, Math.round(rankedItem.overall_score)),
+      );
 
       return {
         id: dbCandidate.id,
@@ -523,7 +625,7 @@ function mapToScreeningCandidates(params: {
         name: dbCandidate.name?.trim() || `Kandidat ${dbCandidate.id}`,
         role: evalResult?.candidate_role?.trim() || "Kandidat",
         score: normalizedScore,
-          met,
+        met,
         missing,
         summary: rankedItem.summary || "Ingen oppsummering tilgjengelig.",
         experience: evalResult?.experience_highlights?.length
@@ -552,14 +654,25 @@ function buildScreeningRecord(params: {
   candidatesWithCv: CandidateWithCvText[];
   jobDescriptionText: string;
 }): SaveScreeningRunPayload {
-  const { jobDescriptionInput, jobProfile, ranking, evals, candidatesWithCv, jobDescriptionText } = params;
+  const {
+    jobDescriptionInput,
+    jobProfile,
+    ranking,
+    evals,
+    candidatesWithCv,
+    jobDescriptionText,
+  } = params;
 
   const dbCandidatesById = new Map(
     candidatesWithCv.map((item) => [String(item.candidate.id), item.candidate]),
   );
-  const evalByCandidateId = new Map(evals.map((item) => [item.candidate_id, item]));
+  const evalByCandidateId = new Map(
+    evals.map((item) => [item.candidate_id, item]),
+  );
 
-  const title = normalizeString(jobProfile.role_title) || getFallbackJobTitle(jobDescriptionInput);
+  const title =
+    normalizeString(jobProfile.role_title) ||
+    getFallbackJobTitle(jobDescriptionInput);
   const hardQualifications = normalizeStringList(jobProfile.must_haves);
   const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
   const candidates: SaveScreeningRunPayload["candidates"] = [];
@@ -569,18 +682,27 @@ function buildScreeningRecord(params: {
     if (!dbCandidate) continue;
 
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
-    const met = normalizeStringList(evalResult?.strengths.map((item) => item.point));
-    const missing = normalizeStringList(evalResult?.gaps.map((item) => item.point));
-    const normalizedScore = Math.max(0, Math.min(100, Math.round(rankedItem.overall_score)));
+    const met = normalizeStringList(
+      evalResult?.strengths.map((item) => item.point),
+    );
+    const missing = normalizeStringList(
+      evalResult?.gaps.map((item) => item.point),
+    );
+    const normalizedScore = Math.max(
+      0,
+      Math.min(100, Math.round(rankedItem.overall_score)),
+    );
 
     candidates.push({
       candidateId: dbCandidate.id,
       rank: rankedItem.rank ?? index + 1,
       score: normalizedScore,
       qualified: rankedItem.qualified,
-        qualificationsMet: met,
+      qualificationsMet: met,
       qualificationsMissing: missing,
-      summary: normalizeString(rankedItem.summary) || "Ingen oppsummering tilgjengelig.",
+      summary:
+        normalizeString(rankedItem.summary) ||
+        "Ingen oppsummering tilgjengelig.",
     });
   }
 
@@ -591,7 +713,8 @@ function buildScreeningRecord(params: {
     header: title,
     description:
       jobDescriptionInput.mode === "text"
-        ? normalizeString(jobDescriptionText) || `Stillingsbeskrivelse for ${title}`
+        ? normalizeString(jobDescriptionText) ||
+          `Stillingsbeskrivelse for ${title}`
         : `Analysert fra opplastet PDF: ${jobDescriptionInput.originalName}`,
     hardQualifications,
     softQualifications,
@@ -599,7 +722,11 @@ function buildScreeningRecord(params: {
   };
 }
 
-async function runScreeningWithNorLlm(req: Request, res: Response, next: NextFunction) {
+async function runScreeningWithNorLlm(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const parsedInput = parseJobDescriptionInput(req);
   if ("error" in parsedInput) {
     return res.status(parsedInput.status).json({ error: parsedInput.error });
@@ -610,12 +737,19 @@ async function runScreeningWithNorLlm(req: Request, res: Response, next: NextFun
   try {
     const candidatesWithCv = await loadCandidatesWithCvText(candidateLimit);
     if (!candidatesWithCv.length) {
-      return res.status(400).json({ error: "Fant ingen kandidater med tilgjengelig CV i databasen." });
+      return res
+        .status(400)
+        .json({
+          error: "Fant ingen kandidater med tilgjengelig CV i databasen.",
+        });
     }
 
     const jobDescriptionText = await getJobDescriptionText(parsedInput);
     const jobProfile = await createJobProfileFromNorLlm(jobDescriptionText);
-    const evals = await evaluateCandidatesWithNorLlm({ candidatesWithCv, jobProfile });
+    const evals = await evaluateCandidatesWithNorLlm({
+      candidatesWithCv,
+      jobProfile,
+    });
 
     const rankingPrompt = buildRankingPrompt({ jobProfile, evals });
     const rankingText = await callNorLlm(rankingPrompt);
@@ -653,7 +787,10 @@ async function runScreeningWithNorLlm(req: Request, res: Response, next: NextFun
     if (!candidates.length) {
       return res
         .status(400)
-        .json({ error: "Fant ingen kandidater som kunne matches mot screeningresultatet." });
+        .json({
+          error:
+            "Fant ingen kandidater som kunne matches mot screeningresultatet.",
+        });
     }
 
     const screeningRecord = buildScreeningRecord({
@@ -693,7 +830,11 @@ function getConfiguredLlm(): "GEMINI" | "NORLLM" {
   return value === "NORLLM" ? "NORLLM" : "GEMINI";
 }
 
-export async function runScreening(req: Request, res: Response, next: NextFunction) {
+export async function runScreening(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const provider = getConfiguredLlm();
 
   if (provider === "NORLLM") {

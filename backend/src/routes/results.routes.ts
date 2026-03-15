@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import * as screening from "../controllers/screening.controller.js";
 import * as results from "../controllers/results.controller.js";
+import * as ai from "../controllers/ai.controller.js"
 
 const router = Router();
 const upload = multer({
@@ -18,4 +19,5 @@ router.get("/job_posts/:jobPostId", results.getScreeningByJobPostId);
 router.get("/:jobPostId/:candidateId", results.getById);
 router.delete("/:jobPostId/:candidateId", results.deleteById);
 
+router.post("/test", ai.runScreeningController);
 export default router;

@@ -15,7 +15,7 @@ export function normalizeString(value: unknown): string {
  * - Removes empty items
  * - Removes duplicates
  */
-export function normalizeStringArray(value: unknown): string[] {
+export function normalizeStringList(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
 
   return value
