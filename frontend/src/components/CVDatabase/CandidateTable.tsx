@@ -35,21 +35,21 @@ function CandidateTable({ filteredData, setPreviewId, dataLength, setReloadKey }
     }
   };
   return (
-    <section className="bg-white --color-primary rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <section className="bg-white --color-primary rounded-xl border border-(--color-primary) overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-130 text-left">
           <thead>
-            <tr className="border-b border-gray-100">
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <tr className="border-b border-(--color-primary)">
+              <th className="px-5 py-5 text-xs mb-2 font-semibold uppercase tracking-wider">
                 Navn
               </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <th className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
                 Sist endret
               </th>
-              <th className="px-5 py-3 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
+              <th className="px-5 py-5 text-xs font-semibold text-center uppercase tracking-wider">
                 Pdf
               </th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">
+              <th className="px-5 py-5 text-xs font-semibold uppercase tracking-wider text-right">
                 Handlinger
               </th>
             </tr>
@@ -60,11 +60,11 @@ function CandidateTable({ filteredData, setPreviewId, dataLength, setReloadKey }
                 key={candidate.id}
                 className="hover:bg-gray-50 transition-colors duration-100"
               >
-                <td className="px-5 py-3.5 text-sm font-medium text-gray-800">
+                <td className="px-5 py-7 text-sm font-medium text-gray-800">
                   {candidate.name ?? candidate.id}
                 </td>
 
-                <td className="px-5 py-3.5 text-sm text-gray-500">
+                <td className="px-5 py-7 text-sm text-gray-500">
                   {new Intl.DateTimeFormat(navigator.language, {
                     dateStyle: "medium",
                   }).format(new Date(candidate.created_at))}
@@ -124,7 +124,7 @@ function CandidateTable({ filteredData, setPreviewId, dataLength, setReloadKey }
       </div>
 
       {/* Footer */}
-      <article className="px-5 py-3 border-t border-gray-100 bg-gray-50">
+      <article className="px-5 py-5 border-t border-(--color-primary) bg-white">
         <p className="text-xs text-gray-400">
           Viser {filteredData.length} av {dataLength} CV-er
         </p>
