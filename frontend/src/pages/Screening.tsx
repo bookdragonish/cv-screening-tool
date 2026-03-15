@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { CheckCircle2, CircleHelp, Clock, FileText, XCircle } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();

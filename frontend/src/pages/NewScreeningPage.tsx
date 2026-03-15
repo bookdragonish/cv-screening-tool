@@ -1,10 +1,9 @@
 import { saveScreeningRun } from "@/api/fetchScreenings";
 import { runScreeningWithGemini } from "@/api/runScreeningWithGemini";
-import NewScreening from "@/components/newScreening/NewScreening";
+import NewScreening from "@/components/NewScreening/NewScreening";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { StepStatus } from "@/types/newScreeningTypes";
 import { useState } from "react";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 type NewScreeningError = {
@@ -23,8 +22,6 @@ function NewScreeningPage() {
     number | null
   >(null);
   const [hasProcessingError, setHasProcessingError] = useState(false);
-
-  const canGoToResults = flowState === "complete";
 
   const uploadStatus: StepStatus =
     flowState === "upload" ? "active" : "completed";
