@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import Searchbar from "@/components/Searchbar";
 
 function handleEdit(id: number) {
   console.log("Edit", id);
@@ -71,7 +72,7 @@ function CVDatabase() {
   };
 
   return (
-    <main className="bg-gray-50 px-4 py-6 sm:px-8">
+    <main className="mx-auto max-w-7xl bg-gray-50 px-4 py-6 sm:px-8">
 
 
       <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
@@ -86,24 +87,9 @@ function CVDatabase() {
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
+      <Searchbar searchQuery={search} setSearchQuery={setSearch} searchAttribute={"navn"}/>
+
       <section className="bg-white --color-primary rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        {/* Search */}
-        <article className="px-5 py-4 border-b border-gray-100">
-          <div className="relative">
-            <img
-              src="src/assets/icons/search-grey.svg"
-              alt="search icon"
-              className="w-5 h-5 opacity-60 hover:opacity-90 absolute left-3 top-1/2 -translate-y-1/2"
-            />
-            <input
-              type="text"
-              placeholder="Søk på navn"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-        </article>
 
         {/* Table */}
         <div className="overflow-x-auto">

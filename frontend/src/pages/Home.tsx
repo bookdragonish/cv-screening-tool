@@ -36,7 +36,7 @@ function Home() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
+    <main className="mx-auto max-w-7xl px-6 py-8 ">
       {/* Dashboard header */}
       <div className="mb-8">
         <h2 className="mb-2 text-3xl font-bold text-(--color-dark)">

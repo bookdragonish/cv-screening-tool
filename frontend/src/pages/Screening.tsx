@@ -37,7 +37,7 @@ function Screening() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="min-h-screen px-8 py-6">
+    <main className="mx-auto max-w-7xl min-h-screen px-8 py-6">
 
       <Breadcrumbs second_site_name={"Skanninghistorikk"} third_site_name={"Resultat"} second_site_link={"/screening-historikk"}/>
 

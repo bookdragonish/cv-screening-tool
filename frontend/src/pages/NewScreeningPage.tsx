@@ -80,7 +80,7 @@ function NewScreeningPage() {
   };
 
   return (
-    <main className="bg-gray-50 px-4 py-6 sm:px-8">
+    <main className="mx-auto max-w-7xl bg-gray-50 px-4 py-6 sm:px-8">
       <Breadcrumbs second_site_name={"Ny skanning"}/>
       <NewScreening
         view={flowState === "upload" ? "upload" : "processing"}

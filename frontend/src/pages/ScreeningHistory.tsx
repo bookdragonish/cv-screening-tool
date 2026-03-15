@@ -1,10 +1,11 @@
 import { Link } from "react-router";
-import { Clock, FileText, Search } from "lucide-react";
+import { Clock, FileText } from "lucide-react";
 import React from "react";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import Searchbar from "@/components/Searchbar";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -41,7 +42,7 @@ function ScreeningHistory() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="min-h-screen px-8 py-6">
+    <main className="mx-auto max-w-7xl min-h-screen px-8 py-6">
       <Breadcrumbs second_site_name={"Skanninghistorikk"} />
 
       <div className="min-h-screen">
@@ -61,23 +62,13 @@ function ScreeningHistory() {
         )}
 
         {isError && (
-          <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Kunne ikke hente skanninghistorikk.
-          </div>
+          <ErrorBox
+            title={"Kunne ikke hente skanninghistorikk."}
+            message={"Prøv igjen senere"}
+          />
         )}
 
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-(--color-dark) opacity-50" />
-            <input
-              type="text"
-              placeholder="Søk etter jobbtittel..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-(--color-primary) py-3 pr-4 pl-10 text-(--color-dark) outline-none focus:ring-2 focus:ring-(--color-primary)"
-            />
-          </div>
-        </div>
+        <Searchbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchAttribute={"jobbtittel"}/>
 
         <div className="space-y-4">
           {filteredHistory.map((screening) => (
