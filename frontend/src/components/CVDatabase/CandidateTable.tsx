@@ -1,4 +1,4 @@
-import { deleteCandidate } from "@/api/candidateActions";
+import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
 
 function handleEdit(id: number) {
@@ -6,14 +6,18 @@ function handleEdit(id: number) {
 }
 
 type CandidateTableProps = {
-  filteredData: Candidate[],
-  setPreviewId: (value: number) => void,
-  setReloadKey: React.Dispatch<React.SetStateAction<number>>,
-  dataLength: number,
+  filteredData: Candidate[];
+  setPreviewId: (value: number) => void;
+  setReloadKey: React.Dispatch<React.SetStateAction<number>>;
+  dataLength: number;
 };
 
-function CandidateTable({ filteredData, setPreviewId, dataLength, setReloadKey }: CandidateTableProps) {
-
+function CandidateTable({
+  filteredData,
+  setPreviewId,
+  dataLength,
+  setReloadKey,
+}: CandidateTableProps) {
   function showPreview(id: number) {
     setPreviewId(id);
   }

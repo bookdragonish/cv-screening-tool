@@ -6,6 +6,7 @@ import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Searchbar from "@/components/Searchbar";
+import HeaderSection from "@/components/HeaderSection";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -46,14 +47,12 @@ function ScreeningHistory() {
       <Breadcrumbs second_site_name={"Skanninghistorikk"} />
 
       <div className="min-h-screen">
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold text-(--color-dark)">
-            Skanninghistorikk
-          </h1>
-          <p className="mt-2 text-(--color-dark) opacity-75">
-            Få oversikt over tidligere CV-skanningresultater
-          </p>
-        </div>
+        <HeaderSection
+          header={"Skanninghistorikk"}
+          subsection={
+            "Oversikt over tidligere CV-skanninger. Resultatene er kun veiledende og kan inneholde unøyaktigheter."
+          }
+        />
 
         {isLoading && (
           <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
@@ -68,7 +67,11 @@ function ScreeningHistory() {
           />
         )}
 
-        <Searchbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchAttribute={"jobbtittel"}/>
+        <Searchbar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          searchAttribute={"jobbtittel"}
+        />
 
         <div className="space-y-4">
           {filteredHistory.map((screening) => (

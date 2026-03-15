@@ -8,6 +8,7 @@ import ErrorBox from "@/components/ErrorBox";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Searchbar from "@/components/Searchbar";
 import CandidateTable from "@/components/CVDatabase/CandidateTable";
+import HeaderSection from "@/components/HeaderSection";
 
 function CVDatabase() {
   const [reloadKey, setReloadKey] = useState(0);
@@ -50,13 +51,9 @@ function CVDatabase() {
 
       <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
 
-      <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <article>
-          <h1 className="text-2xl font-bold text-gray-900">Kandidater</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Administrer ansattes CV-er for screening.
-          </p>
-        </article>
+      <section className="flex justify-between items-center">
+
+         <HeaderSection header={"Kandidater"} subsection={"Administrer ansattes CV-er for screening."} />
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 

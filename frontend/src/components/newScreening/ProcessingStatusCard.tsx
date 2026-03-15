@@ -19,7 +19,7 @@ function ProcessingStatusCard({
     <Card className="mt-6 gap-0 border-slate-200 bg-white py-0">
       <CardContent className="p-6">
         {!isProcessingComplete ? (
-          <div className="flex min-h-[320px] flex-col items-center justify-center text-center">
+          <div className="flex min-h-80 flex-col items-center justify-center text-center">
             <LoaderCircleIcon className="h-14 w-14 animate-spin text-primary" />
             <p className="mt-6 text-3xl font-semibold text-slate-900">Analyserer stillingskrav</p>
             <p className="mt-2 text-base text-slate-500">
