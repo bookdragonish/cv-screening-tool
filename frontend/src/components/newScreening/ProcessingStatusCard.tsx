@@ -23,7 +23,7 @@ function ProcessingStatusCard({
             <LoaderCircleIcon className="h-14 w-14 animate-spin text-primary" />
             <p className="mt-6 text-3xl font-semibold text-slate-900">Analyserer stillingskrav</p>
             <p className="mt-2 text-base text-slate-500">
-              Matcher kandidater fra CV-databasen...
+              Matcher kandidater til jobbeskrivelsen...
             </p>
           </div>
         ) : (

@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ErrorBox from "@/components/ErrorBox";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
@@ -37,23 +38,8 @@ function Screening() {
 
   return (
     <main className="min-h-screen px-8 py-6">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <Link
-          to="/screening-historikk"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Screeninghistorikk
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">Resultat</span>
-      </nav>
+
+      <Breadcrumbs second_site_name={"Skanninghistorikk"} third_site_name={"Resultat"} second_site_link={"/screening-historikk"}/>
 
       {isLoading && (
         <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">

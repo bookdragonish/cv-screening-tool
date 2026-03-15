@@ -4,6 +4,7 @@ import React from "react";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -41,36 +42,27 @@ function ScreeningHistory() {
 
   return (
     <main className="min-h-screen px-8 py-6">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">Screeninghistorikk</span>
-      </nav>
+      <Breadcrumbs second_site_name={"Skanninghistorikk"} />
 
       <div className="min-h-screen">
         <div className="mb-6">
           <h1 className="text-3xl font-semibold text-(--color-dark)">
-            Screeninghistorikk
+            Skanninghistorikk
           </h1>
           <p className="mt-2 text-(--color-dark) opacity-75">
-            Få oversikt over tidligere CV-screeningsresultater
+            Få oversikt over tidligere CV-skanningresultater
           </p>
         </div>
 
         {isLoading && (
           <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Laster screeninghistorikk...
+            Laster skanninghistorikk...
           </div>
         )}
 
         {isError && (
           <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Kunne ikke hente screeninghistorikk.
+            Kunne ikke hente skanninghistorikk.
           </div>
         )}
 

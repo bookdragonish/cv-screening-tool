@@ -140,7 +140,7 @@ function Home() {
               </div>
               <div>
                 <h3 className="font-semibold text-(--color-dark)">
-                  CV-database
+                  Kandidater
                 </h3>
                 <p className="mt-1 text-sm text-(--color-dark) opacity-75">
                   68 aktive CVer
@@ -152,7 +152,7 @@ function Home() {
               variant="outline"
               className="w-full border-(--color-primary) font-medium text-(--color-primary) transition-colors hover:bg-(--color-light)/50"
             >
-              <Link to="/cv-database">Administrer CVer</Link>
+              <Link to="/kandidater">Administrer CVer</Link>
             </Button>
           </div>
         </div>

@@ -2,11 +2,11 @@ import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
 import { deleteCandidate } from "@/api/candidateActions";
-import { Link } from "react-router";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function handleEdit(id: number) {
   console.log("Edit", id);
@@ -72,17 +72,13 @@ function CVDatabase() {
 
   return (
     <main className="bg-gray-50 px-4 py-6 sm:px-8">
-      <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
-        <Link to="/" className="hover:text-gray-600 cursor-pointer">
-          Hjem
-        </Link>
-        <span>›</span>
-        <span className="text-gray-600">CV Database</span>
-      </nav>
+
+
+      <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
 
       <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <article>
-          <h1 className="text-2xl font-bold text-gray-900">CV Database</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Kandidater</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             Administrer ansattes CV-er for screening.
           </p>

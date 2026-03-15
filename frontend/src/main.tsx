@@ -15,13 +15,10 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
-
             <Route path="/new-screening" element={<NewScreeningPage />} />
-
-            <Route path="/screening" element={<Screening />} />
             <Route path="/screening-historikk" element={<ScreeningHistory />} />
             <Route path="/screening-historikk/:jobPostId" element={<Screening />} />
-            <Route path="/cv-database" element={<CVDatabase />} />
+            <Route path="/kandidater" element={<CVDatabase />} />
           </Route>
         </Routes>
     </BrowserRouter>

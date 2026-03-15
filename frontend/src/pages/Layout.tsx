@@ -6,8 +6,8 @@ export default function Layout() {
   
   const navLinks = [
     { path: "/", label: "Oversikt", icon: Home },
-    { path: "/cv-database", label: "CV-database", icon: FileText },
-    { path: "/screening-historikk", label: "Screeninghistorikk", icon: Clock },
+    { path: "/kandidater", label: "Kandidater", icon: FileText },
+    { path: "/screening-historikk", label: "Skanninghistorikk", icon: Clock },
   ];
 
   return (
