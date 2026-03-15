@@ -1,5 +1,5 @@
 // services/llm/providers/norllm/norllm.provider.ts
-import { parsePdf } from "../../../middleware/PdfParser.js";
+import { parsePdf } from "../../../middleware/parserPDF.js";
 import { pool } from "../../../db/pool.js";
 import {
   buildCandidateEvalPrompt,
@@ -17,7 +17,7 @@ import type {
   CandidateWithCvText,
   JobDescriptionInput,
   JobProfile,
-} from "../../../types/GeminiTypes.js";
+} from "../../../types/ai.types.js";
 import { callNorLlm, parseNorLlmJsonWithRepair } from "./norllm.client.js";
 import {
   fixRanking,

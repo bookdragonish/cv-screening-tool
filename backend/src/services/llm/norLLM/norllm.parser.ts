@@ -3,7 +3,7 @@ import type {
   CandidateEval,
   CandidateWithCvText,
   JobProfile,
-} from "../../../types/GeminiTypes.js";
+} from "../../../types/ai.types.js";
 import {
   normalizeString,
   normalizeStringList as toNonEmptyStringArray,

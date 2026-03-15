@@ -1,4 +1,4 @@
-import type { NorLlmResponse } from "../../../types/GeminiTypes.js";
+import type { NorLlmResponse } from "../../../types/ai.types.js";
 
 const NORLLM_URL = "https://llm.hpc.ntnu.no/v1/chat/completions";
 const NORLLM_MODEL = "NorwAI/NorwAI-Magistral-24B-reasoning";

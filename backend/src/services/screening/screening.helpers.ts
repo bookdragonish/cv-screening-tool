@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import type { JobDescriptionInput } from "../../types/GeminiTypes.js";
+import type { JobDescriptionInput } from "../../types/ai.types.js";
 
 export const MAX_CANDIDATES_PER_RUN = 20;
 export const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";

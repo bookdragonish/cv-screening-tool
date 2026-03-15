@@ -4,7 +4,7 @@ import type {
   CandidateWithCvText,
   JobDescriptionInput,
   JobProfile,
-} from "../types/GeminiTypes.js";
+} from "./ai.types.js";
 import { parseRanking } from "../services/llm/gemini/schemas.js";
 
 // Interface for the providers to ensure they cotains similar functions

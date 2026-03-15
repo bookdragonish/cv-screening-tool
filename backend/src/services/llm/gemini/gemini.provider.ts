@@ -27,7 +27,7 @@ import type {
   CandidateWithCv,
   JobDescriptionInput,
   JobProfile,
-} from "../../../types/GeminiTypes.js";
+} from "../../../types/ai.types.js";
 
 const MODEL_NAME = "gemini-2.5-flash";
 

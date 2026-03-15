@@ -7,7 +7,7 @@ import {
 import type {
   JobDescriptionInput,
   RunScreeningResponse,
-} from "../../types/GeminiTypes.js";
+} from "../../types/ai.types.js";
 
 type Params = {
   jobDescriptionInput: JobDescriptionInput;

@@ -1,4 +1,4 @@
-import type { CandidateEval, JobProfile } from "../../../../types/GeminiTypes.js";
+import type { CandidateEval, JobProfile } from "../../../../types/ai.types.js";
 import { RULES } from "./rulesAndRubric.js";
 
 /**

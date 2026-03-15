@@ -1,4 +1,4 @@
-import type { JobProfile } from "../../../../types/GeminiTypes.js";
+import type { JobProfile } from "../../../../types/ai.types.js";
 import { RULES, RUBRIC } from "./rulesAndRubric.js";
 
 /**

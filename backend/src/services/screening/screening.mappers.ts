@@ -7,7 +7,7 @@ import type {
   JobProfile,
   SaveScreeningRunPayload,
   ScreeningCandidate,
-} from "../../types/GeminiTypes.js";
+} from "../../types/ai.types.js";
 import {
   getFallbackJobTitle,
 } from "./screening.helpers.js";
