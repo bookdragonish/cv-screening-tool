@@ -1,7 +1,7 @@
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
-import { AddNewCVModal } from "@/components/AddNewCv/AddNewCVModal";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
@@ -14,7 +14,7 @@ function CVDatabase() {
   const [reloadKey, setReloadKey] = useState(0);
   const { data, isError, isLoading } = useFetchCandidates(reloadKey);
   const [search, setSearch] = useState("");
-  const [previewId, setPreviewId] = useState<number | null>(null);   // Needed now for preview + rendering
+  const [previewId, setPreviewId] = useState<number | null>(null);
 
   if (isError) {
     return (
@@ -47,21 +47,30 @@ function CVDatabase() {
     }));
 
   return (
-    <main className="mx-auto max-w-7xl bg-gray-50 px-4 py-6 sm:px-8">
-
+    <main className="mx-auto max-w-7xl px-6 py-8">
       <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
 
-      <section className="flex justify-between items-center">
-
-         <HeaderSection header={"Kandidater"} subsection={"Administrer ansattes CV-er for screening."} />
+      <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <HeaderSection
+          header={"Kandidater"}
+          subsection={"Administrer ansattes CV-er for screening."}
+        />
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
-      <Searchbar searchQuery={search} setSearchQuery={setSearch} searchAttribute={"navn"}/>
+      <Searchbar
+        searchQuery={search}
+        setSearchQuery={setSearch}
+        searchAttribute={"navn"}
+      />
 
-      <CandidateTable filteredData={filtered} setPreviewId={setPreviewId} setReloadKey={setReloadKey} dataLength={data.length}/>
+      <CandidateTable
+        filteredData={filtered}
+        setPreviewId={setPreviewId}
+        setReloadKey={setReloadKey}
+        dataLength={data.length}
+      />
 
-      {/* Rendering PDF view */}
       {previewId != null && (
         <PdfPreviewOverlay
           candidates={candidates}
