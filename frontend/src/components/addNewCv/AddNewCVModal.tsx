@@ -26,14 +26,11 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { API_URL } from "@/utils/variables"
-type Candidate = {
-  id: number
-  name: string
-  email: string
-}
+import type { Candidate } from "@/types/candidate"
+
 type AddNewCVModalProps = {
   onCreated?: () => void
-  candidateToEdit?: Candidate
+  candidateToEdit?: Partial<Candidate>
   customTrigger?: React.ReactNode
 }
 function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVModalProps) {
@@ -45,8 +42,8 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     mode: "onTouched",
     shouldFocusError: true,
     defaultValues: {
-      name: candidateToEdit ? candidateToEdit.name : "",
-      email: candidateToEdit ? candidateToEdit.email : "",
+      name: candidateToEdit?.name ?? "",
+      email: candidateToEdit?.email ?? "",
       cv: undefined as unknown as File,
     },
   })
@@ -54,8 +51,8 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
   useEffect(() => {
     if (candidateToEdit) {
       form.reset({
-        name: candidateToEdit.name,
-        email: candidateToEdit.email,
+        name: candidateToEdit.name ?? "",
+        email: candidateToEdit.email ?? "",
         cv: undefined,
       })
     }
@@ -64,9 +61,9 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
   const selectedCv = form.watch("cv")
   const isCvSelectionValid = isEditing
     ? !selectedCv || (
-    selectedCv instanceof File &&
-    isPdfFile(selectedCv) &&
-    selectedCv.size <= MAX_PDF_BYTES
+      selectedCv instanceof File &&
+      isPdfFile(selectedCv) &&
+      selectedCv.size <= MAX_PDF_BYTES
     ) : selectedCv instanceof File && isPdfFile(selectedCv) && selectedCv.size <= MAX_PDF_BYTES;
 
   const uid = useId()
@@ -85,7 +82,7 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     }
     try {
       let targetId: number;
-      if (isEditing && candidateToEdit) {
+      if (isEditing && candidateToEdit?.id !== undefined) {
         const updateRes = await fetch(API_URL + `/api/candidates/${candidateToEdit.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -262,9 +259,9 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
                     }}
                   />
                   {!fieldState.invalid &&
-                  <FieldDescription id={cvDescId}>
-                    {isEditing ? "Valgfritt, maks 10MB." : "Påkrevd. PDF, maks 10MB."}
-                  </FieldDescription>
+                    <FieldDescription id={cvDescId}>
+                      {isEditing ? "Valgfritt, maks 10MB." : "Påkrevd. PDF, maks 10MB."}
+                    </FieldDescription>
                   }
                   {fieldState.invalid && (
                     <div id={cvErrId}>
@@ -312,4 +309,5 @@ async function safeJson(res: Response) {
   }
 }
 export { AddNewCVModal }
+
 
