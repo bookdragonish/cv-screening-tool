@@ -158,9 +158,7 @@ export function buildScreeningRecord(params: {
       rank: rankedItem.rank ?? index + 1,
       score: normalizedScore,
       qualified: rankedItem.qualified,
-      qualificationsMet: met.length
-        ? met
-        : ["Ingen tydelige kvalifikasjonstreff funnet."],
+      qualificationsMet: met,
       qualificationsMissing: missing,
       summary:
         normalizeString(rankedItem.summary) ||
