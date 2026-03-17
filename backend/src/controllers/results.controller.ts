@@ -5,7 +5,7 @@ import { normalizeString, normalizeStringList as normalizeStringArray } from "..
 
 /**
  * List all screening results.
- * 
+ *
  * Response:
  * - 200: JSON array of screening results
  */
@@ -22,7 +22,7 @@ export async function list(_req: Request, res: Response, next: NextFunction) {
 
 /**
  * Gets single screening result by job post id and candidate id.
- * 
+ *
  * Request should include 'jobPostId' and 'candidateId'.
  *
  * Responses:
@@ -46,7 +46,7 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
 
 /**
  * Creates a new screening result.
- * 
+ *
  * Request should include 'job_post_id', 'candidate_id', 'rank', 'score', 'qualified', 'qualifications_met', and 'qualifications_missing'. 'summary' is optional.
  *
  * Responses:
@@ -119,7 +119,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * candidate result rows in a single transaction.
  *
  * Request should include 'title', 'description', 'hardQualifications',
- * 'softQualifications', and 'candidates'.
+ * and 'candidates'.
  *
  * Responses:
  * - 201: JSON object with the created job post id
@@ -134,14 +134,12 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       header,
       description,
       hardQualifications,
-      softQualifications,
       candidates,
     } = req.body as {
       title?: string;
       header?: string;
       description?: string;
       hardQualifications?: unknown;
-      softQualifications?: unknown;
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
@@ -158,7 +156,6 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     const normalizedHeader = normalizeString(header) || normalizedTitle;
     const normalizedDescription = normalizeString(description);
     const normalizedHardQualifications = normalizeStringArray(hardQualifications);
-    const normalizedSoftQualifications = normalizeStringArray(softQualifications);
 
     if (!normalizedTitle || !normalizedDescription || !Array.isArray(candidates) || !candidates.length) {
       return res.status(400).json({
@@ -195,13 +192,12 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     await client.query("begin");
 
     const jobPostResult = await client.query(
-      "insert into job_posts(header, title, description, hardQualifications, softQualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
+      "insert into job_posts(header, title, description, hardQualifications ) values($1, $2, $3, $4, $5) returning id, title, created_at",
       [
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
         normalizedHardQualifications.join("\n"),
-        normalizedSoftQualifications.join("\n"),
       ],
     );
 
@@ -245,16 +241,16 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
 
 /**
  * Gets screening history for all job posts that have been screened, including the top 3 candidates for each job post.
- * 
+ *
  * Response:
  * - 200: JSON array of screening history, where each item includes 'jobPostId', 'title', 'screenedAt', and 'candidates' (array of top 3 candidates with their screening results)
  */
 export async function getScreeningHistory(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
-      `SELECT 
-        jp.id as "jobPostId", 
-        jp.title, 
+      `SELECT
+        jp.id as "jobPostId",
+        jp.title,
         jp.created_at as "screenedAt",
         json_agg(
           json_build_object(
@@ -285,7 +281,7 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
 
 /**
  * Gets all candidates that have been screened for a specific job post.
- * 
+ *
  * Request should include 'jobPostId' as a URL parameter.
  *
  * Responses:
@@ -296,9 +292,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
   try {
     const job_post_id = Number(req.params.jobPostId);
     const r = await pool.query(
-      `SELECT 
-        jp.id as "jobPostId", 
-        jp.title, 
+      `SELECT
+        jp.id as "jobPostId",
+        jp.title,
         jp.created_at as "screenedAt",
         json_agg(
           json_build_object(
@@ -330,9 +326,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
 
 /**
  * Deletes a screening result by job post id and candidate id combined as the primary key.
- * 
+ *
  * Request should include 'jobPostId' and 'candidateId' as URL parameters.
- * 
+ *
  * Responses:
  * - 204: If the screening result was successfully deleted
  * - 404: If no screening result with the given job post id and candidate id exists
@@ -347,4 +343,4 @@ export async function deleteById(req: Request, res: Response, next: NextFunction
   } catch (e) {
     next(e);
   }
-}   
+}

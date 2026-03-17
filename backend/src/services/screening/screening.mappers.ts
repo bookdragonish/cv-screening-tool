@@ -22,7 +22,7 @@ type CandidateSource = CandidateWithCv | CandidateWithCvText;
 export function buildRequiredSkills(jobProfile: JobProfile): string[] {
   return Array.from(
     new Set(
-      [...jobProfile.must_haves, ...jobProfile.nice_to_haves]
+      [...jobProfile.must_haves]
         .map((item) => item.trim())
         .filter(Boolean),
     ),
@@ -128,7 +128,6 @@ export function buildScreeningRecord(params: {
     getFallbackJobTitle(jobDescriptionInput);
 
   const hardQualifications = normalizeStringList(jobProfile.must_haves);
-  const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
 
   const candidates: SaveScreeningRunPayload["candidates"] = [];
 
@@ -179,7 +178,6 @@ export function buildScreeningRecord(params: {
           `Stillingsbeskrivelse for ${title}`
         : `Analysert fra opplastet PDF: ${jobDescriptionInput.originalName}`,
     hardQualifications,
-    softQualifications,
     candidates,
   };
 }

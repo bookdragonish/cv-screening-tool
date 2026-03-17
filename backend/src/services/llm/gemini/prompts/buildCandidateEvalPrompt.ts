@@ -10,10 +10,11 @@ export function buildCandidateEvalPrompt(args: {
   candidateLabel: string;
 }): string {
   return `
-<role>You are an CV screening system.</role>
+<role>Du er et CV screening system</role>
 
 <task>
-Evaluate the attached CV against the job profile. Use the rubric.
+- Evaluer den tilknyttede CVen mot jobb annonsen.
+- Forhold deg til reglene og bruk rubrikken.
 </task>
 
 <constraints>
@@ -23,8 +24,8 @@ ${RUBRIC}
 </constraints>
 
 <language_rules>
-- All descriptive fields such as "candidate_role", "experience_highlights", "education", "strengths.point", "strengths.evidence", "gaps.point", "gaps.evidence", and "unknowns" must be written in Norwegian Bokmal.
-- Keep names, company names, technologies, certificates, phone numbers, and email addresses in their original form when needed.
+- Alle deskriptive felter som "candidate_role", "experience_highlights", "education", "strengths.point", "strengths.evidence", "gaps.point", "gaps.evidence", og "unknowns" må forbli på engelsk MEN verdiene MÅ skrives på Norsk Bokmål.
+- Hold alle egennavn, teknologier, sertifikater, mobilnumre, og epost adresser i deres originale form.
 </language_rules>
 
 <context>
@@ -37,7 +38,7 @@ ${JSON.stringify(args.jobProfile)}
 </context>
 
 <output_format>
-Return ONLY valid JSON with this schema:
+Returner KUN gyldig JSON med dette formatet:
 {
   "candidate_id": string,
   "candidate_label": string,
@@ -53,7 +54,7 @@ Return ONLY valid JSON with this schema:
 }
 </output_format>
 
-Final output:
+Endelig output:
 JSON:
 `.trim();
 }

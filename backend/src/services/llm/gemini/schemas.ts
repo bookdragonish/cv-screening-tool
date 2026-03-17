@@ -15,7 +15,6 @@ const ImpactSchema = z.preprocess(
 export const JobProfileSchema = z.object({
   role_title: z.string(),
   must_haves: z.array(z.string()),
-  nice_to_haves: z.array(z.string()),
 });
 
 /**

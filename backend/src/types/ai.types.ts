@@ -1,7 +1,6 @@
 export type JobProfile = {
   role_title: string;
   must_haves: string[];
-  nice_to_haves: string[];
 };
 
 export type CandidateEval = {
@@ -68,7 +67,6 @@ export type SaveScreeningRunPayload = {
   header: string;
   description: string;
   hardQualifications: string[];
-  softQualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;

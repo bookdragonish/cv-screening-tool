@@ -9,13 +9,11 @@ export function buildRankingPrompt(args: {
   evals: CandidateEval[];
 }): string {
   return `
-<role>You are an CV ranking system.</role>
+<role>Du er et system som skal evaluere kandidater og rangere de opp mot "job_profile_json" for denne screeningen.</role>
 
 <task>
-- Rank candidates using ONLY the provided candidate evaluations.
-- Do not re-interpret CVs.
-- Do not invent evidence.
-- Return all descriptive text in Norwegian Bokmal.
+- Vurder kandidatene kun på kvalifikasjonskravene de har oppnådd fra stillingsannonsen
+- Returner all deskriptiv tekst på norsk bokmål.
 </task>
 
 <constraints>
@@ -26,18 +24,14 @@ ${RULES}
 - "role_title" MUST match the job title from the provided job profile, including the company or organization name when present there.
 </role_title_rules>
 
+
 <context>
 <job_profile_json>
 ${JSON.stringify(args.jobProfile)}
 </job_profile_json>
 
-<candidate_evaluations_json>
-${JSON.stringify(args.evals)}
-</candidate_evaluations_json>
-</context>
-
 <output_format>
-Return ONLY valid JSON with this schema:
+Returner KUN gyldig JSON med dette formatet:
 {
   "role_title": string,
   "ranking": [

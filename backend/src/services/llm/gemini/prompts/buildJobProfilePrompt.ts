@@ -5,10 +5,11 @@ import { RULES } from "./rulesAndRubric.js";
  */
 export function buildJobProfileFromTextPrompt(jobAdText: string): string {
   return `
-<role>You are a job requirements parser.</role>
+<role>Du er et system som finner relevant informasjon fra en jobbannonse.</role>
 
 <task>
-Extract a job profile from the job advertisement.
+- Oppgaven din er å hente ut krav til kandidatene i en stillingannonse.
+- Forhold deg til reglene.
 </task>
 
 <constraints>
@@ -16,18 +17,24 @@ ${RULES}
 </constraints>
 
 <role_title_rules>
-- "role_title" MUST include both the job title and the hiring company or organization when the employer is identifiable in the source text.
-- Format "role_title" as "<job title> - <company or organization>".
-- If the employer is not identifiable, use the job title alone.
-- Write the job title portion in Norwegian Bokmal. Keep the company or organization name in its original form.
+- Felted "role_title" MÅ inkludere både tittelen på jobbannonsen OG navnet på bedriften eller organisasjonen når det er mulig å hente i teksten.
+- Formater "role_title" som "<jobbtittel> - <bedrift eller organisasjon>".
+- Hvis bedriften eller organisasjon ikke er mulig å identifisere, bruk kun jobbtittelen.
+- Skriv jobbtittelen på norsk bokmål. Behold bedrift eller organisasjons navnet i sin originale form.
 </role_title_rules>
 
+<must_haves_rules>
+- Kun harde kvalifikasjonskrav skal inngå i "must_haves".
+- Harde kvalifikasjonskrav defineres som krav som ville vært naturlig å plassere i en CV om kravet er oppfylt.
+- Kvalifikasjonskrav du fyller inn i "must_haves" MÅ være hentet fra jobbannonsen OG IKKE noe du finner på selv.
+- Kvalifikasjonskrav som baserer seg på personlighet skal ikke inkluderes.
+</must_haves_rules>
+
 <output_format>
-Return ONLY valid JSON with this schema:
+Returner KUN gyldig JSON med dette formatet:
 {
   "role_title": string,
   "must_haves": string[],
-  "nice_to_haves": string[]
 }
 </output_format>
 
@@ -37,7 +44,7 @@ ${jobAdText}
 </job_ad>
 </context>
 
-Final output:
+Endelig output:
 JSON:
 `.trim();
 }
@@ -47,10 +54,11 @@ JSON:
  */
 export function buildJobProfileFromPdfPrompt(): string {
   return `
-<role>You are a job requirements parser.</role>
+<role>Du er et system som finner relevant informasjon fra en jobbannonse.</role>
 
 <task>
-Extract a structured job profile from the attached job description PDF.
+- Oppgaven din er å hente ut krav til kandidatene i en stillingannonse.
+- Forhold deg til reglene.
 </task>
 
 <constraints>
@@ -58,22 +66,28 @@ ${RULES}
 </constraints>
 
 <role_title_rules>
-- "role_title" MUST include both the job title and the hiring company or organization when the employer is identifiable in the PDF.
-- Format "role_title" as "<job title> - <company or organization>".
-- If the employer is not identifiable, use the job title alone.
-- Write the job title portion in Norwegian Bokmal. Keep the company or organization name in its original form.
+- Felted "role_title" MÅ inkludere både tittelen på jobbannonsen OG navnet på bedriften eller organisasjonen når det er mulig å hente i teksten.
+- Formater "role_title" som "<jobbtittel> - <bedrift eller organisasjon>".
+- Hvis bedriften eller organisasjon ikke er mulig å identifisere, bruk kun jobbtittelen.
+- Skriv jobbtittelen på norsk bokmål. Behold bedrift eller organisasjons navnet i sin originale form.
 </role_title_rules>
 
+<must_haves_rules>
+- Kun harde kvalifikasjonskrav skal inngå i "must_haves".
+- Harde kvalifikasjonskrav defineres som krav som ville vært naturlig å plassere i en CV om kravet er oppfylt.
+- Kvalifikasjonskrav du fyller inn i "must_haves" MÅ være hentet fra jobbannonsen OG IKKE noe du finner på selv.
+- Kvalifikasjonskrav som baserer seg på personlighet skal ikke inkluderes.
+</must_haves_rules>
+
 <output_format>
-Return ONLY valid JSON with this schema:
+Returner KUN gyldig JSON med dette formatet:
 {
   "role_title": string,
   "must_haves": string[],
-  "nice_to_haves": string[]
 }
 </output_format>
 
-Final output:
+Endelig output:
 JSON:
 `.trim();
 }

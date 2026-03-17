@@ -18,12 +18,12 @@ import type {
   JobDescriptionInput,
   JobProfile,
 } from "../../../types/ai.types.js";
-import { callNorLlm, parseNorLlmJsonWithRepair } from "./norllm.client.js";
+import { callNorLlm, parseNorLlmJsonWithRepair } from "../norllm/norllm.client.js";
 import {
   fixRanking,
   buildFallbackRankingFromEvals,
   fixCandidateEval,
-} from "./norllm.parser.js";
+} from "../norllm/norllm.parser.js";
 
 const NORLLM_URL = "https://llm.hpc.ntnu.no/v1/chat/completions";
 const NORLLM_MODEL = "NorwAI/NorwAI-Magistral-24B-reasoning";
@@ -92,7 +92,6 @@ export function createNorllmProvider() {
         schemaDescription: `{
   "role_title": string,
   "must_haves": string[],
-  "nice_to_haves": string[]
 }`,
         parse: parseJobProfile,
       });

@@ -7,7 +7,6 @@ export type SaveScreeningRunPayload = {
   header: string;
   description: string;
   hardQualifications: string[];
-  softQualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;

@@ -17,7 +17,6 @@ create table
         title text not null,
         description text not null,
         hardQualifications text,
-        softQualifications text,
         created_at timestamptz default now ()
     );
 
@@ -33,7 +32,6 @@ INSERT INTO
         title,
         description,
         hardQualifications,
-        softQualifications
     )
 VALUES
     (
@@ -41,12 +39,10 @@ VALUES
         'Contract manager',
         'Responsible for enforcing and updating the rules of the group contract',
         'minimum 10 years experience with vinstraff.no, saved children from a burning hospital, must work at nasa',
-        'good at giving vinstraffer, fair, cool'
     ),
     (
         'Do you want to be our new meeting coordinator?',
         'Meeting coordinator',
         'Responsible booking rooms and reminding the group of meetings',
         'must be named Marius, must have drivers licence',
-        'should know ball, should be able to book rooms'
     );
