@@ -283,7 +283,11 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
             type="button"
             variant="secondary"
             className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false)
+              form.reset()
+              setSubmitError(null)
+            }}
             disabled={form.formState.isSubmitting}
           >
             Avbryt
