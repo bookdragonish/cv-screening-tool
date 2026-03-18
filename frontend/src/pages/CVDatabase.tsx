@@ -7,6 +7,7 @@ import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
+import { Search } from "lucide-react";
 
 function handleEdit(id: number) {
   console.log("Edit", id);
@@ -71,74 +72,76 @@ function CVDatabase() {
   };
 
   return (
-    <main className="bg-gray-50 px-4 py-6 sm:px-8">
-      <nav className="text-sm text-gray-400 mb-4 flex items-center gap-1">
-        <Link to="/" className="hover:text-gray-600 cursor-pointer">
+    <main className="mx-auto max-w-7xl px-6 py-8">
+      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
+        <Link
+          to="/"
+          className="cursor-pointer transition-opacity hover:opacity-75"
+        >
           Hjem
         </Link>
         <span>›</span>
-        <span className="text-gray-600">CV Database</span>
+        <span className="text-(--color-dark)">CV Database</span>
       </nav>
 
       <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <article>
-          <h1 className="text-2xl font-bold text-gray-900">CV Database</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-3xl font-semibold text-(--color-dark)">
+            CV Database
+          </h1>
+          <p className="mt-2 text-(--color-dark) opacity-75">
             Administrer ansattes CV-er for screening.
           </p>
         </article>
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>
 
-      <section className="bg-white --color-primary rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="space-y-4">
         {/* Search */}
-        <article className="px-5 py-4 border-b border-gray-100">
+        <article>
           <div className="relative">
-            <img
-              src="src/assets/icons/search-grey.svg"
-              alt="search icon"
-              className="w-5 h-5 opacity-60 hover:opacity-90 absolute left-3 top-1/2 -translate-y-1/2"
-            />
+            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-(--color-dark) opacity-50" />
             <input
               type="text"
               placeholder="Søk på navn"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className="w-full rounded-lg border border-(--color-primary) bg-white py-2 pr-4 pl-10 text-(--color-dark) outline-none transition focus:ring-2 focus:ring-(--color-primary)"
             />
           </div>
         </article>
 
         {/* Table */}
+        <section className="overflow-hidden rounded-lg border border-(--color-primary) bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-130 text-left">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <tr className="border-b border-(--color-primary) bg-(--color-light)">
+                <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
                   Navn
                 </th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
                   Sist endret
                 </th>
-                <th className="px-5 py-3 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
+                <th className="px-5 py-3 text-center text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
                   Pdf
                 </th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">
+                <th className="px-5 py-3 text-right text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
                   Handlinger
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-(--color-primary)">
               {filtered.map((candidate) => (
                 <tr
                   key={candidate.id}
-                  className="hover:bg-gray-50 transition-colors duration-100"
+                  className="transition-colors duration-100 hover:bg-(--color-light)/40"
                 >
-                  <td className="px-5 py-3.5 text-sm font-medium text-gray-800">
+                  <td className="px-5 py-3.5 text-sm font-medium text-(--color-dark)">
                     {candidate.name ?? candidate.id}
                   </td>
 
-                  <td className="px-5 py-3.5 text-sm text-gray-500">
+                  <td className="px-5 py-3.5 text-sm text-(--color-dark) opacity-75">
                     {new Intl.DateTimeFormat(navigator.language, {
                       dateStyle: "medium",
                     }).format(new Date(candidate.created_at))}
@@ -190,7 +193,7 @@ function CVDatabase() {
                           candidate.name ?? `Kandidat ${candidate.id}`,
                         )
                       }
-                      className="inline-flex items-center cursor-pointer justify-center w-8 h-8 rounded-md text-red-400 hover:text-red-600 transition-colors duration-150"
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-red-500 transition-colors duration-150 hover:bg-red-50 hover:text-red-700"
                       title="Delete candidate"
                     >
                       <img
@@ -205,14 +208,15 @@ function CVDatabase() {
             </tbody>
           </table>
         </div>
+        </section>
 
         {/* Footer */}
-        <article className="px-5 py-3 border-t border-gray-100 bg-gray-50">
-          <p className="text-xs text-gray-400">
+        <article className="px-1 py-1">
+          <p className="text-xs text-(--color-dark) opacity-75">
             Viser {filtered.length} av {data.length} CV-er
           </p>
         </article>
-      </section>
+      </div>
 
       {/* Rendering PDF view */}
       {previewId != null && (

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import * as geminiScreening from "../controllers/geminiScreening.controller.js";
+import * as screening from "../controllers/screening.controller.js";
 import * as results from "../controllers/results.controller.js";
 
 const router = Router();
@@ -11,7 +11,7 @@ const upload = multer({
 
 router.get("/", results.list);
 router.post("/", results.create);
-router.post("/screenings/run", upload.single("jobDescriptionFile"), geminiScreening.runScreeningWithGemini);
+router.post("/screenings/run", upload.single("jobDescriptionFile"), screening.runScreening);
 router.post("/screenings", results.createScreeningRun);
 router.get("/history", results.getScreeningHistory);
 router.get("/job_posts/:jobPostId", results.getScreeningByJobPostId);

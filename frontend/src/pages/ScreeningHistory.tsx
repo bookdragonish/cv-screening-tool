@@ -40,7 +40,7 @@ function ScreeningHistory() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="min-h-screen px-8 py-6">
+    <main className="mx-auto max-w-7xl px-6 py-8">
       <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
         <Link
           to="/"
@@ -52,7 +52,7 @@ function ScreeningHistory() {
         <span className="text-(--color-dark)">Screeninghistorikk</span>
       </nav>
 
-      <div className="min-h-screen">
+      <div>
         <div className="mb-6">
           <h1 className="text-3xl font-semibold text-(--color-dark)">
             Screeninghistorikk
