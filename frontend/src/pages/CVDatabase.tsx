@@ -9,9 +9,6 @@ import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
 import { Search } from "lucide-react";
 
-function handleEdit(id: number) {
-  console.log("Edit", id);
-}
 
 function CVDatabase() {
   const [reloadKey, setReloadKey] = useState(0);
@@ -113,101 +110,101 @@ function CVDatabase() {
 
         {/* Table */}
         <section className="overflow-hidden rounded-lg border border-(--color-primary) bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-130 text-left">
-            <thead>
-              <tr className="border-b border-(--color-primary) bg-(--color-light)">
-                <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
-                  Navn
-                </th>
-                <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
-                  Sist endret
-                </th>
-                <th className="px-5 py-3 text-center text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
-                  Pdf
-                </th>
-                <th className="px-5 py-3 text-right text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
-                  Handlinger
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-(--color-primary)">
-              {filtered.map((candidate) => (
-                <tr
-                  key={candidate.id}
-                  className="transition-colors duration-100 hover:bg-(--color-light)/40"
-                >
-                  <td className="px-5 py-3.5 text-sm font-medium text-(--color-dark)">
-                    {candidate.name ?? candidate.id}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-130 text-left">
+              <thead>
+                <tr className="border-b border-(--color-primary) bg-(--color-light)">
+                  <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
+                    Navn
+                  </th>
+                  <th className="px-5 py-3 text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
+                    Sist endret
+                  </th>
+                  <th className="px-5 py-3 text-center text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
+                    Pdf
+                  </th>
+                  <th className="px-5 py-3 text-right text-xs font-semibold tracking-wider text-(--color-dark) uppercase opacity-75">
+                    Handlinger
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-(--color-primary)">
+                {filtered.map((candidate) => (
+                  <tr
+                    key={candidate.id}
+                    className="transition-colors duration-100 hover:bg-(--color-light)/40"
+                  >
+                    <td className="px-5 py-3.5 text-sm font-medium text-(--color-dark)">
+                      {candidate.name ?? candidate.id}
+                    </td>
 
-                  <td className="px-5 py-3.5 text-sm text-(--color-dark) opacity-75">
-                    {new Intl.DateTimeFormat(navigator.language, {
-                      dateStyle: "medium",
-                    }).format(new Date(candidate.created_at))}
-                  </td>
+                    <td className="px-5 py-3.5 text-sm text-(--color-dark) opacity-75">
+                      {new Intl.DateTimeFormat(navigator.language, {
+                        dateStyle: "medium",
+                      }).format(new Date(candidate.created_at))}
+                    </td>
 
-                  {candidate.has_pdf ? (
-                    <td className="py-3 text-center">
+                    {candidate.has_pdf ? (
+                      <td className="py-3 text-center">
+                        <button
+                          onClick={() => showPreview(candidate.id)}
+                          className="cursor-pointer"
+                        >
+                          <img
+                            src="src/assets/icons/file-pdf-solid.svg"
+                            alt="open pdf"
+                            className="w-5 h-5 opacity-70 hover:opacity-100"
+                          />
+                        </button>
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
+
+                    <td className="px-5 py-3.5 text-right">
+                      <AddNewCVModal
+                        candidateToEdit={{
+                          id: candidate.id,
+                          name: candidate.name ?? "",
+                          email: candidate.email ?? "",
+                        }}
+                        onCreated={() => setReloadKey((prev) => prev + 1)}
+                        customTrigger={
+                          <button
+                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light)"
+                            title="Rediger kandidat"
+                          >
+                            <img
+                              src="src/assets/icons/edit-solid.svg"
+                              alt="edit candidate"
+                              className="w-5 h-5 opacity-70 hover:opacity-100"
+                            />
+                          </button>
+                        }
+                      />
+
                       <button
-                        onClick={() => showPreview(candidate.id)}
-                        className="cursor-pointer"
+                        onClick={() =>
+                          handleDelete(
+                            candidate.id,
+                            candidate.name ?? `Kandidat ${candidate.id}`,
+                          )
+                        }
+                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-red-500 transition-colors duration-150 hover:bg-red-50 hover:text-red-700"
+                        title="Delete candidate"
                       >
                         <img
-                          src="src/assets/icons/file-pdf-solid.svg"
-                          alt="open pdf"
+                          src="src/assets/icons/trash-alt-solid.svg"
+                          alt="delete candidate"
                           className="w-5 h-5 opacity-70 hover:opacity-100"
                         />
                       </button>
                     </td>
-                  ) : (
-                    <td></td>
-                  )}
-
-                  <td className="px-5 py-3.5 text-right">
-                    <AddNewCVModal
-                      candidateToEdit={{
-                        id: candidate.id,
-                        name: candidate.name ?? "",
-                        email: candidate.email ?? "",
-                      }}
-                      onCreated={() => setReloadKey((prev) => prev + 1)}
-                      customTrigger={
-                        <button
-                          className="inline-flex cursor-pointer items-center justify-center w-8 h-8 rounded-md transition-colors duration-150"
-                          title="Rediger kandidat"
-                        >
-                          <img
-                            src="src/assets/icons/edit-solid.svg"
-                            alt="edit candidate"
-                            className="w-5 h-5 opacity-70 hover:opacity-100"
-                          />
-                        </button>
-                      }
-                    />
-
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          candidate.id,
-                          candidate.name ?? `Kandidat ${candidate.id}`,
-                        )
-                      }
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-red-500 transition-colors duration-150 hover:bg-red-50 hover:text-red-700"
-                      title="Delete candidate"
-                    >
-                      <img
-                        src="src/assets/icons/trash-alt-solid.svg"
-                        alt="delete candidate"
-                        className="w-5 h-5 opacity-70 hover:opacity-100"
-                      />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         {/* Footer */}
