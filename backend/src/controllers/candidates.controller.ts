@@ -189,3 +189,42 @@ export async function remove(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+
+/**
+ * Update a candidate's name and email.
+ *
+ * Path params:
+ * - id: number (the database id of the candidate)
+ *
+ * Expects JSON body:
+ * - name: string (required)
+ * - email: string (required)
+ *
+ * Responses:
+ * - 200: Returns the updated candidate object
+ * - 400: If name or email is missing
+ * - 404: If no candidate with that ID exists
+ */
+export async function update(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number(req.params.id);
+    const { name, email } = req.body as { name?: string; email?: string };
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "name and email are required" });
+    }
+
+    const r = await pool.query(
+      "UPDATE candidates SET name = $1, email = $2 WHERE id = $3 RETURNING id, name, email, (cv_pdf IS NOT NULL) as has_pdf, created_at",
+      [name, email, id],
+    );
+
+    if (r.rowCount === 0) {
+      return res.status(404).json({ error: "Candidate not found" });
+    }
+
+    res.json(r.rows[0]);
+  } catch (e) {
+    next(e);
+  }
+}

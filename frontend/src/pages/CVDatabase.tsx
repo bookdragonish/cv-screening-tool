@@ -45,7 +45,6 @@ function CVDatabase() {
       id: candidate.id,
       name: candidate.name ?? `Candidate ${candidate.id}`,
     }));
-
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
       <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
@@ -63,14 +62,12 @@ function CVDatabase() {
         setSearchQuery={setSearch}
         searchAttribute={"navn"}
       />
-
       <CandidateTable
         filteredData={filtered}
         setPreviewId={setPreviewId}
         setReloadKey={setReloadKey}
         dataLength={data.length}
       />
-
       {previewId != null && (
         <PdfPreviewOverlay
           candidates={candidates}
