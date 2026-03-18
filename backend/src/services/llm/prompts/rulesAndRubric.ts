@@ -17,9 +17,9 @@ Rules:
  * Shared scoring weights used when Gemini evaluates candidates.
  */
 const RUBRIC = `
-Scoring rubric (0–100):
-- Must-have match (0–70)
-- Relevant experience depth (0–30)
+Rubrikk for vurdering (0–100):
+- Match av must_haves og nice_to_haves (0-100)
+- Vurderingen skal basere seg på hvor mange must_haves og nice_to_haves som tydelig er oppfylt basert på bevis fra CVene.
 `.trim();
 
 export { RULES, RUBRIC };

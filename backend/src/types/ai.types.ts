@@ -1,19 +1,19 @@
 export type JobProfile = {
   role_title: string;
   must_haves: string[];
+  nice_to_haves?: string[];
 };
 
 export type CandidateEval = {
   candidate_id: string;
   candidate_label: string;
   candidate_role?: string;
-  contact_phone?: string;
   qualified: boolean;
   overall_score: number;
   experience_highlights?: string[];
   education?: string[];
-  strengths: Array<{ point: string; evidence: string }>;
-  gaps: Array<{ point: string; evidence: string; impact: "high" | "medium" | "low" }>;
+  strengths: Array<{ point: string; explanation: string }>;
+  gaps: Array<{ point: string; explanation: string; impact: "high" | "medium" | "low" }>;
   unknowns: string[];
 };
 
@@ -42,11 +42,6 @@ export type CandidateWithCvText = {
   cvText: string;
 };
 
-export type CandidateWithCv = {
-  candidate: ApiCandidate;
-  file: File;
-};
-
 export type ScreeningCandidate = {
   id: number;
   rank: number;
@@ -67,6 +62,7 @@ export type SaveScreeningRunPayload = {
   header: string;
   description: string;
   hardQualifications: string[];
+  softQualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;
@@ -74,6 +70,7 @@ export type SaveScreeningRunPayload = {
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    unknowns: string[];
     summary?: string;
   }>;
 };
@@ -87,11 +84,6 @@ export type RunScreeningResponse = {
 export type JobDescriptionInput =
   | { mode: "text"; text: string }
   | { mode: "pdf"; file: Buffer; originalName: string };
-
-export type JobDescriptionInputFile =
-  | { mode: "text"; text: string }
-  | { mode: "pdf"; file: File; originalName: string };
-
 
 export type NorLlmResponse = {
   choices?: Array<{

@@ -118,7 +118,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * Creates a persisted screening run by inserting one job post row and its
  * candidate result rows in a single transaction.
  *
- * Request should include 'title', 'description', 'hardQualifications',
+ * Request should include 'title', 'description', 'hardQualifications', 'softQualifications',
  * and 'candidates'.
  *
  * Responses:
@@ -134,12 +134,14 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       header,
       description,
       hardQualifications,
+      softQualifications,
       candidates,
     } = req.body as {
       title?: string;
       header?: string;
       description?: string;
       hardQualifications?: unknown;
+      softQualifications?: unknown;
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
@@ -156,6 +158,7 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     const normalizedHeader = normalizeString(header) || normalizedTitle;
     const normalizedDescription = normalizeString(description);
     const normalizedHardQualifications = normalizeStringArray(hardQualifications);
+    const normalizedSoftQualifications = normalizeStringArray(softQualifications);
 
     if (!normalizedTitle || !normalizedDescription || !Array.isArray(candidates) || !candidates.length) {
       return res.status(400).json({
@@ -192,12 +195,13 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     await client.query("begin");
 
     const jobPostResult = await client.query(
-      "insert into job_posts(header, title, description, hardQualifications ) values($1, $2, $3, $4, $5) returning id, title, created_at",
+      "insert into job_posts(header, title, description, hardQualifications, softQualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
       [
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
         normalizedHardQualifications.join("\n"),
+        normalizedSoftQualifications.join("\n"),
       ],
     );
 

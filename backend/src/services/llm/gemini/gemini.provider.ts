@@ -1,30 +1,20 @@
 // gemini.provider.ts
 import { GoogleGenAI } from "@google/genai";
 import { pool } from "../../../db/pool.js";
-import {
-  deleteGeminiFiles,
-  generateFromGeminiOnFiles,
-} from "./geminiGenerate.js";
+import { parsePdf } from "../../../middleware/parserPDF.js";
 import { generateFromGeminiText } from "./geminiText.js";
 import {
-  parseCandidateEval,
+  parseCandidateEvals,
   parseJobProfile,
-  parseRanking,
 } from "./schemas.js";
 import {
-  buildCandidateEvalPrompt,
+  buildCandidatesEvaluationPrompt,
   buildJobAdProfilePrompt,
-  buildJobProfileFromPdfPrompt,
-  buildRankingPrompt,
-} from "./prompts/prompts.js";
-import {
-  uploadFilesToGemini,
-  type UploadedGeminiFile,
-} from "./uploadFilesToGemini.js";
+} from "../prompts/prompts.js";
 import type {
   ApiCandidate,
   CandidateEval,
-  CandidateWithCv,
+  CandidateWithCvText,
   JobDescriptionInput,
   JobProfile,
 } from "../../../types/ai.types.js";
@@ -40,44 +30,31 @@ function createGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({ apiKey });
 }
 
-function sanitizeFileName(value: string): string {
-  return value.replace(/[^a-zA-Z0-9._-]+/g, "_");
-}
-
-async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCv[]> {
+async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCvText[]> {
   const r = await pool.query(
     "select id, name, email, created_at, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
     [limit],
   );
 
   const rows = r.rows as ApiCandidate[];
+  const candidatesWithText: CandidateWithCvText[] = [];
 
-  return rows
-    .map((candidate) => {
-      const pdfBuffer = candidate.cv_pdf;
-      if (!Buffer.isBuffer(pdfBuffer) || !pdfBuffer.length) return null;
+  for (const candidate of rows) {
+    const pdfBuffer = candidate.cv_pdf;
+    const cvText = await parsePdf(pdfBuffer);
+    candidatesWithText.push({ candidate, cvText });
+  }
 
-      const baseName = sanitizeFileName(
-        candidate.name?.trim() || `candidate-${candidate.id}`,
-      );
-
-      const file = new File([Uint8Array.from(pdfBuffer)], `${baseName}.pdf`, {
-        type: "application/pdf",
-      });
-
-      return { candidate, file };
-    })
-    .filter((item): item is CandidateWithCv => item !== null);
+  return candidatesWithText;
 }
 
 export function createGeminiProvider() {
   const ai = createGeminiClient();
-  const uploadedFilesForCleanup: UploadedGeminiFile[] = [];
 
   return {
     kind: "gemini" as const,
 
-    async loadCandidates(limit: number): Promise<CandidateWithCv[]> {
+    async loadCandidates(limit: number): Promise<CandidateWithCvText[]> {
       return loadCandidatesWithCv(limit);
     },
 
@@ -86,120 +63,49 @@ export function createGeminiProvider() {
         return input.text;
       }
 
-      return input.originalName || "PDF job description";
+      return parsePdf(input.file);
     },
 
     async createJobProfile(
-      input: JobDescriptionInput,
-      _jobDescriptionText: string,
+      _input: JobDescriptionInput,
+      jobDescriptionText: string,
     ): Promise<JobProfile> {
-      if (input.mode === "text") {
-        const prompt = buildJobAdProfilePrompt(input.text);
-        const jobProfileText = await generateFromGeminiText({
-          ai,
-          model: MODEL_NAME,
-          prompt,
-        });
-
-        return parseJobProfile(jobProfileText);
-      }
-
-      const jobFile = new File(
-        [Uint8Array.from(input.file)],
-        input.originalName || "job-description.pdf",
-        { type: "application/pdf" },
-      );
-
-      const uploadedJobFiles = await uploadFilesToGemini(ai, [jobFile]);
-      const uploadedJobFile = uploadedJobFiles[0];
-
-      if (!uploadedJobFile) {
-        throw new Error(
-          "Kunne ikke laste opp stillingsbeskrivelsen til Gemini.",
-        );
-      }
-
-      uploadedFilesForCleanup.push(uploadedJobFile);
-
-      const jobProfileText = await generateFromGeminiOnFiles({
+      const prompt = buildJobAdProfilePrompt(jobDescriptionText);
+      const jobProfileText = await generateFromGeminiText({
         ai,
         model: MODEL_NAME,
-        files: [uploadedJobFile],
-        prompt: buildJobProfileFromPdfPrompt(),
-        labelFiles: false,
+        prompt,
       });
 
       return parseJobProfile(jobProfileText);
     },
 
     async evaluateCandidates(params: {
-      candidatesWithCv: CandidateWithCv[];
+      candidatesWithCv: CandidateWithCvText[];
       jobProfile: JobProfile;
     }): Promise<CandidateEval[]> {
       const { candidatesWithCv, jobProfile } = params;
 
-      const uploadedCandidateFiles = await uploadFilesToGemini(
-        ai,
-        candidatesWithCv.map((item) => item.file),
-      );
-
-      uploadedFilesForCleanup.push(...uploadedCandidateFiles);
-
-      const evals: CandidateEval[] = [];
-
-      for (let i = 0; i < uploadedCandidateFiles.length; i += 1) {
-        const uploadedFile = uploadedCandidateFiles[i];
-        const candidateWithCv = candidatesWithCv[i];
-
-        if (!uploadedFile || !candidateWithCv) {
-          throw new Error("Mangler kandidatdata under evaluering.");
-        }
-
-        const candidate = candidateWithCv.candidate;
-
-        const evalPrompt = buildCandidateEvalPrompt({
-          jobProfile,
-          candidateId: String(candidate.id),
-          candidateLabel: candidate.name ?? uploadedFile.displayName,
-        });
-
-        const evalText = await generateFromGeminiOnFiles({
-          ai,
-          model: MODEL_NAME,
-          files: [uploadedFile],
-          prompt: evalPrompt,
-          labelFiles: false,
-        });
-
-        evals.push(parseCandidateEval(evalText));
-      }
-
-      return evals;
-    },
-
-    async rankCandidates(params: {
-      jobProfile: JobProfile;
-      evals: CandidateEval[];
-      candidatesWithCv: CandidateWithCv[];
-    }): Promise<ReturnType<typeof parseRanking>> {
-      const { jobProfile, evals } = params;
-
-      const rankingPrompt = buildRankingPrompt({ jobProfile, evals });
-      const rankingText = await generateFromGeminiText({
-        ai,
-        model: MODEL_NAME,
-        prompt: rankingPrompt,
+      const evalPrompt = buildCandidatesEvaluationPrompt({
+        jobProfile,
+        candidates: candidatesWithCv.map((item) => ({
+          candidateId: String(item.candidate.id),
+          candidateLabel: item.candidate.name ?? `candidate-${item.candidate.id}`,
+          cvText: item.cvText,
+        })),
       });
 
-      return parseRanking(rankingText);
+      const evalText = await generateFromGeminiText({
+        ai,
+        model: MODEL_NAME,
+        prompt: evalPrompt,
+      });
+
+      return parseCandidateEvals(evalText);
     },
 
     async cleanup(): Promise<void> {
-      if (!uploadedFilesForCleanup.length) return;
-
-      await deleteGeminiFiles(ai, uploadedFilesForCleanup).catch((error) => {
-        console.warn("Kunne ikke slette Gemini-filer etter screening:", error);
-      });
+      return;
     },
   };
 }
