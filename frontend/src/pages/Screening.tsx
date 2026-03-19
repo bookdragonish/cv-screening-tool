@@ -12,7 +12,7 @@ function Screening() {
 
   if (isLoading || !data) {
     return (
-      <main className="flex justify-center items-center h-170">
+      <main id="main-content" className="flex h-170 items-center justify-center" aria-busy="true" aria-live="polite">
         <Spinner />
       </main>
     );
@@ -37,7 +37,7 @@ function Screening() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="mx-auto max-w-7xl min-h-screen px-8 py-6">
+    <main id="main-content" className="mx-auto max-w-7xl min-h-screen px-8 py-6">
 
       <Breadcrumbs second_site_name={"Skanninghistorikk"} third_site_name={"Resultat"} second_site_link={"/screening-historikk"}/>
 
@@ -48,26 +48,26 @@ function Screening() {
       )}
 
       {!isLoading && !isError && data && (
-        <div className="space-y-4">
-          <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+        <section className="space-y-4" aria-label="Screeningresultater">
+          <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
             <h1 className="text-3xl font-semibold text-(--color-dark)">
               {data.title}
             </h1>
             <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-4 w-4" aria-hidden="true" />
               <span>{formatDate(data.screenedAt)}</span>
             </div>
-          </div>
+          </header>
 
           {data.candidates.map((candidate) => (
-            <div
+            <article
               key={candidate.candidateId}
               className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">
-                    <FileText className="h-5 w-5 text-(--color-primary)" />
+                    <FileText className="h-5 w-5 text-(--color-primary)" aria-hidden="true" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-(--color-dark)">
@@ -122,6 +122,7 @@ function Screening() {
                           <CheckCircle2
                             className="mt-0.5 h-3.5 w-3.5 shrink-0"
                             style={{ color: "var(--status-qual-met)" }}
+                            aria-hidden="true"
                           />
                         ) : null}
                         <span>{item}</span>
@@ -152,6 +153,7 @@ function Screening() {
                           <XCircle
                             className="mt-0.5 h-3.5 w-3.5 shrink-0"
                             style={{ color: "var(--status-qual-not-met)" }}
+                            aria-hidden="true"
                           />
                         ) : null}
                         <span>{item}</span>
@@ -173,6 +175,7 @@ function Screening() {
                           <CircleHelp
                             className="mt-0.5 h-3.5 w-3.5 shrink-0"
                             style={{ color: "var(--status-unknown)" }}
+                            aria-hidden="true"
                           />
                           <span>{item}</span>
                         </li>
@@ -181,9 +184,9 @@ function Screening() {
                   </section>
                 ) : null}
               </div>
-            </div>
+            </article>
           ))}
-        </div>
+        </section>
       )}
     </main>
   );

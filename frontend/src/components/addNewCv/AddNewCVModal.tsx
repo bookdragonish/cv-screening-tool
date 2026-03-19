@@ -148,7 +148,7 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
         {customTrigger ? (
           customTrigger
         ) : (
-          <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm">
+          <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white">
             <PlusIcon className="size-6" />
             Legg til CV
           </Button>
@@ -295,7 +295,7 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
           <Button
             type="submit"
             form="add-cv-form"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer"
+            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
             disabled={form.formState.isSubmitting || !isCvSelectionValid}
           >
             {form.formState.isSubmitting ? "Lagrer..." : (isEditing ? "Oppdater" : "Legg til")}
