@@ -5,6 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { CheckCircle2, CircleHelp, Clock, FileText, XCircle } from "lucide-react";
 import { useParams } from "react-router";
+import CandidateCard from "@/components/CandidateCard";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
@@ -58,131 +59,40 @@ function Screening() {
               <span>{formatDate(data.screenedAt)}</span>
             </div>
           </div>
-
-          {data.candidates.map((candidate) => (
-            <div
-              key={candidate.candidateId}
-              className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">
-                    <FileText className="h-5 w-5 text-(--color-primary)" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-(--color-dark)">
-                      #{candidate.rank} {candidate.candidateName}
-                    </h2>
-                  </div>
+          <div className="space-y-10">
+              <section>
+                <h1 className="text-xl font-bold mb-4">
+                  Kvalifiserte kandidater
+                </h1>
+                  
+                <div className="grid gap-6">
+                  {data.candidates.map((candidate) =>
+                    candidate.qualified ? (
+                      <CandidateCard
+                        key={candidate.candidateId}
+                        candidate={candidate}
+                      />
+                    ) : null
+                  )}
                 </div>
-                <span className="rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)">
-                  {candidate.qualified ? "Kvalifisert" : "Ikke kvalifisert"}
-                </span>
-              </div>
+              </section>
+              <section>
+                <h1 className="text-xl font-bold mb-4">
+                  Ikke kvalifiserte kandidater
+                </h1>
 
-              <article className="flex justify-between">
-                <p className="mt-1 text-sm text-(--color-dark) opacity-75">
-                  Matchscore:
-                </p>
-                <p className="mt-1 text-sm text-(--color-dark) opacity-75">
-                  {" "}
-                  {Math.round(candidate.score)}%
-                </p>
-              </article>
-              <Progress value={Math.round(candidate.score)} />
-
-              {candidate.summary && (
-                <p className="mt-4 text-sm text-(--color-dark) opacity-90">
-                  {candidate.summary}
-                </p>
-              )}
-
-              <div
-                className={`mt-5 grid gap-3 ${
-                  candidate.unknowns.length ? "lg:grid-cols-3" : "md:grid-cols-2"
-                }`}
-              >
-                <section className="py-1">
-                  <div className="mb-3">
-                    <h3 className="text-sm font-semibold text-(--color-dark)">
-                      Oppnådde kvalifikasjoner:
-                    </h3>
-                  </div>
-                  {(() => {
-                    const fallbackMet = "Ingen kvalifikasjoner oppnådd.";
-                    const metItems = candidate.qualificationsMet.length
-                      ? candidate.qualificationsMet
-                      : [fallbackMet];
-
-                    return (
-                  <ul className="space-y-2 text-sm text-(--color-dark)">
-                    {metItems.map((item, index) => (
-                      <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
-                        {item !== fallbackMet ? (
-                          <CheckCircle2
-                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                            style={{ color: "var(--status-qual-met)" }}
-                          />
-                        ) : null}
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                    );
-                  })()}
-                </section>
-
-                <section className="py-1">
-                  <div className="mb-3">
-                    <h3 className="text-sm font-semibold text-(--color-dark)">
-                      Manglende kvalifikasjoner:
-                    </h3>
-                  </div>
-                  {(() => {
-                    const fallbackMissing = "Ingen manglende kvalifikasjoner";
-                    const missingItems = candidate.qualificationsMissing.length
-                      ? candidate.qualificationsMissing
-                      : [fallbackMissing];
-
-                    return (
-                  <ul className="space-y-2 text-sm text-(--color-dark)">
-                    {missingItems.map((item, index) => (
-                      <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
-                        {item !== fallbackMissing ? (
-                          <XCircle
-                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                            style={{ color: "var(--status-qual-not-met)" }}
-                          />
-                        ) : null}
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                    );
-                  })()}
-                </section>
-
-                {candidate.unknowns.length ? (
-                  <section className="py-1">
-                    <div className="mb-3">
-                      <h3 className="text-sm font-semibold text-(--color-dark)">Usikkerheter:</h3>
-                    </div>
-                    <ul className="space-y-2 text-sm text-(--color-dark)">
-                      {candidate.unknowns.map((item, index) => (
-                        <li key={`${item}-${index}`} className="flex items-start gap-2 leading-5">
-                          <CircleHelp
-                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                            style={{ color: "var(--status-unknown)" }}
-                          />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
-              </div>
-            </div>
-          ))}
+                <div className="grid gap-6">
+                  {data.candidates.map((candidate) =>
+                    !candidate.qualified ? (
+                      <CandidateCard
+                        key={candidate.candidateId}
+                        candidate={candidate}
+                      />
+                    ) : null
+                  )}
+                </div>
+              </section>
+          </div>
         </div>
       )}
     </main>

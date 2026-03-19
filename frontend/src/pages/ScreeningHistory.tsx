@@ -100,19 +100,22 @@ function ScreeningHistory() {
                         <p className="mb-2 text-sm font-medium text-(--color-dark)">
                           Top 3 kandidater:
                         </p>
+                        {screening.candidates.some(c => c.qualified) && (
                         <div className="flex flex-wrap gap-2">
                           {screening.candidates
+                            .filter(c => c.qualified)
                             .slice(0, 3)
                             .map((candidate, index) => (
+                              
                               <span
                                 key={index}
                                 className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
                               >
-                                #{index + 1} {candidate.candidateName} (
-                                {Math.round(candidate.score)}%)
+                                #{index + 1} {candidate.candidateName} ({Math.round(candidate.score)}%)
                               </span>
                             ))}
                         </div>
+                        )}
                       </div>
                     </div>
                   </div>
