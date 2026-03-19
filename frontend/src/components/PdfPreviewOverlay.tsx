@@ -1,6 +1,8 @@
 import { useFetchPDF } from "@/hooks/useFetchPDF";
 import type { CandidatePreview } from "@/types/candidate";
 import { useMemo, useState } from "react";
+import { LoaderCircleIcon } from "lucide-react";
+import ErrorBox from "@/components/ErrorBox"
 
 type PdfPreviewOverlayProps = {
   candidates: CandidatePreview[];
@@ -27,16 +29,19 @@ function PdfPreviewOverlay({
 
   if (isError) {
     return(
-      <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg">Kunne ikke laste data.</div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm">
+        <ErrorBox title="Feil ved innlastning" message="Kunne ikke laste PDF-filen."/>
       </div>
     );
   }
 
   if (isLoading) {
     return(
-      <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg">Laster...</div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm">
+        <div className="flex flex-col items-center gap-3 rounded-lg bg-white p-6 shadow-lg">
+          <LoaderCircleIcon className="h-8 w-8 animate-spin text-primary"/>
+          <span className="text-sm font-medium text-slate-700">Laster dokument...</span>
+        </div>
       </div>
     );
   }
