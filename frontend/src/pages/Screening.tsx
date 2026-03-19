@@ -1,9 +1,8 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ErrorBox from "@/components/ErrorBox";
-import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
-import { CheckCircle2, CircleHelp, Clock, FileText, XCircle } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useParams } from "react-router";
 import CandidateCard from "@/components/CandidateCard";
 
