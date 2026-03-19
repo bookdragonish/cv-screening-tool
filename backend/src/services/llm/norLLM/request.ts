@@ -1,4 +1,4 @@
-import { parsePdf } from "../middleware/PdfParser.js";
+import { parsePdf } from "../../../middleware/parserPDF.js";
 
 const url = "https://llm.hpc.ntnu.no/v1/chat/completions";
 

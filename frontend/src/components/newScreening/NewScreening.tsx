@@ -1,10 +1,10 @@
 import ErrorBox from "@/components/ErrorBox";
-import NewScreeningHeader from "@/components/newScreening/NewScreeningHeader";
-import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
+import NewScreeningHeader from "@/components/NewScreening/NewScreeningHeader";
+import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
-import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
+import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
-import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
+import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
 
 type NewScreeningError = {
   title: string;
@@ -15,7 +15,6 @@ type NewScreeningProps = {
   view: "upload" | "processing";
   isProcessingComplete: boolean;
   jobDescriptionInput: JobDescriptionInput | null;
-  canGoToResults: boolean;
   uploadStatus: StepStatus;
   processingStatus: StepStatus;
   resultsStatus: StepStatus;
@@ -31,7 +30,6 @@ function NewScreening({
   view,
   isProcessingComplete,
   jobDescriptionInput,
-  canGoToResults,
   uploadStatus,
   processingStatus,
   resultsStatus,
@@ -43,8 +41,8 @@ function NewScreening({
   onStartNew,
 }: NewScreeningProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8">
-      <NewScreeningHeader canGoToResults={canGoToResults} />
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
+      <NewScreeningHeader />
 
       <ScreeningProgressSteps
         uploadStatus={uploadStatus}

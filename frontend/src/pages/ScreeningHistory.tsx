@@ -1,9 +1,12 @@
 import { Link } from "react-router";
-import { Clock, FileText, Search } from "lucide-react";
+import { Clock, FileText } from "lucide-react";
 import React from "react";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import Searchbar from "@/components/Searchbar";
+import HeaderSection from "@/components/HeaderSection";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -40,52 +43,35 @@ function ScreeningHistory() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">Screeninghistorikk</span>
-      </nav>
+    <main className="mx-auto max-w-7xl min-h-screen px-8 py-6">
+      <Breadcrumbs second_site_name={"Skanninghistorikk"} />
 
-      <div>
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold text-(--color-dark)">
-            Screeninghistorikk
-          </h1>
-          <p className="mt-2 text-(--color-dark) opacity-75">
-            Få oversikt over tidligere CV-screeningsresultater
-          </p>
-        </div>
+      <div className="min-h-screen">
+        <HeaderSection
+          header={"Skanninghistorikk"}
+          subsection={
+            "Oversikt over tidligere CV-skanninger. Resultatene er kun veiledende og kan inneholde unøyaktigheter."
+          }
+        />
 
         {isLoading && (
           <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Laster screeninghistorikk...
+            Laster skanninghistorikk...
           </div>
         )}
 
         {isError && (
-          <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Kunne ikke hente screeninghistorikk.
-          </div>
+          <ErrorBox
+            title={"Kunne ikke hente skanninghistorikk."}
+            message={"Prøv igjen senere"}
+          />
         )}
 
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-(--color-dark) opacity-50" />
-            <input
-              type="text"
-              placeholder="Søk etter jobbtittel..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-(--color-primary) py-3 pr-4 pl-10 text-(--color-dark) outline-none focus:ring-2 focus:ring-(--color-primary)"
-            />
-          </div>
-        </div>
+        <Searchbar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          searchAttribute={"jobbtittel"}
+        />
 
         <div className="space-y-4">
           {filteredHistory.map((screening) => (
@@ -93,7 +79,7 @@ function ScreeningHistory() {
               key={screening.jobPostId}
               className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <div className="flex items-start space-x-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">

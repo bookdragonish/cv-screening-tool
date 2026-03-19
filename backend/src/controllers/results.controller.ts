@@ -1,17 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
+import { normalizeString, normalizeStringList as normalizeStringArray } from "../utils/normailizers.js";
 
-function normalizeString(value: unknown): string {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function normalizeStringArray(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .map((item) => normalizeString(item))
-    .filter(Boolean);
-}
 
 /**
  * List all screening results.

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CandidateEval, JobProfile, Ranking } from "../../../types/GeminiTypes.js";
+import type { CandidateEval, JobProfile, Ranking } from "../../../types/ai.types.js";
 
 /**
  * Normalizes impact labels before validating allowed values.

@@ -49,7 +49,7 @@ function ScreeningProgressSteps({
 }: ScreeningProgressStepsProps) {
   return (
     <div className="mt-8 overflow-x-auto pb-1">
-      <div className="mx-auto w-full max-w-[640px] min-w-fit">
+      <div className="mx-auto w-full max-w-160 min-w-fit">
         <div className="flex items-start justify-center gap-2 sm:gap-3">
           <StepNode number={1} label="Last opp stillingsbeskrivelse" status={uploadStatus} />
 
@@ -57,7 +57,7 @@ function ScreeningProgressSteps({
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(processingStatus)}
-                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-primary"
+                className="h-1 w-full bg-slate-300 *:data-[slot=progress-indicator]:bg-primary"
               />
             </div>
           </div>
@@ -68,7 +68,7 @@ function ScreeningProgressSteps({
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(resultsStatus)}
-                className="h-1 w-full bg-slate-300 [&>[data-slot=progress-indicator]]:bg-primary"
+                className="h-1 w-full bg-slate-300 *:data-[slot=progress-indicator]:bg-primary"
               />
             </div>
           </div>

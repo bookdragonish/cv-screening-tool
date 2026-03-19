@@ -1,9 +1,10 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ErrorBox from "@/components/ErrorBox";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { CheckCircle2, CircleHelp, Clock, FileText, XCircle } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
@@ -36,24 +37,9 @@ function Screening() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <Link
-          to="/screening-historikk"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Screeninghistorikk
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">Resultat</span>
-      </nav>
+    <main className="mx-auto max-w-7xl min-h-screen px-8 py-6">
+
+      <Breadcrumbs second_site_name={"Skanninghistorikk"} third_site_name={"Resultat"} second_site_link={"/screening-historikk"}/>
 
       {isLoading && (
         <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">

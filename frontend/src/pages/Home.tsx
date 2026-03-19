@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
+import HeaderSection from "@/components/HeaderSection";
 
 function Home() {
   const { screeningData, isLoading, isError } = useFetchScreenings();
@@ -36,17 +37,13 @@ function Home() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
-      {/* Dashboard header */}
-      <div className="mb-8">
-        <h2 className="mb-2 text-3xl font-bold text-(--color-dark)">
-          Oversikt
-        </h2>
-        <p className="text-(--color-dark) opacity-75">
-          Velkommen tilbake! Her er en oversikt over dine
-          CV-screeningaktiviteter.
-        </p>
-      </div>
+    <main className="mx-auto max-w-7xl px-6 py-8 ">
+      <HeaderSection
+        header={"Oversikt"}
+        subsection={
+          "Velkommen tilbake! Her er en oversikt over dine CV-skanningsaktiviteter."
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left column - recent activity */}
@@ -140,7 +137,7 @@ function Home() {
               </div>
               <div>
                 <h3 className="font-semibold text-(--color-dark)">
-                  CV-database
+                  Kandidater
                 </h3>
                 <p className="mt-1 text-sm text-(--color-dark) opacity-75">
                   68 aktive CVer
@@ -152,7 +149,7 @@ function Home() {
               variant="outline"
               className="w-full border-(--color-primary) font-medium text-(--color-primary) transition-colors hover:bg-(--color-light)/50"
             >
-              <Link to="/cv-database">Administrer CVer</Link>
+              <Link to="/kandidater">Administrer CVer</Link>
             </Button>
           </div>
         </div>

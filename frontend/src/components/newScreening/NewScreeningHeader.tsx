@@ -1,20 +1,7 @@
-import ScreeningBreadcrumbs from "@/components/newScreening/ScreeningBreadcrumbs";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 
-type NewScreeningHeaderProps = {
-  canGoToResults: boolean;
-};
-
-function NewScreeningHeader({
-  canGoToResults,
-}: NewScreeningHeaderProps) {
+function NewScreeningHeader() {
   return (
-    <>
-      <ScreeningBreadcrumbs
-        current="new-screening"
-        canGoToResults={canGoToResults}
-      />
-
       <Item className="gap-0 p-0" size="default" variant="default">
         <ItemContent className="gap-0">
           <ItemTitle className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Ny screening</ItemTitle>
@@ -23,7 +10,7 @@ function NewScreeningHeader({
           </ItemDescription>
         </ItemContent>
       </Item>
-    </>
+  
   );
 }
 
