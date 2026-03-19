@@ -100,7 +100,7 @@ function ScreeningHistory() {
                         <p className="mb-2 text-sm font-medium text-(--color-dark)">
                           Top 3 kandidater:
                         </p>
-                        {screening.candidates.some(c => c.qualified) && (
+                        {screening.candidates.some(c => c.qualified) ? (
                         <div className="flex flex-wrap gap-2">
                           {screening.candidates
                             .filter(c => c.qualified)
@@ -115,6 +115,10 @@ function ScreeningHistory() {
                               </span>
                             ))}
                         </div>
+                        ) : (
+                          <p className="text-sm text-(--color-dark) opacity-75">
+                            Ingen kvalifiserte kandidater
+                          </p>
                         )}
                       </div>
                     </div>

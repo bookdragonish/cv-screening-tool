@@ -64,32 +64,44 @@ function Screening() {
                   Kvalifiserte kandidater
                 </h1>
                   
-                <div className="grid gap-6">
-                  {data.candidates.map((candidate) =>
-                    candidate.qualified ? (
-                      <CandidateCard
-                        key={candidate.candidateId}
-                        candidate={candidate}
-                      />
-                    ) : null
+                {data.candidates.some(c=>c.qualified) ? (
+                  <div className="grid gap-6">
+                    {data.candidates.map((candidate) =>
+                      candidate.qualified && (
+                        <CandidateCard
+                          key={candidate.candidateId}
+                          candidate={candidate}
+                        />
+                      )
                   )}
-                </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-(--color-dark) opacity-75">
+                    Ingen kvalifiserte kandidater
+                  </p>
+                )}
               </section>
               <section>
                 <h1 className="text-xl font-bold mb-4">
                   Ikke kvalifiserte kandidater
                 </h1>
 
-                <div className="grid gap-6">
-                  {data.candidates.map((candidate) =>
-                    !candidate.qualified ? (
-                      <CandidateCard
-                        key={candidate.candidateId}
-                        candidate={candidate}
-                      />
-                    ) : null
+                {data.candidates.some(c=>!c.qualified) ? (
+                  <div className="grid gap-6">
+                    {data.candidates.map((candidate) =>
+                      !candidate.qualified && (
+                        <CandidateCard
+                          key={candidate.candidateId}
+                          candidate={candidate}
+                        />
+                      )
                   )}
-                </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-(--color-dark) opacity-75">
+                    Ingen kvalifiserte kandidater
+                  </p>
+                )}
               </section>
           </div>
         </div>
