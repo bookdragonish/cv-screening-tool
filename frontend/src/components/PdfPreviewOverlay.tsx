@@ -26,11 +26,19 @@ function PdfPreviewOverlay({
   const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidate.id);
 
   if (isError) {
-    return <div>Error.</div>;
+    return(
+      <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-lg">Kunne ikke laste data.</div>
+      </div>
+    );
   }
 
-  if (isLoading || !documentURL) {
-    return;
+  if (isLoading) {
+    return(
+      <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-lg">Laster...</div>
+      </div>
+    );
   }
 
   function nextPdfPreview() {
