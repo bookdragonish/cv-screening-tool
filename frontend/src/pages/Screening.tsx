@@ -99,7 +99,7 @@ function Screening() {
                   </div>
                 ) : (
                   <p className="text-sm text-(--color-dark) opacity-75">
-                    Ingen kvalifiserte kandidater
+                    Ingen ikke kvalifiserte kandidater
                   </p>
                 )}
               </section>
