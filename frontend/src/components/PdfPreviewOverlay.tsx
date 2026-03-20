@@ -51,12 +51,12 @@ function PdfPreviewOverlay({
   if (!selectedCandidate) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white w-full max-w-4xl h-[90vh] rounded-lg shadow-lg flex flex-col overflow-hidden">
-        <header className="flex justify-between items-center px-4 py-2 border-b">
+    <div className="fixed inset-0 flex items-center justify-center bg-primary/35">
+      <div className="bg-background w-full max-w-4xl h-[90vh] rounded-lg shadow-lg flex flex-col overflow-hidden border border-border">
+        <header className="flex justify-between items-center px-4 py-2 border-b border-border">
           <h3 className="font-bold mb-4"> {selectedCandidate.name} </h3>
           <button
-            className="px-4 py-2 bg-gray-700 text-white rounded enabled:hover:text-gray-200"
+            className="px-4 py-2 bg-(--color-primary) text-white rounded enabled:hover:opacity-90"
             onClick={onClose}
           >
             ✕
@@ -76,7 +76,7 @@ function PdfPreviewOverlay({
 
         <footer className="flex justify-between mb-1">
           <button
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 enabled:hover:text-gray-200 m-5"
+            className="px-4 py-2 bg-muted text-foreground rounded disabled:opacity-50 enabled:hover:bg-muted/80 m-5"
             onClick={prevPdfPreview}
             disabled={!hasPrevious}
           >
@@ -84,7 +84,7 @@ function PdfPreviewOverlay({
           </button>
 
           <button
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 enabled:hover:text-gray-200 m-5"
+            className="px-4 py-2 bg-muted text-foreground rounded disabled:opacity-50 enabled:hover:bg-muted/80 m-5"
             onClick={nextPdfPreview}
             disabled={!hasNext}
           >

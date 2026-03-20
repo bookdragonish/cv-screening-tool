@@ -14,7 +14,7 @@ function Home() {
 
   if (isLoading || !screeningData) {
     return (
-      <main className="flex justify-center items-center h-170">
+      <main id="main-content" className="flex h-170 items-center justify-center" aria-busy="true" aria-live="polite">
         <Spinner />
       </main>
     );
@@ -41,7 +41,7 @@ function Home() {
   const activeCvCount = candidatesData?.length ?? 0;
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8 ">
+    <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
       <HeaderSection
         header={"Oversikt"}
         subsection={
@@ -49,23 +49,23 @@ function Home() {
         }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left column - recent activity */}
-        <div className="lg:col-span-2">
-          <div className="rounded-lg border border-(--color-primary) shadow-sm">
+        <section className="lg:col-span-2" aria-label="Nylig screeningaktivitet">
+          <article className="rounded-lg border border-(--color-primary) shadow-sm">
             {/* Screening history header */}
-            <div className="border-b border-(--color-primary) p-6">
+            <header className="border-b border-(--color-primary) p-6">
               <h3 className="text-lg font-semibold text-(--color-dark)">
                 Nylig screeningaktivitet
               </h3>
               <p className="mt-1 text-sm text-(--color-dark) opacity-75">
                 Dine siste CV-screeningresultater
               </p>
-            </div>
+            </header>
             {/* Screening activity list */}
-            <div className="divide-y divide-(--color-primary)">
+            <ul className="divide-y divide-(--color-primary)" aria-live="polite">
               {screeningData.slice(0, 5).map((activity) => (
-                <div
+                <li
                   key={activity.jobPostId}
                   className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"
                 >
@@ -74,42 +74,42 @@ function Home() {
                       {activity.title}
                     </h4>
                     <div className="flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-                      <Clock className="w-4 h-4" />
+                      <Clock className="h-4 w-4" aria-hidden="true" />
                       <span>{formatDate(activity.screenedAt)}</span>
                     </div>
                   </div>
                   <Link
                     to={`/screening-historikk/${activity.jobPostId}`}
-                    className="text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
+                    className="rounded-md text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                   >
                     Se resultater
                   </Link>
-                </div>
+                </li>
               ))}
               {isLoading && (
-                <div className="p-6 text-sm text-(--color-dark) opacity-75">
+                <li className="p-6 text-sm text-(--color-dark) opacity-75">
                   Laster screeningaktivitet...
-                </div>
+                </li>
               )}
               {isError && !isLoading && (
-                <div className="p-6 text-sm text-(--color-dark) opacity-75">
+                <li className="p-6 text-sm text-(--color-dark) opacity-75">
                   Kunne ikke hente screeningaktivitet.
-                </div>
+                </li>
               )}
-            </div>
-            <div className="border-t border-(--color-primary) p-6 text-center">
+            </ul>
+            <footer className="border-t border-(--color-primary) p-6 text-center">
               <Link
                 to="/screening-historikk"
-                className="inline-flex items-center gap-1 text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75"
+                className="inline-flex items-center gap-1 rounded-md text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
               >
                 Se hele screeninghistorikken →
               </Link>
-            </div>
-          </div>
-        </div>
+            </footer>
+          </article>
+        </section>
 
         {/* Right column - actions */}
-        <div className="space-y-6">
+        <aside className="space-y-6" aria-label="Screeninghandlinger">
           {/* Start new screening card */}
           <Card className="rounded-lg border-(--color-primary) bg-(--color-primary) p-6 shadow-sm">
             <h3 className="mb-2 text-xl font-semibold text-white">
@@ -121,7 +121,7 @@ function Home() {
             </p>
             <Button
               asChild
-              className="w-full border-2 border-white bg-transparent font-medium text-white transition-all hover:bg-white hover:text-(--color-primary)"
+              className="w-full border-2 border-white bg-transparent font-medium text-white transition-all hover:bg-white hover:text-(--color-primary) focus-visible:bg-white focus-visible:text-(--color-primary)"
             >
               <Link
                 to="/new-screening"
@@ -134,10 +134,10 @@ function Home() {
           </Card>
 
           {/* CV database card */}
-          <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+          <section className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm" aria-label="Kandidatdatabase">
             <div className="mb-4 flex items-start gap-3">
               <div className="rounded-lg bg-(--color-light) p-2">
-                <FileText className="h-5 w-5 text-(--color-dark)" />
+                <FileText className="h-5 w-5 text-(--color-dark)" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="font-semibold text-(--color-dark)">
@@ -155,8 +155,8 @@ function Home() {
             >
               <Link to="/kandidater">Administrer CVer</Link>
             </Button>
-          </div>
-        </div>
+          </section>
+        </aside>
       </div>
     </main>
   );

@@ -41,7 +41,10 @@ function NewScreening({
   onStartNew,
 }: NewScreeningProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
+    <section
+      className="mx-auto w-full max-w-6xl px-4 sm:px-8"
+      aria-labelledby="new-screening-title"
+    >
       <NewScreeningHeader />
 
       <ScreeningProgressSteps
@@ -70,7 +73,7 @@ function NewScreening({
           resultsHref={resultsHref}
         />
       )}
-    </div>
+    </section>
   );
 }
 
