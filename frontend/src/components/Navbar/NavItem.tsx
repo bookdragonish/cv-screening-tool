@@ -9,19 +9,21 @@ type NavItemProps = {
 
 function NavItem({ to, label, icon: Icon }: NavItemProps) {
   return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        [
-          "flex items-center gap-2 text-sm font-medium transition-opacity",
-          isActive
-            ? "text-(--color-primary) opacity-100"
-            : "text-(--color-dark) opacity-60 hover:opacity-100",
-        ].join(" ")
-      }
-    >
-      <Icon className="h-4 w-4" />
-      <span>{label}</span>
-    </NavLink>
+    <li>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          [
+            "flex items-center gap-2 rounded-md px-2 py-1 text-sm font-medium transition-opacity focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2",
+            isActive
+              ? "text-(--color-primary) opacity-100"
+              : "text-(--color-dark) opacity-80 hover:opacity-100",
+          ].join(" ")
+        }
+      >
+        <Icon className="h-4 w-4" aria-hidden="true" />
+        <span>{label}</span>
+      </NavLink>
+    </li>
   );
 } export default NavItem;

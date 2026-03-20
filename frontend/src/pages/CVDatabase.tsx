@@ -29,7 +29,7 @@ function CVDatabase() {
 
   if (isLoading || !data) {
     return (
-      <main className="flex justify-center items-center h-170">
+      <main id="main-content" className="flex h-170 items-center justify-center" aria-busy="true" aria-live="polite">
         <Spinner />
       </main>
     );
@@ -46,8 +46,8 @@ function CVDatabase() {
       name: candidate.name ?? `Candidate ${candidate.id}`,
     }));
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
-      <Breadcrumbs second_site_name={"Kandidater"}></Breadcrumbs>
+    <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
+      <Breadcrumbs second_site_name={"Kandidater"} />
 
       <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <HeaderSection

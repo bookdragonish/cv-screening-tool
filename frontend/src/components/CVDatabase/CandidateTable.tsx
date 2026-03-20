@@ -1,6 +1,7 @@
 import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 
 
 type CandidateTableProps = {
@@ -39,21 +40,27 @@ function CandidateTable({
 
   return (
     <div className="space-y-3">
-      <section className="overflow-hidden rounded-lg border border-(--color-primary) bg-white shadow-sm">
+      <section
+        className="overflow-hidden rounded-lg border border-(--color-primary) bg-white shadow-sm"
+        aria-label="Kandidattabell"
+      >
         <div className="overflow-x-auto">
           <table className="w-full min-w-130 text-left">
+            <caption className="sr-only">
+              Liste over kandidater med dato for siste endring, PDF-forhåndsvisning, redigering og sletting av kandidater.
+            </caption>
             <thead>
               <tr className="border-b border-(--color-primary) bg-(--color-light) text-(--color-primary)">
-                <th className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
                   Navn
                 </th>
-                <th className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
                   Sist endret
                 </th>
-                <th className="px-5 py-5 text-center text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="px-5 py-5 text-center text-xs font-semibold uppercase tracking-wider">
                   Pdf
                 </th>
-                <th className="px-5 py-5 text-right text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="px-5 py-5 text-right text-xs font-semibold uppercase tracking-wider">
                   Handlinger
                 </th>
               </tr>
@@ -77,18 +84,16 @@ function CandidateTable({
                   {candidate.has_pdf ? (
                     <td className="py-3 text-center">
                       <button
+                        type="button"
                         onClick={() => showPreview(candidate.id)}
-                        className="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-(--color-light)"
+                        className="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                        aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
                       >
-                        <img
-                          src="src/assets/icons/file-pdf-solid.svg"
-                          alt="open pdf"
-                          className="h-5 w-5 opacity-70 transition-opacity duration-150 hover:opacity-100"
-                        />
+                        <Eye className="h-5 w-5 opacity-80" aria-hidden="true" />
                       </button>
                     </td>
                   ) : (
-                    <td></td>
+                    <td className="text-center text-sm text-slate-500">-</td>
                   )}
 
                   <td className="px-5 py-3.5 text-right">
@@ -101,33 +106,29 @@ function CandidateTable({
                         onCreated={() => setReloadKey((prev) => prev + 1)}
                         customTrigger={
                           <button
-                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light)"
+                            type="button"
+                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                             title="Rediger kandidat"
+                            aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
                           >
-                            <img
-                              src="src/assets/icons/edit-solid.svg"
-                              alt="edit candidate"
-                              className="w-5 h-5 opacity-70 hover:opacity-100"
-                            />
+                            <Pencil className="w-4 h-4 opacity-80" aria-hidden="true" />
                           </button>
                         }
                       />
 
                     <button
+                      type="button"
                       onClick={() =>
                         handleDelete(
                           candidate.id,
                           candidate.name ?? `Kandidat ${candidate.id}`,
                         )
                       }
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light)"
-                      title="Delete candidate"
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                      title="Slett kandidat"
+                      aria-label={`Slett kandidat ${candidate.name ?? candidate.id}`}
                     >
-                      <img
-                        src="src/assets/icons/trash-alt-solid.svg"
-                        alt="delete candidate"
-                        className="h-5 w-5 opacity-70 transition-opacity duration-150 hover:opacity-100"
-                      />
+                      <Trash2 className="h-4 w-4 opacity-80" aria-hidden="true" />
                     </button>
                   </td>
                 </tr>
