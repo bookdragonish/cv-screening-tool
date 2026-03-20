@@ -22,13 +22,15 @@ const AddNewCvSchema = z.object({
     .transform((val) => val.trim()),
 
   cv: z
-    .custom<File>((file) => file instanceof File, {
+    .any()
+    .optional()
+    .refine((file) => !file || file instanceof File, {
       message: "Du må laste opp en CV (PDF).",
     })
-    .refine((file) => isPdfFile(file), {
+    .refine((file) => !file || isPdfFile(file), {
       message: "CV må være en PDF.",
     })
-    .refine((file) => file.size <= MAX_PDF_BYTES, {
+    .refine((file) => !file || file.size <= MAX_PDF_BYTES, {
       message: "PDFen er for stor (maks 10MB).",
     }),
 })

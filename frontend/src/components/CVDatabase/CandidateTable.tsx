@@ -1,9 +1,7 @@
 import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 
-function handleEdit(id: number) {
-  console.log("Edit", id);
-}
 
 type CandidateTableProps = {
   filteredData: Candidate[];
@@ -94,17 +92,26 @@ function CandidateTable({
                   )}
 
                   <td className="px-5 py-3.5 text-right">
-                    <button
-                      onClick={() => handleEdit(candidate.id)}
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light)"
-                      title="Delete candidate"
-                    >
-                      <img
-                        src="src/assets/icons/edit-solid.svg"
-                        alt="edit candidate"
-                        className="h-5 w-5 opacity-70 transition-opacity duration-150 hover:opacity-100"
+                    <AddNewCVModal
+                        candidateToEdit={{
+                          id: candidate.id,
+                          name: candidate.name ?? "",
+                          email: candidate.email ?? "",
+                        }}
+                        onCreated={() => setReloadKey((prev) => prev + 1)}
+                        customTrigger={
+                          <button
+                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light)"
+                            title="Rediger kandidat"
+                          >
+                            <img
+                              src="src/assets/icons/edit-solid.svg"
+                              alt="edit candidate"
+                              className="w-5 h-5 opacity-70 hover:opacity-100"
+                            />
+                          </button>
+                        }
                       />
-                    </button>
 
                     <button
                       onClick={() =>

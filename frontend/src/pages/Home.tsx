@@ -3,12 +3,14 @@ import { FileText, Plus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
+import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
 import HeaderSection from "@/components/HeaderSection";
 
 function Home() {
   const { screeningData, isLoading, isError } = useFetchScreenings();
+  const { data: candidatesData } = useFetchCandidates();
 
   if (isLoading || !screeningData) {
     return (
@@ -35,6 +37,8 @@ function Home() {
       month: "short",
       year: "numeric",
     }).format(new Date(dateValue));
+
+  const activeCvCount = candidatesData?.length ?? 0;
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8 ">
@@ -140,7 +144,7 @@ function Home() {
                   Kandidater
                 </h3>
                 <p className="mt-1 text-sm text-(--color-dark) opacity-75">
-                  68 aktive CVer
+                  {activeCvCount} aktive CVer
                 </p>
               </div>
             </div>
