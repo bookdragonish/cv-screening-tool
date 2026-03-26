@@ -88,6 +88,7 @@ function CandidateTable({
                         onClick={() => showPreview(candidate.id)}
                         className="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                         aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
+                        title="Forhåndsvis PDF"
                       >
                         <Eye className="h-5 w-5 opacity-80" aria-hidden="true" />
                       </button>

@@ -1,6 +1,6 @@
 import { useFetchPDF } from "@/hooks/useFetchPDF";
 import type { CandidatePreview } from "@/types/candidate";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { LoaderCircleIcon, X, ChevronLeft, ChevronRight, FileQuestion } from "lucide-react";
 import ErrorBox from "@/components/ErrorBox"
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,19 @@ function PdfPreviewOverlay({
     return index >= 0 ? index : 0;
   }, [candidates, initialId]);
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
   const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex);
   const selectedCandidate = candidates[selectedIndex];
 
   const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidate.id);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(timer);
+  }), [];
 
   if (isError) {
     return (
@@ -65,11 +74,12 @@ function PdfPreviewOverlay({
   if (!selectedCandidate) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-primary/35">
+    <div className="fixed inset-0 flex items-center justify-center bg-primary/35" role="dialog" aria-modal="true" aria-label={`Forhåndsvisning for ${selectedCandidate.name}`}>
       <div className="bg-background w-full max-w-4xl h-[90vh] rounded-lg shadow-lg flex flex-col overflow-hidden border border-border">
         <header className="flex items-center justify-between border-b border-border px-6 py-4">
           <h3 className="text-lg font-semibold text-foreground"> {selectedCandidate.name} </h3>
           <Button
+            ref={closeBtnRef}
             onClick={onClose}
             aria-label="Lukk forhåndvisning"
             title="Lukk forhåndsvisning"
@@ -89,7 +99,7 @@ function PdfPreviewOverlay({
             ></iframe>
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
-              <FileQuestion className="h-16 w-16 opacity-50"/>
+              <FileQuestion className="h-16 w-16 opacity-50" />
               <p className="text-lg font-medium">Det eksisterer ingen CV for denne kandidaten</p>
 
             </div>
@@ -104,7 +114,7 @@ function PdfPreviewOverlay({
             disabled={!hasPrevious}
             className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-transparent hover:border-(--color-primary) transition-all duration-200"
           >
-            <ChevronLeft className="h-4 w-4" aria-hidden="true"/>
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             <span>Forrige kandidat</span>
           </Button>
 
@@ -118,7 +128,7 @@ function PdfPreviewOverlay({
             className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-transparent hover:border-(--color-primary) transition-all duration-200"
           >
             <span>Neste kandidat</span>
-            <ChevronRight className="h-4 w-4 opacity-80" aria-hidden="true"/>
+            <ChevronRight className="h-4 w-4 opacity-80" aria-hidden="true" />
           </Button>
         </footer>
       </div>

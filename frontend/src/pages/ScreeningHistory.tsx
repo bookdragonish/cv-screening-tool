@@ -86,9 +86,9 @@ function ScreeningHistory() {
                       <FileText className="h-5 w-5 text-(--color-primary)" aria-hidden="true" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-(--color-dark)">
+                      <h2 className="text-lg font-semibold text-(--color-dark)">
                         {screening.title}
-                      </h3>
+                      </h2>
                       <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
                         <span className="flex items-center">
                           <Clock className="h-4 w-4" aria-hidden="true" />

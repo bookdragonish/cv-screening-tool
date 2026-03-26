@@ -55,9 +55,9 @@ function Home() {
           <article className="rounded-lg border border-(--color-primary) shadow-sm">
             {/* Screening history header */}
             <header className="border-b border-(--color-primary) p-6">
-              <h3 className="text-lg font-semibold text-(--color-dark)">
+              <h2 className="text-lg font-semibold text-(--color-dark)">
                 Nylig screeningaktivitet
-              </h3>
+              </h2>
               <p className="mt-1 text-sm text-(--color-dark) opacity-75">
                 Dine siste CV-screeningresultater
               </p>
@@ -70,9 +70,9 @@ function Home() {
                   className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"
                 >
                   <div>
-                    <h4 className="mb-2 font-semibold text-(--color-dark)">
+                    <h3 className="mb-2 font-semibold text-(--color-dark)">
                       {activity.title}
-                    </h4>
+                    </h3>
                     <div className="flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
                       <Clock className="h-4 w-4" aria-hidden="true" />
                       <span>{formatDate(activity.screenedAt)}</span>

@@ -46,28 +46,30 @@ function CVDatabase() {
       name: candidate.name ?? `Candidate ${candidate.id}`,
     }));
   return (
-    <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
-      <Breadcrumbs second_site_name={"Kandidater"} />
+    <>
+      <main id="main-content" className="mx-auto max-w-7xl px-6 py-8" inert={previewId !== null}>
+        <Breadcrumbs second_site_name={"Kandidater"} />
 
-      <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <HeaderSection
-          header={"Kandidater"}
-          subsection={"Administrer ansattes CV-er for screening."}
+        <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <HeaderSection
+            header={"Kandidater"}
+            subsection={"Administrer ansattes CV-er for screening."}
+          />
+          <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
+        </section>
+
+        <Searchbar
+          searchQuery={search}
+          setSearchQuery={setSearch}
+          searchAttribute={"navn"}
         />
-        <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
-      </section>
-
-      <Searchbar
-        searchQuery={search}
-        setSearchQuery={setSearch}
-        searchAttribute={"navn"}
-      />
-      <CandidateTable
-        filteredData={filtered}
-        setPreviewId={setPreviewId}
-        setReloadKey={setReloadKey}
-        dataLength={data.length}
-      />
+        <CandidateTable
+          filteredData={filtered}
+          setPreviewId={setPreviewId}
+          setReloadKey={setReloadKey}
+          dataLength={data.length}
+        />
+      </main>
       {previewId != null && (
         <PdfPreviewOverlay
           candidates={candidates}
@@ -75,7 +77,7 @@ function CVDatabase() {
           onClose={() => setPreviewId(null)}
         />
       )}
-    </main>
+    </>
   );
 }
 
