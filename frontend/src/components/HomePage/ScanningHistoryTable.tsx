@@ -16,7 +16,7 @@ function ScanningHistoryTable() {
 
         {/* Screening history header */}
         <header className="border-b border-(--color-primary) p-6 bg-(--color-light) rounded-t-lg ">
-          <h3 className="text-lg font-semibold text-(--color-dark)">
+          <h3 className="subsection-title text-(--color-dark)">
             Tidligere skanninghistorikk
           </h3>
         </header>
@@ -30,7 +30,7 @@ function ScanningHistoryTable() {
                 className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"
               >
                 <div>
-                  <h4 className="mb-2 font-semibold text-(--color-dark)">
+                  <h4 className="mb-2 font-semibold text-regular text-(--color-dark)">
                     {activity.title}
                   </h4>
                   <div className="flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
@@ -39,7 +39,7 @@ function ScanningHistoryTable() {
                   </div>
                 </div>
 
-                <p className="rounded-md text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2">
+                <p className="rounded-md text-smaller text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2">
                   Se resultater
                 </p>
               </li>
@@ -59,7 +59,7 @@ function ScanningHistoryTable() {
 
         <Link
           to="/screening-historikk"
-          className=" flex justify-center gap-1 rounded-md text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+          className=" flex justify-center gap-1 rounded-md text-regular text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
         >
           <footer className="border-t border-(--color-primary) w-full p-6 text-center rounded-b-lg bg-(--color-light)">
             Se hele skanninghistorikken →

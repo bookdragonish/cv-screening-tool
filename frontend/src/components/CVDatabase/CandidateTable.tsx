@@ -51,16 +51,16 @@ function CandidateTable({
             </caption>
             <thead>
               <tr className="border-b border-(--color-primary) bg-(--color-light) text-(--color-primary)">
-                <th scope="col" className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="p-3 subsection-title uppercase tracking-wider">
                   Navn
                 </th>
-                <th scope="col" className="px-5 py-5 text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="p-3 subsection-title uppercase tracking-wider">
                   Sist endret
                 </th>
-                <th scope="col" className="px-5 py-5 text-center text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="p-3 subsection-title uppercase text-center tracking-wider">
                   Pdf
                 </th>
-                <th scope="col" className="px-5 py-5 text-right text-xs font-semibold uppercase tracking-wider">
+                <th scope="col" className="p-3 subsection-title text-right uppercase tracking-wider">
                   Handlinger
                 </th>
               </tr>
@@ -71,11 +71,11 @@ function CandidateTable({
                   key={candidate.id}
                   className="group transition-colors duration-150 hover:bg-(--color-light)/70"
                 >
-                  <td className="px-5 py-7 text-sm font-medium text-(--color-dark) transition-colors duration-150 group-hover:text-(--color-primary)">
+                  <td className="px-5 py-7 text-regular text-(--color-dark) transition-colors duration-150 group-hover:text-(--color-primary)">
                     {candidate.name ?? candidate.id}
                   </td>
 
-                  <td className="px-5 py-7 text-sm text-(--color-primary)">
+                  <td className="px-5 py-7 text-regular text-(--color-primary)">
                     {new Intl.DateTimeFormat(navigator.language, {
                       dateStyle: "medium",
                     }).format(new Date(candidate.created_at))}
@@ -86,10 +86,10 @@ function CandidateTable({
                       <button
                         type="button"
                         onClick={() => showPreview(candidate.id)}
-                        className="cursor-pointer rounded-md p-2 transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                        className="cursor-pointer rounded-md p-2 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                         aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
                       >
-                        <Eye className="h-5 w-5 opacity-80" aria-hidden="true" />
+                        <Eye className="h-6 w-6 opacity-70 hover:opacity-100" aria-hidden="true" />
                       </button>
                     </td>
                   ) : (
@@ -107,11 +107,11 @@ function CandidateTable({
                         customTrigger={
                           <button
                             type="button"
-                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                             title="Rediger kandidat"
                             aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
                           >
-                            <Pencil className="w-4 h-4 opacity-80" aria-hidden="true" />
+                            <Pencil className="h-5 w-5 opacity-70 hover:opacity-100" aria-hidden="true" />
                           </button>
                         }
                       />
@@ -124,11 +124,11 @@ function CandidateTable({
                           candidate.name ?? `Kandidat ${candidate.id}`,
                         )
                       }
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 hover:bg-(--color-light) focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                       title="Slett kandidat"
                       aria-label={`Slett kandidat ${candidate.name ?? candidate.id}`}
                     >
-                      <Trash2 className="h-4 w-4 opacity-80" aria-hidden="true" />
+                      <Trash2 className="h-5 w-5 opacity-70 hover:opacity-100" aria-hidden="true" />
                     </button>
                   </td>
                 </tr>
@@ -138,7 +138,7 @@ function CandidateTable({
         </div>
       </section>
 
-      <p className="px-1 text-xs text-(--color-dark) opacity-75">
+      <p className="px-1 text-smaller text-(--color-dark) opacity-75">
         Viser {filteredData.length} av {dataLength} kandidater
       </p>
     </div>

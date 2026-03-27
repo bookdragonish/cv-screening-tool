@@ -148,9 +148,12 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
         {customTrigger ? (
           customTrigger
         ) : (
-          <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white">
+          <Button className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer px-4 py-2 rounded-md flex items-center gap-2 shadow-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white">
             <PlusIcon className="size-6" />
-            Legg til kandidat
+            <p className="text-regular p-2">
+              Legg til kandidat
+            </p>
+            
           </Button>
         )}
       </DialogTrigger>

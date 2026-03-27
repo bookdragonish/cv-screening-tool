@@ -40,7 +40,7 @@ function Logo() {
       <div className="rounded-lg bg-(--color-primary) p-2">
         <FileText className="h-5 w-5 text-white" aria-hidden="true" />
       </div>
-      <h1 className="text-xl font-semibold text-(--color-dark)">Job-Scan</h1>
+      <h1 className="section-title font-semibold text-(--color-dark)">Job-Scan</h1>
     </Link>
   );
 }
@@ -52,7 +52,7 @@ function Profile() {
       className="flex items-center gap-2 text-(--color-dark) sm:self-auto"
     >
       <User className="h-5 w-5" aria-hidden="true" />
-      <span className="text-sm font-medium">HR-bruker</span>
+      <span className="text-regular font-medium">HR-bruker</span>
     </section>
   );
 }

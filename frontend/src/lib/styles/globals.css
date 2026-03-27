@@ -74,4 +74,29 @@
   body {
     @apply bg-background text-foreground;
   }
+
+}
+
+@layer components {
+  .page-title {
+    @apply text-4xl font-bold;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold;
+  }
+
+  .subsection-title {
+    @apply text-base  font-semibold;
+  }
+
+  .text-regular {
+    @apply text-base;
+  }
+
+  .text-smaller {
+    @apply text-sm ;
+  }
+
+
 }

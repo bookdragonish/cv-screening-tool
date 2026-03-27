@@ -14,7 +14,7 @@ function NavItem({ to, label, icon: Icon }: NavItemProps) {
         to={to}
         className={({ isActive }) =>
           [
-            "flex items-center gap-2 rounded-md px-2 py-1 text-sm font-medium transition-opacity focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2",
+            "flex items-center gap-2 rounded-md px-1 py-1 text-regular transition-opacity focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2",
             isActive
               ? "text-(--color-primary) opacity-100"
               : "text-(--color-dark) opacity-80 hover:opacity-100",
