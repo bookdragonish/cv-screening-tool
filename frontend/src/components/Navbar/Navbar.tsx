@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import NavItem from "./NavItem";
 
 const navItems = [
-  { to: "/", label: "Oversikt", icon: Home },
+  { to: "/", label: "Hjem", icon: Home },
   { to: "/kandidater", label: "Kandidater", icon: FileText },
   { to: "/screening-historikk", label: "Skanninghistorikk", icon: Clock },
 ];

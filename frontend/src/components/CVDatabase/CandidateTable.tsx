@@ -139,7 +139,7 @@ function CandidateTable({
       </section>
 
       <p className="px-1 text-xs text-(--color-dark) opacity-75">
-        Viser {filteredData.length} av {dataLength} CV-er
+        Viser {filteredData.length} av {dataLength} kandidater
       </p>
     </div>
   );

@@ -98,7 +98,7 @@ function ScreeningHistory() {
 
                       <div className="mt-4">
                         <p className="mb-2 text-sm font-medium text-(--color-dark)">
-                          Top 3 kandidater:
+                          Topp 3 kandidater:
                         </p>
                         {screening.candidates.some(c => c.qualified) ? (
                         <div className="flex flex-wrap gap-2">

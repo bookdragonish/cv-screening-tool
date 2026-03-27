@@ -1,10 +1,10 @@
 import ErrorBox from "@/components/ErrorBox";
-import NewScreeningHeader from "@/components/NewScreening/NewScreeningHeader";
 import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
 import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
+import HeaderSection from "../HeaderSection";
 
 type NewScreeningError = {
   title: string;
@@ -45,7 +45,7 @@ function NewScreening({
       className="mx-auto w-full max-w-6xl px-4 sm:px-8"
       aria-labelledby="new-screening-title"
     >
-      <NewScreeningHeader />
+      <HeaderSection header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen"} />
 
       <ScreeningProgressSteps
         uploadStatus={uploadStatus}

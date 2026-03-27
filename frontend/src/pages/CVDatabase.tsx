@@ -52,7 +52,7 @@ function CVDatabase() {
       <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <HeaderSection
           header={"Kandidater"}
-          subsection={"Administrer ansattes CV-er for screening."}
+          subsection={"Administrer ansattes informasjon og CV-er for skanninger."}
         />
         <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
       </section>

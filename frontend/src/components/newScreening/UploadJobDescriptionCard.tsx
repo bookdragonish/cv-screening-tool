@@ -114,9 +114,9 @@ function UploadJobDescriptionCard({
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <CardTitle className="text-3xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
+            <CardTitle className="text-2xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
             <CardDescription className="text-base text-slate-500">
-              Last opp en PDF eller lim inn stillingsbeskrivelsen for å starte screeningprosessen.
+              Last opp PDF eller lim inn stillingsbeskrivelsen for å starte skanningsprosessen.
             </CardDescription>
           </div>
 
