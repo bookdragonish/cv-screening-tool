@@ -2,7 +2,7 @@ import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Clock } from "lucide-react";
 import { Link } from "react-router";
 
-function EarlierScanningTable() {
+function ScanningHistoryTable() {
   const { screeningData, isLoading, isError } = useFetchScreenings();
 
   const formatDate = (dateValue: string) =>
@@ -12,16 +12,13 @@ function EarlierScanningTable() {
       year: "numeric",
     }).format(new Date(dateValue));
   return (
-    <section className="lg:col-span-2" aria-label="Nylig screeningaktivitet">
-      <article className="rounded-lg border border-(--color-primary) shadow-sm">
+    <section className="lg:col-span-2 rounded-lg border border-(--color-primary) shadow-sm" aria-label="Nylig screeningaktivitet">
+
         {/* Screening history header */}
         <header className="border-b border-(--color-primary) p-6 bg-(--color-light) rounded-t-lg ">
           <h3 className="text-lg font-semibold text-(--color-dark)">
             Tidligere skanninghistorikk
           </h3>
-          <p className="mt-1 text-sm text-(--color-dark) opacity-75">
-            Dine siste jobbskanningsresultater.
-          </p>
         </header>
 
         {/* Screening activity list */}
@@ -50,12 +47,12 @@ function EarlierScanningTable() {
           ))}
           {isLoading && (
             <li className="flex justify-center w-full p-6 text-sm text-(--color-dark) opacity-75">
-              Laster screeningaktivitet...
+              Laster skanningaktivitet...
             </li>
           )}
           {isError && !isLoading && (
             <li className="flex justify-center w-full p-6 text-sm text-(--color-dark) opacity-75">
-              Kunne ikke hente screeningaktivitet.
+              Kunne ikke hente skanningaktivitet.
             </li>
           )}
         </ul>
@@ -65,11 +62,11 @@ function EarlierScanningTable() {
           className=" flex justify-center gap-1 rounded-md text-sm font-medium text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
         >
           <footer className="border-t border-(--color-primary) w-full p-6 text-center rounded-b-lg bg-(--color-light)">
-            Se hele screeninghistorikken →
+            Se hele skanninghistorikken →
           </footer>{" "}
         </Link>
-      </article>
+    
     </section>
   );
 }
-export default EarlierScanningTable;
+export default ScanningHistoryTable;
