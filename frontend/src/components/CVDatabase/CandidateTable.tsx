@@ -3,7 +3,6 @@ import type { Candidate } from "@/types/candidate";
 import { AddNewCVModal } from "@/components/AddNewCv/AddNewCVModal";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
-
 type CandidateTableProps = {
   filteredData: Candidate[];
   setPreviewId: (value: number) => void;
@@ -47,20 +46,33 @@ function CandidateTable({
         <div className="overflow-x-auto">
           <table className="w-full min-w-130 text-left">
             <caption className="sr-only">
-              Liste over kandidater med dato for siste endring, PDF-forhåndsvisning, redigering og sletting av kandidater.
+              Liste over kandidater med dato for siste endring,
+              PDF-forhåndsvisning, redigering og sletting av kandidater.
             </caption>
             <thead>
               <tr className="border-b border-(--color-primary) bg-(--color-light) text-(--color-primary)">
-                <th scope="col" className="p-3 subsection-title uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="p-3 subsection-title uppercase tracking-wider"
+                >
                   Navn
                 </th>
-                <th scope="col" className="p-3 subsection-title uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="p-3 subsection-title uppercase tracking-wider"
+                >
                   Sist endret
                 </th>
-                <th scope="col" className="p-3 subsection-title uppercase text-center tracking-wider">
+                <th
+                  scope="col"
+                  className="p-3 subsection-title uppercase text-center tracking-wider"
+                >
                   Pdf
                 </th>
-                <th scope="col" className="p-3 subsection-title text-right uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="p-3 subsection-title text-right uppercase tracking-wider"
+                >
                   Handlinger
                 </th>
               </tr>
@@ -89,7 +101,10 @@ function CandidateTable({
                         className="cursor-pointer rounded-md p-2 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                         aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
                       >
-                        <Eye className="h-6 w-6 opacity-70 hover:opacity-100" aria-hidden="true" />
+                        <Eye
+                          className="h-6 w-6 opacity-70 hover:opacity-100"
+                          aria-hidden="true"
+                        />
                       </button>
                     </td>
                   ) : (
@@ -98,23 +113,26 @@ function CandidateTable({
 
                   <td className="px-5 py-3.5 text-right">
                     <AddNewCVModal
-                        candidateToEdit={{
-                          id: candidate.id,
-                          name: candidate.name ?? "",
-                          email: candidate.email ?? "",
-                        }}
-                        onCreated={() => setReloadKey((prev) => prev + 1)}
-                        customTrigger={
-                          <button
-                            type="button"
-                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
-                            title="Rediger kandidat"
-                            aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
-                          >
-                            <Pencil className="h-5 w-5 opacity-70 hover:opacity-100" aria-hidden="true" />
-                          </button>
-                        }
-                      />
+                      candidateToEdit={{
+                        id: candidate.id,
+                        name: candidate.name ?? "",
+                        email: candidate.email ?? "",
+                      }}
+                      onCreated={() => setReloadKey((prev) => prev + 1)}
+                      customTrigger={
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                          title="Rediger kandidat"
+                          aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
+                        >
+                          <Pencil
+                            className="h-5 w-5 opacity-70 hover:opacity-100"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      }
+                    />
 
                     <button
                       type="button"
@@ -128,7 +146,10 @@ function CandidateTable({
                       title="Slett kandidat"
                       aria-label={`Slett kandidat ${candidate.name ?? candidate.id}`}
                     >
-                      <Trash2 className="h-5 w-5 opacity-70 hover:opacity-100" aria-hidden="true" />
+                      <Trash2
+                        className="h-5 w-5 opacity-70 hover:opacity-100"
+                        aria-hidden="true"
+                      />
                     </button>
                   </td>
                 </tr>
@@ -138,9 +159,11 @@ function CandidateTable({
         </div>
       </section>
 
-      <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-        Viser {filteredData.length} av {dataLength} kandidater
-      </p>
+      <footer>
+        <p className="px-1 text-smaller text-(--color-dark) opacity-75">
+          Viser {filteredData.length} av {dataLength} kandidater
+        </p>
+      </footer>
     </div>
   );
 }
