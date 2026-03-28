@@ -4,7 +4,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
 import { readFile } from "node:fs/promises";
-import norLLM from "./services/llm/norLLM/request.js";
+import norLLM from "./services/llm/norllm/request.js";
 import { run } from "node:test";
 
 export const app = express();
@@ -27,7 +27,7 @@ app.get("/", (_req, res) => {
 
 app.get("/norllm", async (_req, res) => {
   try {
-    const buffer = await readFile("src/services/llm/norLLM/cv.pdf");
+    const buffer = await readFile("src/services/llm/norllm/cv.pdf");
     const data = await norLLM(buffer);
     res.json({ ok: true, message: data });
   } catch (error) {
