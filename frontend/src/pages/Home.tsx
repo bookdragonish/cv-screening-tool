@@ -36,9 +36,10 @@ function Home() {
             Last opp en stillingsbeskrivelse for å finne de mest relevante
             kandidatene.
           </p>
+
           <Button
             asChild
-            className="w-full border-2 border-white bg-transparent font-medium text-white transition-all hover:bg-white hover:text-(--color-primary) focus-visible:bg-white focus-visible:text-(--color-primary)"
+            className="w-full border-2 border-white hover-dark-button"
           >
             <Link
               to="/new-screening"

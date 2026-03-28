@@ -127,7 +127,7 @@ function ScreeningHistory() {
 
                 <Link
                   to={`/screening-historikk/${screening.jobPostId}`}
-                  className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                  className="rounded-lg hover-dark-button border-(--color-primary) p-2 border-2"
                 >
                   Se resultater
                 </Link>
