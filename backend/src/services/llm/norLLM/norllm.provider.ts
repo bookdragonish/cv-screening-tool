@@ -38,7 +38,7 @@ export function createNorllmProvider() {
 
     async loadCandidates(limit: number): Promise<CandidateWithCvText[]> {
       const result = await pool.query(
-        "select id, name, email, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
+        "select id, name, email, cv_markdown from candidates where cv_markdown is not null and btrim(cv_markdown) <> '' order by id desc limit $1",
         [limit],
       );
 
@@ -46,13 +46,7 @@ export function createNorllmProvider() {
       const candidatesWithText: CandidateWithCvText[] = [];
 
       for (const candidate of rows) {
-        const pdfBuffer = candidate.cv_pdf;
-
-        if (!Buffer.isBuffer(pdfBuffer) || !pdfBuffer.length) {
-          continue;
-        }
-
-        const cvText = await parsePdf(pdfBuffer);
+        const cvText = candidate.cv_markdown?.trim() ?? "";
         if (!cvText.trim()) {
           continue;
         }
@@ -108,15 +102,12 @@ export function createNorllmProvider() {
       for (const item of candidatesWithCv) {
         const candidate = item.candidate;
 
-        const prompt = `${buildCandidateEvalPrompt({
+        const prompt = buildCandidateEvalPrompt({
           jobProfile,
           candidateId: String(candidate.id),
           candidateLabel: candidate.name ?? `candidate-${candidate.id}`,
-        })}
-
-<candidate_cv_text>
-${item.cvText}
-</candidate_cv_text>`;
+          cvText: item.cvText,
+        });
 
         const responseText = await callNorLlm(prompt);
 

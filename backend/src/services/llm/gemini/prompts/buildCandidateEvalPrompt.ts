@@ -8,12 +8,15 @@ export function buildCandidateEvalPrompt(args: {
   jobProfile: JobProfile;
   candidateId: string;
   candidateLabel: string;
+  cvText?: string;
 }): string {
+  const hasCvText = Boolean(args.cvText?.trim());
+
   return `
 <role>You are an CV screening system.</role>
 
 <task>
-Evaluate the attached CV against the job profile. Use the rubric.
+Evaluate the candidate CV against the job profile. Use the rubric.
 </task>
 
 <constraints>
@@ -34,6 +37,13 @@ ${JSON.stringify(args.jobProfile)}
 
 <candidate_id>${args.candidateId}</candidate_id>
 <candidate_label_hint>${args.candidateLabel}</candidate_label_hint>
+${
+  hasCvText
+    ? `<candidate_cv_text>
+${args.cvText}
+</candidate_cv_text>`
+    : ""
+}
 </context>
 
 <output_format>

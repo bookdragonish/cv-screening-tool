@@ -35,7 +35,8 @@ export type ApiCandidate = {
   name?: string | null;
   email?: string | null;
   created_at?: string;
-  cv_pdf: Buffer;
+  cv_pdf?: Buffer | null;
+  cv_markdown?: string | null;
 };
 
 export type CandidateWithCvText = {
