@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
+import { parsePdf } from "../middleware/parserPDF.js";
 
 /**
  * List all candidates.
@@ -108,31 +109,45 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * Notes:
  * - This handler assumes middleware like `multer` is configured and populates `req.file`.
  */
-export async function uploadCV(req: Request, res: Response) {
-  const { id } = req.params;
+export async function uploadCV(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
 
-  if (!id || isNaN(Number(id))) {
-    return res.status(400).json({ error: "Invalid candidate id" });
+    if (!id || isNaN(Number(id))) {
+      return res.status(400).json({ error: "Invalid candidate id" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Missing file field 'cv'" });
+    }
+
+    if (req.file.mimetype !== "application/pdf") {
+      return res.status(415).json({ error: "Only PDF supported" });
+    }
+
+    const parsedCvText = (await parsePdf(req.file.buffer)).trim();
+
+    if (!parsedCvText) {
+      return res.status(422).json({
+        error: "Could not extract readable text from uploaded CV PDF",
+      });
+    }
+
+    console.log(parsedCvText)
+
+    const result = await pool.query(
+      "UPDATE candidates SET cv_pdf = $1, cv_markdown = $2 WHERE id = $3",
+      [req.file.buffer, parsedCvText, id],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Candidate not found" });
+    }
+
+    return res.json({ ok: true });
+  } catch (e) {
+    return next(e);
   }
-
-  if (!req.file) {
-    return res.status(400).json({ error: "Missing file field 'cv'" });
-  }
-
-  if (req.file.mimetype !== "application/pdf") {
-    return res.status(415).json({ error: "Only PDF supported" });
-  }
-
-  const result = await pool.query(
-    `UPDATE candidates SET cv_pdf = $1 WHERE id = $2`,
-    [req.file.buffer, id],
-  );
-
-  if (result.rowCount === 0) {
-    return res.status(404).json({ error: "Candidate not found" });
-  }
-
-  res.json({ ok: true });
 }
 
 /**
