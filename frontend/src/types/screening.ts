@@ -2,7 +2,10 @@ export type ScreeningDetails = {
   jobPostId: number;
   title: string;
   screenedAt: string;
-  candidates: Array<{
+  candidates: Array<RankedCandidate>;
+};
+
+export type RankedCandidate = {
     candidateId: number;
     candidateName: string;
     rank: number;
@@ -13,5 +16,4 @@ export type ScreeningDetails = {
     unknowns: string[];
     summary?: string;
     createdAt: string;
-  }>;
-};
+  }

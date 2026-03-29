@@ -4,7 +4,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
 import { Clock } from "lucide-react";
 import { useParams } from "react-router";
-import CandidateCard from "@/components/CandidateCard";
+import CandidateSidbar from "@/components/ScreeningPage/CandidateSidebar";
+import CandidateOverview from "@/components/ScreeningPage/CandidateOverview";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
@@ -52,71 +53,22 @@ function Screening() {
         second_site_link={"/screening-historikk"}
       />
 
-      <section className="space-y-4" aria-label="Screeningresultater">
-        <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-semibold text-(--color-dark)">
-            {data.title}
-          </h1>
-          <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
-            <Clock className="h-4 w-4" aria-hidden="true" />
-            <span>{formatDate(data.screenedAt)}</span>
-          </div>
-        </header>
-
-        <div className="space-y-10">
-          <section>
-            <h2 className="mb-4 text-xl font-bold">Kvalifiserte kandidater</h2>
-
-            {data.candidates.some((c) => c.qualified) ? (
-              <div className="grid gap-6">
-                {data.candidates.map(
-                  (candidate) =>
-                    candidate.qualified && (
-                      <CandidateCard
-                        key={candidate.candidateId}
-                        candidate={candidate}
-                      />
-                    ),
-                )}
-              </div>
-            ) : (
-              <p className="text-sm text-(--color-dark) opacity-75">
-                Ingen kvalifiserte kandidater
-              </p>
-            )}
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-xl font-bold">
-              Ikke kvalifiserte kandidater
-            </h2>
-
-            {data.candidates.some((c) => !c.qualified) ? (
-              <div className="grid gap-6">
-                {data.candidates.map(
-                  (candidate) =>
-                    !candidate.qualified && (
-                      <CandidateCard
-                        key={candidate.candidateId}
-                        candidate={candidate}
-                      />
-                    ),
-                )}
-              </div>
-            ) : (
-              <p className="text-sm text-(--color-dark) opacity-75">
-                Ingen ikke-kvalifiserte kandidater
-              </p>
-            )}
-          </section>
+      <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+        <h1 className="text-3xl font-semibold text-(--color-dark)">
+          {data.title}
+        </h1>
+        <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
+          <Clock className="h-4 w-4" aria-hidden="true" />
+          <span>{formatDate(data.screenedAt)}</span>
         </div>
-      </section>
+      </header>
 
-      <footer>
-        <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-          Viser {data.candidates.length} kandidater
-        </p>
-      </footer>
+      <div id="result-container" className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+      <CandidateSidbar candidates={data.candidates} />
+      
+      <CandidateOverview candidates={data.candidates} />
+      </div>
     </main>
   );
 }
