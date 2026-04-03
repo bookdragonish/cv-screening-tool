@@ -4,7 +4,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import cors from "cors";
 import { readFile } from "node:fs/promises";
-import norLLM from "./services/llm/norllm/request.js";
+import norLLM from "./services/llm/norLLM/request.js";
 import { run } from "node:test";
 
 export const app = express();
