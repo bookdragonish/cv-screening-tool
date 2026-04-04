@@ -57,6 +57,7 @@ function Screening() {
         <h1 className="text-3xl font-semibold text-(--color-dark)">
           {data.title}
         </h1>
+        <p> {data.aiJobDescription}</p>
         <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
           <Clock className="h-4 w-4" aria-hidden="true" />
           <span>{formatDate(data.screenedAt)}</span>
