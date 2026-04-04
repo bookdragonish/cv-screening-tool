@@ -16,4 +16,5 @@ export type RankedCandidate = {
     unknowns: string[];
     summary?: string;
     createdAt: string;
+    aml?: "aml-4.6" | "aml-4.7";
   }

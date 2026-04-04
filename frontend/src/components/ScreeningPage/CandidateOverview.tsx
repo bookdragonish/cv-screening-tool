@@ -1,5 +1,5 @@
 import type { RankedCandidate } from "@/types/screening";
-import CandidateCard from "../CandidateCard";
+import CandidateCard from "./CandidateCard";
 
 function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
   return (

@@ -1,26 +1,18 @@
 import { CheckCircle2, CircleHelp, FileText, XCircle } from "lucide-react";
-import { Progress } from "./ui/progress";
-
-type Candidate = {
-  candidateId: number;
-  rank: number;
-  candidateName: string;
-  qualified: boolean;
-  score: number;
-  summary?: string;
-  qualificationsMet: string[];
-  qualificationsMissing: string[];
-  unknowns: string[];
-};
+import { Progress } from "../ui/progress";
+import type { RankedCandidate } from "@/types/screening";
 
 type CandidateCardProps = {
-  candidate: Candidate;
+  candidate: RankedCandidate;
   id: number;
 };
 
 function CandidateCard({ candidate, id }: CandidateCardProps) {
   return (
-    <div id={id + ""} className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
+    <div
+      id={id + ""}
+      className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm"
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">
@@ -33,9 +25,14 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
             </h2>
           </div>
         </div>
-        {/*                 <span className="rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)">
-                  {candidate.qualified ? "Kvalifisert" : "Ikke kvalifisert"}
-                </span> */}
+
+        {candidate.aml ? (
+          <span className="rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)">
+            {candidate.aml}
+          </span>
+        ) : (
+          ""
+        )}
       </div>
 
       <article className="flex justify-between">

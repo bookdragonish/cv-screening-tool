@@ -1,5 +1,4 @@
 import type { RankedCandidate } from "@/types/screening";
-
 function CandidateSidbar({ candidates }: { candidates: RankedCandidate[] }) {
   return (
     <aside className="lg:sticky lg:top-10 lg:h-[90vh] lg:flex lg:flex-col lg:overflow-scroll sm:grid sm:grid-cols-2 sm:m-4">
@@ -12,9 +11,10 @@ function CandidateSidbar({ candidates }: { candidates: RankedCandidate[] }) {
             <a
               key={candidate.candidateId}
               href={`#${candidate.candidateId}`}
-              className=" px-3 py-2 text-sm opacity-70 hover:opacity-100 uppercase"
+              className=" px-3 py-2 flex text-sm opacity-70 hover:opacity-100 uppercase"
             >
-              {candidate.candidateName}
+              <p>{candidate.candidateName}</p> 
+              {candidate.aml ? (<p className="mx-1">§</p>) : ("")} 
             </a>
           ))}
         </article>
