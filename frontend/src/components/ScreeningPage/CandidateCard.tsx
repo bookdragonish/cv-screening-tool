@@ -1,6 +1,7 @@
 import { CheckCircle2, CircleHelp, FileText, XCircle } from "lucide-react";
 import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
+import { Badge } from "../ui/badge";
 
 type CandidateCardProps = {
   candidate: RankedCandidate;
@@ -27,9 +28,10 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
         </div>
 
         {candidate.aml ? (
-          <span className="rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)">
-            {candidate.aml}
-          </span>
+          <Badge variant="secondary">
+            {"AML §" + candidate.aml}
+          </Badge>
+        
         ) : (
           ""
         )}
