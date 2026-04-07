@@ -30,10 +30,11 @@ import type { Candidate } from "@/types/candidate"
 
 type AddNewCVModalProps = {
   onCreated?: () => void
+  onDelete?: (id: number, name: string) => Promise<Boolean>
   candidateToEdit?: Partial<Candidate>
   customTrigger?: React.ReactNode
 }
-function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVModalProps) {
+function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: AddNewCVModalProps) {
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const isEditing = !!candidateToEdit
@@ -247,6 +248,26 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
             type="button"
             variant="secondary"
             className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
+            hidden={!isEditing}
+            onClick={async () => {
+              if (candidateToEdit?.id == null) return
+
+              const deleted = await onDelete?.(
+                candidateToEdit.id,
+                candidateToEdit.name ?? `Kandidat ${candidateToEdit.id}`
+              )
+              if (deleted) {
+                setOpen(false)
+                form.reset()
+              }
+            }}
+          >
+            Slett
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
             onClick={() => {
               setOpen(false)
               form.reset()
