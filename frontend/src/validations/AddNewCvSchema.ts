@@ -35,6 +35,14 @@ const AddNewCvSchema = z.object({
 
   aml47: z
     .boolean(),
+
+  ansiennitet: z
+    .number()
+    .int("Ansiennitet må være et heltall")
+    .min(0, "Ansiennitet kan ikke være negativ")
+    .max(100, "Ansiennitet kan ikke være lengre enn 100 år")
+    .nullable()
+    .optional(),
 })
 
 type AddNewCvValues = z.infer<typeof AddNewCvSchema>

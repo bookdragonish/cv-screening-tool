@@ -47,6 +47,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
       cv: undefined as unknown as File,
       aml46: false,
       aml47: false,
+      ansiennitet: null,
     },
   })
 
@@ -57,6 +58,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         cv: undefined,
         aml46: false,
         aml47: false,
+        ansiennitet: null,
       })
     }
   }, [candidateToEdit, form])
@@ -75,6 +77,9 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
   const cvDescId = `add-cv-pdf-desc-${uid}`
   const cvErrId = `add-cv-pdf-err-${uid}`
   const submitErrId = `add-cv-submit-err-${uid}`
+  const amlGroupLabelId = `add-cv-aml-label-${uid}`
+  const ansienitetDescId = `add-cv-ansiennitet-desc-${uid}`
+  const ansienitetErrId = `add-cv-ansiennitet-err-${uid}`
   async function onSubmit(values: AddNewCvValues) {
     setSubmitError(null)
     if (!isEditing && !values.cv) {
@@ -91,6 +96,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
             name: values.name,
             aml46: values.aml46,
             aml47: values.aml47,
+            ansiennitet: values.ansiennitet,
           }),
         })
         if (!updateRes.ok) {
@@ -108,6 +114,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
             cv_pdf: null,
             aml46: values.aml46,
             aml47: values.aml47,
+            ansiennitet: values.ansiennitet,
           }),
         })
         if (!createRes.ok) {
@@ -245,8 +252,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
               )}
             />
             <Field>
-              <FieldLabel>Arbeidsmiljøloven</FieldLabel>
-              <div className="flex items-center gap-4">
+              <FieldLabel id={amlGroupLabelId}>Arbeidsmiljøloven</FieldLabel>
+              <div role="group" aria-labelledby={amlGroupLabelId} className="flex items-center gap-4">
                 <Controller
                   name="aml46"
                   control={form.control}
@@ -285,6 +292,42 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                 />
               </div>
             </Field>
+            <Controller 
+              name="ansiennitet"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="add-cv-ansiennitet">
+                    Ansiennitet
+                  </FieldLabel>
+                  <Input
+                    type="number"
+                    id="add-cv-ansiennitet"
+                    step={1}
+                    min={0}
+                    max={100}
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      field.onChange(val === "" ? null : Number(val))
+                    }}
+                    onBlur={field.onBlur}
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={`${ansienitetDescId} ${fieldState.invalid ? ansienitetErrId : ""}`.trim()}
+                  />
+                  {!fieldState.invalid && (
+                    <FieldDescription id={ansienitetDescId}>
+                      Antall år, valgfritt (0–100).
+                    </FieldDescription>
+                  )}
+                  {fieldState.invalid && (
+                    <div id={ansienitetErrId}>
+                      <FieldError errors={[fieldState.error]} />
+                    </div>
+                  )}
+                </Field>
+              )}
+            />
             {submitError && (
               <p className="text-sm text-red-600" role="alert" aria-live="polite">
                 {submitError}
