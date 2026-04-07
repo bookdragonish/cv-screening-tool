@@ -70,8 +70,8 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       name?: string;
       email?: string;
     };
-    if (!name || !email)
-      return res.status(400).json({ error: "name and email are required" });
+    if (!name)
+      return res.status(400).json({ error: "name is required" });
 
     const r = await pool.query(
       "insert into candidates(name, email) values($1, $2) returning id, name, email, (cv_pdf IS NOT NULL) as has_pdf, created_at",
@@ -210,8 +210,8 @@ export async function update(req: Request, res: Response, next: NextFunction) {
     const id = Number(req.params.id);
     const { name, email } = req.body as { name?: string; email?: string };
 
-    if (!name || !email) {
-      return res.status(400).json({ error: "name and email are required" });
+    if (!name) {
+      return res.status(400).json({ error: "name is are required" });
     }
 
     const r = await pool.query(

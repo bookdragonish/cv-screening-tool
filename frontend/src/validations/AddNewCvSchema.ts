@@ -17,10 +17,6 @@ const AddNewCvSchema = z.object({
     .min(2, "Navn må være minst 2 tegn.")
     .max(80, "Navn kan ikke være lengre enn 80 tegn."),
 
-  email: z
-    .email("Skriv inn en gyldig e-postadresse.")
-    .transform((val) => val.trim()),
-
   cv: z
     .any()
     .optional()

@@ -43,7 +43,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     shouldFocusError: true,
     defaultValues: {
       name: candidateToEdit?.name ?? "",
-      email: candidateToEdit?.email ?? "",
       cv: undefined as unknown as File,
     },
   })
@@ -52,7 +51,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     if (candidateToEdit) {
       form.reset({
         name: candidateToEdit.name ?? "",
-        email: candidateToEdit.email ?? "",
         cv: undefined,
       })
     }
@@ -69,8 +67,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
   const uid = useId()
   const nameDescId = `add-cv-name-desc-${uid}`
   const nameErrId = `add-cv-name-err-${uid}`
-  const emailDescId = `add-cv-email-desc-${uid}`
-  const emailErrId = `add-cv-email-err-${uid}`
   const cvDescId = `add-cv-pdf-desc-${uid}`
   const cvErrId = `add-cv-pdf-err-${uid}`
   const submitErrId = `add-cv-submit-err-${uid}`
@@ -88,7 +84,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: values.name,
-            email: values.email,
           }),
         })
         if (!updateRes.ok) {
@@ -103,7 +98,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: values.name,
-            email: values.email,
             cv_pdf: null,
           }),
         })
@@ -191,36 +185,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
                   </FieldDescription>
                   {fieldState.invalid && (
                     <div id={nameErrId}>
-                      <FieldError errors={[fieldState.error]} />
-                    </div>
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="add-cv-email">
-                    E-post <span aria-hidden="true">*</span>
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="add-cv-email"
-                    type="email"
-                    placeholder="ola@example.com"
-                    autoComplete="email"
-                    required
-                    aria-required="true"
-                    aria-invalid={fieldState.invalid}
-                    aria-describedby={`${emailDescId} ${fieldState.invalid ? emailErrId : ""}`.trim()}
-                  />
-                  <FieldDescription id={emailDescId}>
-                    Må være en gyldig e-postadresse.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <div id={emailErrId}>
                       <FieldError errors={[fieldState.error]} />
                     </div>
                   )}
