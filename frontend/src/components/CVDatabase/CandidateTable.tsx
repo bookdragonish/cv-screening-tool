@@ -9,6 +9,7 @@
     setPreviewId: (value: number) => void;
     setReloadKey: React.Dispatch<React.SetStateAction<number>>;
     dataLength: number;
+    setPopup: (popup: { message: string; type: "success" | "error" }) => void;
   };
 
   function CandidateTable({
@@ -16,6 +17,7 @@
     setPreviewId,
     dataLength,
     setReloadKey,
+    setPopup,
   }: CandidateTableProps) {
     function showPreview(id: number) {
       setPreviewId(id);
@@ -33,6 +35,7 @@
       try {
         await deleteCandidate(id);
         setReloadKey((prev) => prev + 1);
+        setPopup({ message: `Kandidat ${name} er slettet!`, type: "error" });
         return true;
       } catch (error) {
         alert("Feil ved sletting: " + (error as Error).message);
@@ -105,7 +108,10 @@
                             name: candidate.name ?? "",
                             email: candidate.email ?? "",
                           }}
-                          onCreated={() => setReloadKey((prev) => prev + 1)}
+                          onCreated={() => {
+                            setReloadKey((prev) => prev + 1);
+                            setPopup({ message: `${candidate.name} er oppdatert!`, type: "success" });
+                          }}
                           onDelete={handleDelete}
                           customTrigger={
                             <button
