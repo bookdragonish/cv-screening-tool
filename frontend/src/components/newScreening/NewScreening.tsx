@@ -1,10 +1,10 @@
 import ErrorBox from "@/components/ErrorBox";
-import NewScreeningHeader from "@/components/NewScreening/NewScreeningHeader";
-import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
+import NewScreeningHeader from "@/components/newScreening/NewScreeningHeader";
+import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
-import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
+import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
-import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
+import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
 
 type NewScreeningError = {
   title: string;
