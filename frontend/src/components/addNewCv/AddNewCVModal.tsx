@@ -45,6 +45,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
     defaultValues: {
       name: candidateToEdit?.name ?? "",
       cv: undefined as unknown as File,
+      aml46: false,
+      aml47: false,
     },
   })
 
@@ -53,6 +55,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
       form.reset({
         name: candidateToEdit.name ?? "",
         cv: undefined,
+        aml46: false,
+        aml47: false,
       })
     }
   }, [candidateToEdit, form])
@@ -85,6 +89,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: values.name,
+            aml46: values.aml46,
+            aml47: values.aml47,
           }),
         })
         if (!updateRes.ok) {
@@ -100,6 +106,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           body: JSON.stringify({
             name: values.name,
             cv_pdf: null,
+            aml46: values.aml46,
+            aml47: values.aml47,
           }),
         })
         if (!createRes.ok) {
@@ -236,6 +244,47 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                 </Field>
               )}
             />
+            <Field>
+              <FieldLabel>Arbeidsmiljøloven</FieldLabel>
+              <div className="flex items-center gap-4">
+                <Controller
+                  name="aml46"
+                  control={form.control}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="add-cv-aml-46"
+                        checked={field.value}
+                        onChange={(e) => {
+                          field.onChange(e.target.checked)
+                          if (e.target.checked) form.setValue("aml47", false)
+                        }}
+                      />
+                      <FieldLabel htmlFor="add-cv-aml-46">§ 4.6</FieldLabel>
+                    </div>
+                  )}
+                />
+                <Controller
+                  name="aml47"
+                  control={form.control}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="add-cv-aml-47"
+                        checked={field.value}
+                        onChange={(e) => {
+                          field.onChange(e.target.checked)
+                          if (e.target.checked) form.setValue("aml46", false)
+                        }}
+                      />
+                      <FieldLabel htmlFor="add-cv-aml-47">§ 4.7</FieldLabel>
+                    </div>
+                  )}
+                />
+              </div>
+            </Field>
             {submitError && (
               <p className="text-sm text-red-600" role="alert" aria-live="polite">
                 {submitError}

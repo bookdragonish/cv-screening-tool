@@ -29,6 +29,12 @@ const AddNewCvSchema = z.object({
     .refine((file) => !file || file.size <= MAX_PDF_BYTES, {
       message: "PDFen er for stor (maks 10MB).",
     }),
+    
+  aml46: z
+    .boolean(),
+
+  aml47: z
+    .boolean(),
 })
 
 type AddNewCvValues = z.infer<typeof AddNewCvSchema>
