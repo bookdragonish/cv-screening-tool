@@ -66,7 +66,15 @@
     @apply border-border outline-ring/50;
   }
 
-  :where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    [tabindex]
+  ):focus-visible {
     outline: 3px solid var(--color-primary);
     outline-offset: 2px;
   }
@@ -74,4 +82,44 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+  .page-title {
+    @apply text-4xl font-bold;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold;
+  }
+
+  .subsection-title {
+    @apply text-base  font-semibold;
+  }
+
+  .text-regular {
+    @apply text-base;
+  }
+
+  .text-smaller {
+    @apply text-sm;
+  }
+
+@layer components {
+  .hover-dark-button {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    transition: all 0.2s ease;
+  }
+
+  .hover-dark-button:hover,
+  .hover-dark-button:focus-visible {
+    background-color: white !important;
+    color: var(--color-primary) !important;
+  }
+}
+}
+
+html {
+  scroll-behavior: smooth;
 }

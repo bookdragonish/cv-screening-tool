@@ -48,13 +48,13 @@ function CVDatabase() {
       name: candidate.name ?? `Candidate ${candidate.id}`,
     }));
   return (
-    <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
+    <main id="main-content" className="mx-auto max-w-7xl p-6">
       <Breadcrumbs second_site_name={"Kandidater"} />
 
       <section className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <HeaderSection
           header={"Kandidater"}
-          subsection={"Administrer ansattes CV-er for screening."}
+          subsection={"Administrer ansattes informasjon og CV-er for skanninger."}
         />
       <AddNewCVModal
         onCreated={() => {

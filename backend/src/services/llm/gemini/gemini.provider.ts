@@ -1,35 +1,44 @@
 // gemini.provider.ts
 import { GoogleGenAI } from "@google/genai";
 import { pool } from "../../../db/pool.js";
-import {
-  deleteGeminiFiles,
-  generateFromGeminiOnFiles,
-} from "./geminiGenerate.js";
+import { parsePdf } from "../../../middleware/parserPDF.js";
 import { generateFromGeminiText } from "./geminiText.js";
 import {
-  parseCandidateEval,
+  parseCandidateEvals,
   parseJobProfile,
-  parseRanking,
 } from "./schemas.js";
 import {
-  buildCandidateEvalPrompt,
-  buildJobAdProfilePrompt,
-  buildJobProfileFromPdfPrompt,
-  buildRankingPrompt,
-} from "./prompts/prompts.js";
-import {
-  uploadFilesToGemini,
-  type UploadedGeminiFile,
-} from "./uploadFilesToGemini.js";
+  buildCandidatesEvaluationPrompt,
+  buildJobProfileFromTextPrompt,
+} from "../prompts/prompts.js";
 import type {
   ApiCandidate,
   CandidateEval,
-  CandidateWithCv,
+  CandidateWithCvText,
   JobDescriptionInput,
   JobProfile,
 } from "../../../types/ai.types.js";
 
 const MODEL_NAME = "gemini-2.5-flash";
+const JOB_PROFILE_SCHEMA_DESCRIPTION = `{
+  "role_title": string,
+  "must_haves": string[],
+  "nice_to_haves": string[]
+}`;
+const CANDIDATE_EVAL_SCHEMA_DESCRIPTION = `{
+  "evaluations": [{
+    "candidate_id": string,
+    "candidate_label": string,
+    "candidate_role": string,
+    "qualified": boolean,
+    "overall_score": number,
+    "experience_highlights": string[],
+    "education": string[],
+    "strengths": [{"point": string, "explanation": string}],
+    "gaps": [{"point": string, "explanation": string, "impact": "high"|"medium"|"low"}],
+    "unknowns": string[]
+  }]
+}`;
 
 function createGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -40,13 +49,9 @@ function createGeminiClient(): GoogleGenAI {
   return new GoogleGenAI({ apiKey });
 }
 
-function sanitizeFileName(value: string): string {
-  return value.replace(/[^a-zA-Z0-9._-]+/g, "_");
-}
-
-async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCv[]> {
+async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCvText[]> {
   const r = await pool.query(
-    "select id, name, email, created_at, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
+    "select id, name, email, created_at, cv_markdown from candidates where cv_markdown is not null and btrim(cv_markdown) <> '' order by id desc limit $1",
     [limit],
   );
 
@@ -54,30 +59,78 @@ async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCv[]> {
 
   return rows
     .map((candidate) => {
-      const pdfBuffer = candidate.cv_pdf;
-      if (!Buffer.isBuffer(pdfBuffer) || !pdfBuffer.length) return null;
+      const cvText = candidate.cv_markdown?.trim();
+      if (!cvText) return null;
 
-      const baseName = sanitizeFileName(
-        candidate.name?.trim() || `candidate-${candidate.id}`,
-      );
-
-      const file = new File([Uint8Array.from(pdfBuffer)], `${baseName}.pdf`, {
-        type: "application/pdf",
-      });
-
-      return { candidate, file };
+      return { candidate, cvText };
     })
-    .filter((item): item is CandidateWithCv => item !== null);
+    .filter((item): item is CandidateWithCvText => item !== null);
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function parseGeminiJsonWithRepair<T>(params: {
+  ai: GoogleGenAI;
+  model: string;
+  rawText: string;
+  schemaDescription: string;
+  parse: (text: string) => T;
+  label: string;
+}): Promise<T> {
+  const { ai, model, rawText, schemaDescription, parse, label } = params;
+
+  try {
+    return parse(rawText);
+  } catch (firstError) {
+    const repairPrompt = [
+      "You are a strict JSON formatter.",
+      "Convert the content below into a valid JSON object matching the schema.",
+      "Return only JSON.",
+      "Use double quotes for all keys and string values.",
+      "Do not add markdown code fences.",
+      "",
+      "Schema:",
+      schemaDescription,
+      "",
+      "Content to repair:",
+      rawText,
+    ].join("\n");
+
+    const repairedText = await generateFromGeminiText({
+      ai,
+      model,
+      prompt: repairPrompt,
+      forceJsonResponse: true,
+    });
+
+    try {
+      return parse(repairedText);
+    } catch (repairError) {
+      const rawPreview =
+        rawText.length > 1200 ? `${rawText.slice(0, 1200)}...` : rawText;
+      throw new Error(
+        [
+          `Gemini returned invalid JSON for ${label}.`,
+          `First parse error: ${toErrorMessage(firstError)}`,
+          `Repair parse error: ${toErrorMessage(repairError)}`,
+          `Raw response preview:`,
+          rawPreview,
+        ].join("\n"),
+        { cause: repairError },
+      );
+    }
+  }
 }
 
 export function createGeminiProvider() {
   const ai = createGeminiClient();
-  const uploadedFilesForCleanup: UploadedGeminiFile[] = [];
 
   return {
     kind: "gemini" as const,
 
-    async loadCandidates(limit: number): Promise<CandidateWithCv[]> {
+    async loadCandidates(limit: number): Promise<CandidateWithCvText[]> {
       return loadCandidatesWithCv(limit);
     },
 
@@ -86,120 +139,73 @@ export function createGeminiProvider() {
         return input.text;
       }
 
-      return input.originalName || "PDF job description";
+      return parsePdf(input.file);
     },
 
     async createJobProfile(
-      input: JobDescriptionInput,
-      _jobDescriptionText: string,
+      _input: JobDescriptionInput,
+      jobDescriptionText: string,
     ): Promise<JobProfile> {
-      if (input.mode === "text") {
-        const prompt = buildJobAdProfilePrompt(input.text);
-        const jobProfileText = await generateFromGeminiText({
-          ai,
-          model: MODEL_NAME,
-          prompt,
-        });
+      void _input;
 
-        return parseJobProfile(jobProfileText);
-      }
-
-      const jobFile = new File(
-        [Uint8Array.from(input.file)],
-        input.originalName || "job-description.pdf",
-        { type: "application/pdf" },
-      );
-
-      const uploadedJobFiles = await uploadFilesToGemini(ai, [jobFile]);
-      const uploadedJobFile = uploadedJobFiles[0];
-
-      if (!uploadedJobFile) {
-        throw new Error(
-          "Kunne ikke laste opp stillingsbeskrivelsen til Gemini.",
-        );
-      }
-
-      uploadedFilesForCleanup.push(uploadedJobFile);
-
-      const jobProfileText = await generateFromGeminiOnFiles({
+      const prompt = buildJobProfileFromTextPrompt(jobDescriptionText);
+      const jobProfileText = await generateFromGeminiText({
         ai,
         model: MODEL_NAME,
-        files: [uploadedJobFile],
-        prompt: buildJobProfileFromPdfPrompt(),
-        labelFiles: false,
+        prompt,
+        forceJsonResponse: true,
       });
 
-      return parseJobProfile(jobProfileText);
+      return parseGeminiJsonWithRepair({
+        ai,
+        model: MODEL_NAME,
+        rawText: jobProfileText,
+        schemaDescription: JOB_PROFILE_SCHEMA_DESCRIPTION,
+        parse: parseJobProfile,
+        label: "job profile",
+      });
     },
 
     async evaluateCandidates(params: {
-      candidatesWithCv: CandidateWithCv[];
+      candidatesWithCv: CandidateWithCvText[];
       jobProfile: JobProfile;
     }): Promise<CandidateEval[]> {
       const { candidatesWithCv, jobProfile } = params;
-
-      const uploadedCandidateFiles = await uploadFilesToGemini(
-        ai,
-        candidatesWithCv.map((item) => item.file),
-      );
-
-      uploadedFilesForCleanup.push(...uploadedCandidateFiles);
-
-      const evals: CandidateEval[] = [];
-
-      for (let i = 0; i < uploadedCandidateFiles.length; i += 1) {
-        const uploadedFile = uploadedCandidateFiles[i];
-        const candidateWithCv = candidatesWithCv[i];
-
-        if (!uploadedFile || !candidateWithCv) {
-          throw new Error("Mangler kandidatdata under evaluering.");
-        }
-
-        const candidate = candidateWithCv.candidate;
-
-        const evalPrompt = buildCandidateEvalPrompt({
-          jobProfile,
-          candidateId: String(candidate.id),
-          candidateLabel: candidate.name ?? uploadedFile.displayName,
-        });
-
-        const evalText = await generateFromGeminiOnFiles({
-          ai,
-          model: MODEL_NAME,
-          files: [uploadedFile],
-          prompt: evalPrompt,
-          labelFiles: false,
-        });
-
-        evals.push(parseCandidateEval(evalText));
+      if (candidatesWithCv.length === 0) {
+        return [];
       }
 
-      return evals;
-    },
-
-    async rankCandidates(params: {
-      jobProfile: JobProfile;
-      evals: CandidateEval[];
-      candidatesWithCv: CandidateWithCv[];
-    }): Promise<ReturnType<typeof parseRanking>> {
-      const { jobProfile, evals } = params;
-
-      const rankingPrompt = buildRankingPrompt({ jobProfile, evals });
-      const rankingText = await generateFromGeminiText({
-        ai,
-        model: MODEL_NAME,
-        prompt: rankingPrompt,
+      const evalPrompt = buildCandidatesEvaluationPrompt({
+        jobProfile,
+        candidates: candidatesWithCv.map((candidateWithCv) => {
+          const candidate = candidateWithCv.candidate;
+          return {
+            candidateId: String(candidate.id),
+            candidateLabel: candidate.name ?? `candidate-${candidate.id}`,
+            cvText: candidateWithCv.cvText,
+          };
+        }),
       });
 
-      return parseRanking(rankingText);
+      const evalText = await generateFromGeminiText({
+        ai,
+        model: MODEL_NAME,
+        prompt: evalPrompt,
+        forceJsonResponse: true,
+      });
+
+      return parseGeminiJsonWithRepair({
+        ai,
+        model: MODEL_NAME,
+        rawText: evalText,
+        schemaDescription: CANDIDATE_EVAL_SCHEMA_DESCRIPTION,
+        parse: parseCandidateEvals,
+        label: "candidate evaluations",
+      });
     },
 
     async cleanup(): Promise<void> {
-      if (!uploadedFilesForCleanup.length) return;
-
-      await deleteGeminiFiles(ai, uploadedFilesForCleanup).catch((error) => {
-        console.warn("Kunne ikke slette Gemini-filer etter screening:", error);
-      });
+      return;
     },
   };
 }

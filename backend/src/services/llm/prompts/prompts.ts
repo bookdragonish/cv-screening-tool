@@ -3,9 +3,7 @@
  */
 export {
   buildJobAdProfilePrompt,
-  buildJobProfileFromPdfPrompt,
   buildJobProfileFromTextPrompt,
 } from "./buildJobProfilePrompt.js";
-export { buildCandidateEvalPrompt } from "./buildCandidateEvalPrompt.js";
-export { buildRankingPrompt } from "./buildRankingPrompt.js";
+export { buildCandidatesEvaluationPrompt } from "./buildCandidatesEvalPrompt.js";
 export { RULES, RUBRIC } from "./rulesAndRubric.js";

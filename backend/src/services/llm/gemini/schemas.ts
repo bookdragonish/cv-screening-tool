@@ -15,7 +15,7 @@ const ImpactSchema = z.preprocess(
 export const JobProfileSchema = z.object({
   role_title: z.string(),
   must_haves: z.array(z.string()),
-  nice_to_haves: z.array(z.string()),
+  nice_to_haves: z.array(z.string()).optional(),
 });
 
 /**
@@ -25,14 +25,17 @@ export const CandidateEvalSchema = z.object({
   candidate_id: z.string(),
   candidate_label: z.string(),
   candidate_role: z.string().optional(),
-  contact_phone: z.string().optional(),
   qualified: z.boolean(),
   overall_score: z.number(),
   experience_highlights: z.array(z.string()).optional(),
   education: z.array(z.string()).optional(),
-  strengths: z.array(z.object({ point: z.string(), evidence: z.string() })),
-  gaps: z.array(z.object({ point: z.string(), evidence: z.string(), impact: ImpactSchema })),
+  strengths: z.array(z.object({ point: z.string(), explanation: z.string() })),
+  gaps: z.array(z.object({ point: z.string(), explanation: z.string(), impact: ImpactSchema })),
   unknowns: z.array(z.string()),
+});
+
+export const CandidateEvalsSchema = z.object({
+  evaluations: z.array(CandidateEvalSchema),
 });
 
 /**
@@ -66,12 +69,48 @@ function extractFirstJsonObject(text: string): string {
   const s = stripCodeFences(text);
   const start = s.indexOf("{");
   if (start === -1) throw new Error("No JSON object start '{' found.");
+
   let depth = 0;
+  let inString = false;
+  let isEscaped = false;
+
   for (let i = start; i < s.length; i++) {
-    if (s[i] === "{") depth++;
-    else if (s[i] === "}") depth--;
-    if (depth === 0) return s.slice(start, i + 1);
+    const ch = s[i];
+
+    if (inString) {
+      if (isEscaped) {
+        isEscaped = false;
+        continue;
+      }
+
+      if (ch === "\\") {
+        isEscaped = true;
+        continue;
+      }
+
+      if (ch === "\"") {
+        inString = false;
+      }
+
+      continue;
+    }
+
+    if (ch === "\"") {
+      inString = true;
+      continue;
+    }
+
+    if (ch === "{") {
+      depth++;
+      continue;
+    }
+
+    if (ch === "}") {
+      depth--;
+      if (depth === 0) return s.slice(start, i + 1);
+    }
   }
+
   throw new Error("JSON object not closed properly.");
 }
 
@@ -79,26 +118,42 @@ function extractFirstJsonObject(text: string): string {
  * Parses a JSON object from model output text.
  */
 function parseJsonOrThrow(text: string): unknown {
-  const jsonStr = extractFirstJsonObject(text);
-  return JSON.parse(jsonStr);
+  const stripped = stripCodeFences(text);
+
+  try {
+    return JSON.parse(stripped);
+  } catch {
+    const jsonStr = extractFirstJsonObject(stripped);
+    return JSON.parse(jsonStr);
+  }
 }
 
 /**
- * Parses and validates job profile output from Gemini.
+ * Parses and validates job profile output from the LLM.
  */
 export function parseJobProfile(text: string): JobProfile {
   return JobProfileSchema.parse(parseJsonOrThrow(text)) as JobProfile;
 }
 
 /**
- * Parses and validates candidate evaluation output from Gemini.
+ * Parses and validates candidate evaluation output from the LLM.
  */
 export function parseCandidateEval(text: string): CandidateEval {
   return CandidateEvalSchema.parse(parseJsonOrThrow(text)) as CandidateEval;
 }
 
 /**
- * Parses and validates candidate ranking output from Gemini.
+ * Parses the candidate evaluations from the LLM.
+ */
+export function parseCandidateEvals(text: string): CandidateEval[] {
+  const parsed = CandidateEvalsSchema.parse(parseJsonOrThrow(text)) as {
+    evaluations: CandidateEval[];
+  };
+  return parsed.evaluations;
+}
+
+/**
+ * Parses and validates candidate ranking output from the LLM.
  */
 export function parseRanking(text: string): Ranking {
   return RankingSchema.parse(parseJsonOrThrow(text)) as Ranking;

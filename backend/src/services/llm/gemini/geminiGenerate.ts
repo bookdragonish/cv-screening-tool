@@ -3,7 +3,13 @@ import {
   GoogleGenAI,
   type Part,
 } from "@google/genai";
-import type { UploadedGeminiFile } from "./uploadFilesToGemini.js";
+
+export type UploadedGeminiFile = {
+  uri: string;
+  mimeType: string;
+  displayName: string;
+  uploadId: string;
+};
 
 /**
  * Sends a prompt and one or more uploaded files to Gemini.
@@ -16,8 +22,9 @@ export async function generateFromGeminiOnFiles(params: {
   files: UploadedGeminiFile[];
   prompt: string;
   labelFiles?: boolean;
+  forceJsonResponse?: boolean;
 }): Promise<string> {
-  const { ai, model, files, prompt, labelFiles = true } = params;
+  const { ai, model, files, prompt, labelFiles = true, forceJsonResponse = false } = params;
 
   const parts: Part[] = [{text: prompt}];
 
@@ -37,10 +44,15 @@ export async function generateFromGeminiOnFiles(params: {
     parts: parts,
   }
 
-  const response = await ai.models.generateContent({
+  const request = {
     model,
     contents: [userContent],
-  });
+    ...(forceJsonResponse
+      ? { config: { responseMimeType: "application/json" } }
+      : {}),
+  };
+
+  const response = await ai.models.generateContent(request);
 
   const text = response.candidates?.[0]?.content?.parts?.[0]?.text;
   return text ?? "Tom respons, noe feilet";

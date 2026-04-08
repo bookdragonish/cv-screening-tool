@@ -36,7 +36,7 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
 
 /**
  * Creates a new job post.
- * 
+ *
  * Request should include 'header', 'title', 'description', 'hardQualifications', and 'softQualifications'.
  *
  * Responses:
@@ -45,7 +45,7 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
  */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
-    const { header, title, description, hardQualifications, softQualifications } = req.body as { header?: string; title?: string; description?: string; hardQualifications?: string; softQualifications?: string };
+    const { header, title, description, hardQualifications, softQualifications } = req.body as { header?: string; title?: string; description?: string; hardQualifications?: string; softQualifications?: string; };
     if (!header || !title || !description || !hardQualifications || !softQualifications) return res.status(400).json({ error: "header, title, description, hardQualifications, and softQualifications are required" });
 
     const r = await pool.query(
