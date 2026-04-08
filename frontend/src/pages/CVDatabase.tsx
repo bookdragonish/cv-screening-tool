@@ -9,12 +9,14 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import Searchbar from "@/components/Searchbar";
 import CandidateTable from "@/components/CVDatabase/CandidateTable";
 import HeaderSection from "@/components/HeaderSection";
+import CheckMarkPopUp from "@/components/CheckMarkPopUp";
 
 function CVDatabase() {
   const [reloadKey, setReloadKey] = useState(0);
   const { data, isError, isLoading } = useFetchCandidates(reloadKey);
   const [search, setSearch] = useState("");
   const [previewId, setPreviewId] = useState<number | null>(null);
+  const [popup, setPopup] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   if (isError) {
     return (
@@ -54,8 +56,15 @@ function CVDatabase() {
           header={"Kandidater"}
           subsection={"Administrer ansattes informasjon og CV-er for skanninger."}
         />
-        <AddNewCVModal onCreated={() => setReloadKey((k) => k + 1)} />
+      <AddNewCVModal
+        onCreated={() => {
+          setReloadKey((k) => k + 1);
+          setPopup({ message: "Kandidat lagt til!", type: "success" });
+        }}
+      />
       </section>
+
+      <CheckMarkPopUp popup={popup} setPopup={setPopup} />
 
       <Searchbar
         searchQuery={search}
@@ -67,6 +76,7 @@ function CVDatabase() {
         setPreviewId={setPreviewId}
         setReloadKey={setReloadKey}
         dataLength={data.length}
+        setPopup={setPopup}
       />
       {previewId != null && (
         <PdfPreviewOverlay

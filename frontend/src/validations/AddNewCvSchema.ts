@@ -17,10 +17,6 @@ const AddNewCvSchema = z.object({
     .min(2, "Navn må være minst 2 tegn.")
     .max(80, "Navn kan ikke være lengre enn 80 tegn."),
 
-  email: z
-    .email("Skriv inn en gyldig e-postadresse.")
-    .transform((val) => val.trim()),
-
   cv: z
     .any()
     .optional()
@@ -33,6 +29,20 @@ const AddNewCvSchema = z.object({
     .refine((file) => !file || file.size <= MAX_PDF_BYTES, {
       message: "PDFen er for stor (maks 10MB).",
     }),
+    
+  aml46: z
+    .boolean(),
+
+  aml47: z
+    .boolean(),
+
+  ansiennitet: z
+    .number()
+    .int("Ansiennitet må være et heltall")
+    .min(0, "Ansiennitet kan ikke være negativ")
+    .max(100, "Ansiennitet kan ikke være lengre enn 100 år")
+    .nullable()
+    .optional(),
 })
 
 type AddNewCvValues = z.infer<typeof AddNewCvSchema>

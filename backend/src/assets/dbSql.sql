@@ -1,4 +1,4 @@
-DROP TABLE candidates;
+DROP TABLE candidates CASCADE;
 
 create table
     if not exists candidates (
@@ -7,6 +7,10 @@ create table
         email TEXT unique,
         cv_pdf BYTEA,
         cv_markdown text,
+        aml46 boolean not null default false,
+        aml47 boolean not null default false,
+        ansiennitet integer check (ansiennitet >= 0 and ansiennitet <= 100),
+        constraint chk_aml_one_at_a_time check (not (aml46 = true and aml47 = true)),
         created_at timestamptz default now ()
     );
 
