@@ -1,6 +1,5 @@
 import type {
   CandidateEval,
-  CandidateWithCv,
   CandidateWithCvText,
   JobDescriptionInput,
   JobProfile,
@@ -12,7 +11,7 @@ import { parseRanking } from "../services/llm/gemini/schemas.js";
 export type GeminiProvider = {
   kind: "gemini";
 
-  loadCandidates(limit: number): Promise<CandidateWithCv[]>;
+  loadCandidates(limit: number): Promise<CandidateWithCvText[]>;
 
   getJobDescriptionText(
     input: JobDescriptionInput,
@@ -24,14 +23,14 @@ export type GeminiProvider = {
   ): Promise<JobProfile>;
 
   evaluateCandidates(params: {
-    candidatesWithCv: CandidateWithCv[];
+    candidatesWithCv: CandidateWithCvText[];
     jobProfile: JobProfile;
   }): Promise<CandidateEval[]>;
 
   rankCandidates(params: {
     jobProfile: JobProfile;
     evals: CandidateEval[];
-    candidatesWithCv: CandidateWithCv[];
+    candidatesWithCv: CandidateWithCvText[];
   }): Promise<ReturnType<typeof parseRanking>>;
 };
 
