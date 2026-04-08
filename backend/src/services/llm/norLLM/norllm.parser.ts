@@ -119,19 +119,19 @@ export function fixCandidateEval(params: {
         const point = normalizeString(
           typeof record.point === "string" ? record.point : "",
         );
-        const evidence = normalizeString(
-          typeof record.evidence === "string" ? record.evidence : "",
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
         );
 
-        if (!point && !evidence) return null;
+        if (!point && !explanation) return null;
 
         return {
           point: point || "Uspesifisert styrke",
-          evidence: evidence || "Ikke oppgitt",
+          explanation: explanation || "Ikke oppgitt",
         };
       })
       .filter(
-        (item): item is { point: string; evidence: string } => item !== null,
+        (item): item is { point: string; explanation: string } => item !== null,
       );
 
     const gaps = gapsRaw
@@ -142,15 +142,15 @@ export function fixCandidateEval(params: {
         const point = normalizeString(
           typeof record.point === "string" ? record.point : "",
         );
-        const evidence = normalizeString(
-          typeof record.evidence === "string" ? record.evidence : "",
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
         );
 
-        if (!point && !evidence) return null;
+        if (!point && !explanation) return null;
 
         return {
           point: point || "Uspesifisert gap",
-          evidence: evidence || "Ikke oppgitt",
+          explanation: explanation || "Ikke oppgitt",
           impact: normalizeImpact(record.impact),
         };
       })
@@ -159,7 +159,7 @@ export function fixCandidateEval(params: {
           item,
         ): item is {
           point: string;
-          evidence: string;
+          explanation: string;
           impact: "high" | "medium" | "low";
         } => item !== null,
       );
@@ -177,10 +177,6 @@ export function fixCandidateEval(params: {
         normalizeString(
           typeof raw.candidate_role === "string" ? raw.candidate_role : "",
         ) || "Kandidat",
-      contact_phone:
-        normalizeString(
-          typeof raw.contact_phone === "string" ? raw.contact_phone : "",
-        ) || "Ikke oppgitt",
       qualified:
         typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
       overall_score: score,
@@ -188,7 +184,7 @@ export function fixCandidateEval(params: {
       education: toNonEmptyStringArray(raw.education),
       strengths: strengths.length
         ? strengths
-        : [{ point: "Ingen tydelige styrker", evidence: "Ikke oppgitt" }],
+        : [{ point: "Ingen tydelige styrker", explanation: "Ikke oppgitt" }],
       gaps,
       unknowns: toNonEmptyStringArray(raw.unknowns),
     };

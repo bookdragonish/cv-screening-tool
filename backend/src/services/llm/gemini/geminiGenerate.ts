@@ -3,7 +3,13 @@ import {
   GoogleGenAI,
   type Part,
 } from "@google/genai";
-import type { UploadedGeminiFile } from "./uploadFilesToGemini.js";
+
+export type UploadedGeminiFile = {
+  uri: string;
+  mimeType: string;
+  displayName: string;
+  uploadId: string;
+};
 
 /**
  * Sends a prompt and one or more uploaded files to Gemini.

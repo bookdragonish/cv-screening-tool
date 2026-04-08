@@ -4,7 +4,6 @@ import type {
   JobDescriptionInput,
   JobProfile,
 } from "./ai.types.js";
-import { parseRanking } from "../services/llm/gemini/schemas.js";
 
 // Interface for the providers to ensure they cotains similar functions
 
@@ -26,12 +25,6 @@ export type GeminiProvider = {
     candidatesWithCv: CandidateWithCvText[];
     jobProfile: JobProfile;
   }): Promise<CandidateEval[]>;
-
-  rankCandidates(params: {
-    jobProfile: JobProfile;
-    evals: CandidateEval[];
-    candidatesWithCv: CandidateWithCvText[];
-  }): Promise<ReturnType<typeof parseRanking>>;
 };
 
 export type NorllmProvider = {
@@ -52,12 +45,6 @@ export type NorllmProvider = {
     candidatesWithCv: CandidateWithCvText[];
     jobProfile: JobProfile;
   }): Promise<CandidateEval[]>;
-
-  rankCandidates(params: {
-    jobProfile: JobProfile;
-    evals: CandidateEval[];
-    candidatesWithCv: CandidateWithCvText[];
-  }): Promise<ReturnType<typeof parseRanking>>;
 };
 
 export type ScreeningLlmProvider =

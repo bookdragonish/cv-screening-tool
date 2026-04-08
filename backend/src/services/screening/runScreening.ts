@@ -1,5 +1,6 @@
 import { getLlmProvider } from "../llm/llm.service.js";
 import {
+  buildRankingFromEvaluations,
   buildRequiredSkills,
   buildScreeningRecord,
   mapToScreeningCandidates,
@@ -50,13 +51,14 @@ export async function runScreeningService({
       jobProfile,
     });
 
-    const ranking = await provider.rankCandidates({
+    const ranking = buildRankingFromEvaluations({
       jobProfile,
       evals,
       candidatesWithCv,
     });
 
     const candidates = mapToScreeningCandidates({
+      jobProfile,
       ranking,
       evals,
       candidatesWithCv,
@@ -104,13 +106,14 @@ export async function runScreeningService({
     jobProfile,
   });
 
-  const ranking = await provider.rankCandidates({
+  const ranking = buildRankingFromEvaluations({
     jobProfile,
     evals,
     candidatesWithCv,
   });
 
   const candidates = mapToScreeningCandidates({
+    jobProfile,
     ranking,
     evals,
     candidatesWithCv,
