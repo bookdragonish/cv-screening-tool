@@ -66,12 +66,48 @@ function extractFirstJsonObject(text: string): string {
   const s = stripCodeFences(text);
   const start = s.indexOf("{");
   if (start === -1) throw new Error("No JSON object start '{' found.");
+
   let depth = 0;
+  let inString = false;
+  let isEscaped = false;
+
   for (let i = start; i < s.length; i++) {
-    if (s[i] === "{") depth++;
-    else if (s[i] === "}") depth--;
-    if (depth === 0) return s.slice(start, i + 1);
+    const ch = s[i];
+
+    if (inString) {
+      if (isEscaped) {
+        isEscaped = false;
+        continue;
+      }
+
+      if (ch === "\\") {
+        isEscaped = true;
+        continue;
+      }
+
+      if (ch === "\"") {
+        inString = false;
+      }
+
+      continue;
+    }
+
+    if (ch === "\"") {
+      inString = true;
+      continue;
+    }
+
+    if (ch === "{") {
+      depth++;
+      continue;
+    }
+
+    if (ch === "}") {
+      depth--;
+      if (depth === 0) return s.slice(start, i + 1);
+    }
   }
+
   throw new Error("JSON object not closed properly.");
 }
 
@@ -79,8 +115,14 @@ function extractFirstJsonObject(text: string): string {
  * Parses a JSON object from model output text.
  */
 function parseJsonOrThrow(text: string): unknown {
-  const jsonStr = extractFirstJsonObject(text);
-  return JSON.parse(jsonStr);
+  const stripped = stripCodeFences(text);
+
+  try {
+    return JSON.parse(stripped);
+  } catch {
+    const jsonStr = extractFirstJsonObject(stripped);
+    return JSON.parse(jsonStr);
+  }
 }
 
 /**
