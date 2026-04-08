@@ -260,13 +260,18 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                   render={({ field }) => (
                     <div className="flex items-center gap-2">
                       <input
-                        type="checkbox"
+                        type="radio"
                         id="add-cv-aml-46"
                         checked={field.value}
-                        onChange={(e) => {
-                          field.onChange(e.target.checked)
-                          if (e.target.checked) form.setValue("aml47", false)
+                        onClick={() => {
+                          if (field.value) {
+                            field.onChange(false)
+                          } else {
+                            field.onChange(true)
+                            form.setValue("aml47", false)
+                          }
                         }}
+                        onChange={() => {}}
                       />
                       <FieldLabel htmlFor="add-cv-aml-46">§ 4.6</FieldLabel>
                     </div>
@@ -278,13 +283,18 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                   render={({ field }) => (
                     <div className="flex items-center gap-2">
                       <input
-                        type="checkbox"
+                        type="radio"
                         id="add-cv-aml-47"
                         checked={field.value}
-                        onChange={(e) => {
-                          field.onChange(e.target.checked)
-                          if (e.target.checked) form.setValue("aml46", false)
+                        onClick={() => {
+                          if (field.value) {
+                            field.onChange(false)
+                          } else {
+                            field.onChange(true)
+                            form.setValue("aml46", false)
+                          }
                         }}
+                        onChange={() => {}}
                       />
                       <FieldLabel htmlFor="add-cv-aml-47">§ 4.7</FieldLabel>
                     </div>
