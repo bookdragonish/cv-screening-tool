@@ -107,6 +107,9 @@
                             id: candidate.id,
                             name: candidate.name ?? "",
                             email: candidate.email ?? "",
+                            aml46: candidate.aml46,
+                            aml47: candidate.aml47,
+                            ansiennitet: candidate.ansiennitet,
                           }}
                           onCreated={() => {
                             setReloadKey((prev) => prev + 1);

@@ -56,9 +56,9 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
       form.reset({
         name: candidateToEdit.name ?? "",
         cv: undefined,
-        aml46: false,
-        aml47: false,
-        ansiennitet: null,
+        aml46: candidateToEdit.aml46 ?? false,
+        aml47: candidateToEdit.aml47 ?? false,
+        ansiennitet: candidateToEdit.ansiennitet ?? null,
       })
     }
   }, [candidateToEdit, form])
