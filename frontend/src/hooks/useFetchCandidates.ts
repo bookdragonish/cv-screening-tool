@@ -48,6 +48,7 @@ export function useFetchCandidate(id: string) {
     name: "",
     email: "",
     created_at: "",
+    has_pdf: false,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);

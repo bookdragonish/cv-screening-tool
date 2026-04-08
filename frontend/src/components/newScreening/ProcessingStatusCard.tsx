@@ -35,10 +35,10 @@ function ProcessingStatusCard({
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button variant="outline" className="border-slate-300 bg-white hover:bg-slate-100" onClick={onStartNew}>
-                Start ny screening
+                Start ny skanning
               </Button>
               <Button asChild className="bg-primary hover:bg-primary/80">
-                <Link to={resultsHref}>Gå til resultater</Link>
+                <Link to={resultsHref}>Se resultater</Link>
               </Button>
             </div>
           </div>
