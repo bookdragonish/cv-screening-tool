@@ -1,7 +1,5 @@
 import { createGeminiProvider } from "./gemini/gemini.provider.js";
-import { createNorllmProvider } from "./norllm/norllm.provider.js";
-
-const provider = process.env.LLM ?? "gemini";
+import { createNorllmProvider } from "./norLLM/norllm.provider.js";
 
 export interface LlmMessage {
   role: "system" | "user" | "assistant";
@@ -9,6 +7,8 @@ export interface LlmMessage {
 }
 
 export async function getLlmProvider() {
+  const provider = (process.env.LLM ?? "gemini").trim().toLowerCase();
+
   switch (provider) {
     case "gemini":
       return createGeminiProvider();

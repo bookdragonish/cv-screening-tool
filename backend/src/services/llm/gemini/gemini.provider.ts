@@ -9,7 +9,7 @@ import {
 } from "./schemas.js";
 import {
   buildCandidatesEvaluationPrompt,
-  buildJobAdProfilePrompt,
+  buildJobProfileFromTextPrompt,
 } from "../prompts/prompts.js";
 import type {
   ApiCandidate,
@@ -20,6 +20,25 @@ import type {
 } from "../../../types/ai.types.js";
 
 const MODEL_NAME = "gemini-2.5-flash";
+const JOB_PROFILE_SCHEMA_DESCRIPTION = `{
+  "role_title": string,
+  "must_haves": string[],
+  "nice_to_haves": string[]
+}`;
+const CANDIDATE_EVAL_SCHEMA_DESCRIPTION = `{
+  "evaluations": [{
+    "candidate_id": string,
+    "candidate_label": string,
+    "candidate_role": string,
+    "qualified": boolean,
+    "overall_score": number,
+    "experience_highlights": string[],
+    "education": string[],
+    "strengths": [{"point": string, "explanation": string}],
+    "gaps": [{"point": string, "explanation": string, "impact": "high"|"medium"|"low"}],
+    "unknowns": string[]
+  }]
+}`;
 
 function createGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -32,20 +51,77 @@ function createGeminiClient(): GoogleGenAI {
 
 async function loadCandidatesWithCv(limit: number): Promise<CandidateWithCvText[]> {
   const r = await pool.query(
-    "select id, name, email, created_at, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
+    "select id, name, email, created_at, cv_markdown from candidates where cv_markdown is not null and btrim(cv_markdown) <> '' order by id desc limit $1",
     [limit],
   );
 
   const rows = r.rows as ApiCandidate[];
-  const candidatesWithText: CandidateWithCvText[] = [];
 
-  for (const candidate of rows) {
-    const pdfBuffer = candidate.cv_pdf;
-    const cvText = await parsePdf(pdfBuffer);
-    candidatesWithText.push({ candidate, cvText });
+  return rows
+    .map((candidate) => {
+      const cvText = candidate.cv_markdown?.trim();
+      if (!cvText) return null;
+
+      return { candidate, cvText };
+    })
+    .filter((item): item is CandidateWithCvText => item !== null);
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function parseGeminiJsonWithRepair<T>(params: {
+  ai: GoogleGenAI;
+  model: string;
+  rawText: string;
+  schemaDescription: string;
+  parse: (text: string) => T;
+  label: string;
+}): Promise<T> {
+  const { ai, model, rawText, schemaDescription, parse, label } = params;
+
+  try {
+    return parse(rawText);
+  } catch (firstError) {
+    const repairPrompt = [
+      "You are a strict JSON formatter.",
+      "Convert the content below into a valid JSON object matching the schema.",
+      "Return only JSON.",
+      "Use double quotes for all keys and string values.",
+      "Do not add markdown code fences.",
+      "",
+      "Schema:",
+      schemaDescription,
+      "",
+      "Content to repair:",
+      rawText,
+    ].join("\n");
+
+    const repairedText = await generateFromGeminiText({
+      ai,
+      model,
+      prompt: repairPrompt,
+      forceJsonResponse: true,
+    });
+
+    try {
+      return parse(repairedText);
+    } catch (repairError) {
+      const rawPreview =
+        rawText.length > 1200 ? `${rawText.slice(0, 1200)}...` : rawText;
+      throw new Error(
+        [
+          `Gemini returned invalid JSON for ${label}.`,
+          `First parse error: ${toErrorMessage(firstError)}`,
+          `Repair parse error: ${toErrorMessage(repairError)}`,
+          `Raw response preview:`,
+          rawPreview,
+        ].join("\n"),
+        { cause: repairError },
+      );
+    }
   }
-
-  return candidatesWithText;
 }
 
 export function createGeminiProvider() {
@@ -70,14 +146,24 @@ export function createGeminiProvider() {
       _input: JobDescriptionInput,
       jobDescriptionText: string,
     ): Promise<JobProfile> {
-      const prompt = buildJobAdProfilePrompt(jobDescriptionText);
+      void _input;
+
+      const prompt = buildJobProfileFromTextPrompt(jobDescriptionText);
       const jobProfileText = await generateFromGeminiText({
         ai,
         model: MODEL_NAME,
         prompt,
+        forceJsonResponse: true,
       });
 
-      return parseJobProfile(jobProfileText);
+      return parseGeminiJsonWithRepair({
+        ai,
+        model: MODEL_NAME,
+        rawText: jobProfileText,
+        schemaDescription: JOB_PROFILE_SCHEMA_DESCRIPTION,
+        parse: parseJobProfile,
+        label: "job profile",
+      });
     },
 
     async evaluateCandidates(params: {
@@ -85,23 +171,37 @@ export function createGeminiProvider() {
       jobProfile: JobProfile;
     }): Promise<CandidateEval[]> {
       const { candidatesWithCv, jobProfile } = params;
+      if (candidatesWithCv.length === 0) {
+        return [];
+      }
 
       const evalPrompt = buildCandidatesEvaluationPrompt({
         jobProfile,
-        candidates: candidatesWithCv.map((item) => ({
-          candidateId: String(item.candidate.id),
-          candidateLabel: item.candidate.name ?? `candidate-${item.candidate.id}`,
-          cvText: item.cvText,
-        })),
+        candidates: candidatesWithCv.map((candidateWithCv) => {
+          const candidate = candidateWithCv.candidate;
+          return {
+            candidateId: String(candidate.id),
+            candidateLabel: candidate.name ?? `candidate-${candidate.id}`,
+            cvText: candidateWithCv.cvText,
+          };
+        }),
       });
 
       const evalText = await generateFromGeminiText({
         ai,
         model: MODEL_NAME,
         prompt: evalPrompt,
+        forceJsonResponse: true,
       });
 
-      return parseCandidateEvals(evalText);
+      return parseGeminiJsonWithRepair({
+        ai,
+        model: MODEL_NAME,
+        rawText: evalText,
+        schemaDescription: CANDIDATE_EVAL_SCHEMA_DESCRIPTION,
+        parse: parseCandidateEvals,
+        label: "candidate evaluations",
+      });
     },
 
     async cleanup(): Promise<void> {

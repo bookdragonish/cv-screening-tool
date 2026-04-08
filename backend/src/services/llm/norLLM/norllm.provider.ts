@@ -17,7 +17,7 @@ import type {
   JobDescriptionInput,
   JobProfile,
 } from "../../../types/ai.types.js";
-import { callNorLlm, parseNorLlmJsonWithRepair } from "../norllm/norllm.client.js";
+import { callNorLlm, parseNorLlmJsonWithRepair } from "../norLLM/norllm.client.js";
 
 export function createNorllmProvider() {
   return {
@@ -25,7 +25,7 @@ export function createNorllmProvider() {
 
     async loadCandidates(limit: number): Promise<CandidateWithCvText[]> {
       const result = await pool.query(
-        "select id, name, email, cv_pdf from candidates where cv_pdf is not null order by id desc limit $1",
+        "select id, name, email, cv_markdown from candidates where cv_markdown is not null and btrim(cv_markdown) <> '' order by id desc limit $1",
         [limit],
       );
 
@@ -33,13 +33,7 @@ export function createNorllmProvider() {
       const candidatesWithText: CandidateWithCvText[] = [];
 
       for (const candidate of rows) {
-        const pdfBuffer = candidate.cv_pdf;
-
-        if (!Buffer.isBuffer(pdfBuffer) || !pdfBuffer.length) {
-          continue;
-        }
-
-        const cvText = await parsePdf(pdfBuffer);
+        const cvText = candidate.cv_markdown?.trim() ?? "";
         if (!cvText.trim()) {
           continue;
         }
@@ -90,13 +84,20 @@ export function createNorllmProvider() {
       jobProfile: JobProfile;
     }): Promise<CandidateEval[]> {
       const { candidatesWithCv, jobProfile } = params;
+      if (candidatesWithCv.length === 0) {
+        return [];
+      }
+
       const prompt = buildCandidatesEvaluationPrompt({
         jobProfile,
-        candidates: candidatesWithCv.map((item) => ({
-          candidateId: String(item.candidate.id),
-          candidateLabel: item.candidate.name ?? `candidate-${item.candidate.id}`,
-          cvText: item.cvText,
-        })),
+        candidates: candidatesWithCv.map((item) => {
+          const candidate = item.candidate;
+          return {
+            candidateId: String(candidate.id),
+            candidateLabel: candidate.name ?? `candidate-${candidate.id}`,
+            cvText: item.cvText,
+          };
+        }),
       });
 
       const responseText = await callNorLlm(prompt);

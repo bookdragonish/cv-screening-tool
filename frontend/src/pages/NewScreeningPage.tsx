@@ -1,6 +1,6 @@
 import { saveScreeningRun } from "@/api/fetchScreenings";
 import { runScreeningWithGemini } from "@/api/runScreeningWithGemini";
-import NewScreening from "@/components/NewScreening/NewScreening";
+import NewScreening from "@/components/newScreening/NewScreening";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { StepStatus } from "@/types/newScreeningTypes";
 import { useState } from "react";
@@ -80,7 +80,7 @@ function NewScreeningPage() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl bg-gray-50 px-4 py-6 sm:px-8">
+    <main id="main-content" className="mx-auto max-w-7xl bg-gray-50 px-4 py-6 sm:px-8">
       <Breadcrumbs second_site_name={"Ny skanning"}/>
       <NewScreening
         view={flowState === "upload" ? "upload" : "processing"}

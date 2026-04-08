@@ -27,14 +27,18 @@ function StepNode({
       : "border-primary bg-primary text-white";
 
   return (
-    <div className={`flex flex-col items-center ${STEP_WIDTH_CLASS}`}>
+    <li
+      className={`flex flex-col items-center ${STEP_WIDTH_CLASS}`}
+      aria-current={status === "active" ? "step" : undefined}
+    >
       <div
         className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold ${containerClassName}`}
+        aria-hidden="true"
       >
         {status === "completed" ? <CheckIcon className="h-4 w-4" /> : number}
       </div>
       <p className="mt-2 text-center text-sm text-slate-600">{label}</p>
-    </div>
+    </li>
   );
 }
 
@@ -48,35 +52,35 @@ function ScreeningProgressSteps({
   resultsStatus,
 }: ScreeningProgressStepsProps) {
   return (
-    <div className="mt-8 overflow-x-auto pb-1">
+    <section className="mt-8 overflow-x-auto pb-1" aria-label="Screeningfremdrift">
       <div className="mx-auto w-full max-w-160 min-w-fit">
-        <div className="flex items-start justify-center gap-2 sm:gap-3">
+        <ol className="flex items-start justify-center gap-2 sm:gap-3">
           <StepNode number={1} label="Last opp stillingsbeskrivelse" status={uploadStatus} />
 
-          <div className={`shrink-0 ${CONNECTOR_WIDTH_CLASS}`}>
+          <li className={`shrink-0 ${CONNECTOR_WIDTH_CLASS}`} aria-hidden="true">
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(processingStatus)}
                 className="h-1 w-full bg-slate-300 *:data-[slot=progress-indicator]:bg-primary"
               />
             </div>
-          </div>
+          </li>
 
           <StepNode number={2} label="Behandling" status={processingStatus} />
 
-          <div className={`shrink-0 ${CONNECTOR_WIDTH_CLASS}`}>
+          <li className={`shrink-0 ${CONNECTOR_WIDTH_CLASS}`} aria-hidden="true">
             <div className="flex h-8 items-center">
               <Progress
                 value={connectorValue(resultsStatus)}
                 className="h-1 w-full bg-slate-300 *:data-[slot=progress-indicator]:bg-primary"
               />
             </div>
-          </div>
+          </li>
 
           <StepNode number={3} label="Resultater" status={resultsStatus} />
-        </div>
+        </ol>
       </div>
-    </div>
+    </section>
   );
 }
 

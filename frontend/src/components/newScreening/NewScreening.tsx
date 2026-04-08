@@ -1,10 +1,10 @@
 import ErrorBox from "@/components/ErrorBox";
-import NewScreeningHeader from "@/components/NewScreening/NewScreeningHeader";
-import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
+import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
-import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
+import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
-import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
+import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
+import HeaderSection from "../HeaderSection";
 
 type NewScreeningError = {
   title: string;
@@ -41,8 +41,11 @@ function NewScreening({
   onStartNew,
 }: NewScreeningProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
-      <NewScreeningHeader />
+    <section
+      className="mx-auto w-full max-w-6xl px-4 sm:px-8"
+      aria-labelledby="new-screening-title"
+    >
+      <HeaderSection header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen"} />
 
       <ScreeningProgressSteps
         uploadStatus={uploadStatus}
@@ -70,7 +73,7 @@ function NewScreening({
           resultsHref={resultsHref}
         />
       )}
-    </div>
+    </section>
   );
 }
 

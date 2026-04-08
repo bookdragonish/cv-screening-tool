@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileTextIcon, UploadIcon } from "lucide-react";
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
@@ -70,6 +70,7 @@ function UploadJobDescriptionCard({
   const fileErrorId = `screening-job-description-file-error-${uid}`;
   const textAreaId = `screening-job-description-text-${uid}`;
   const textErrorId = `screening-job-description-text-error-${uid}`;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const setPickedFile = (file: File | undefined) => {
     form.setValue("jobDescriptionFile", file, {
@@ -113,9 +114,9 @@ function UploadJobDescriptionCard({
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <CardTitle className="text-3xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
+            <CardTitle className="text-2xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
             <CardDescription className="text-base text-slate-500">
-              Last opp en PDF eller lim inn stillingsbeskrivelsen for å starte screeningprosessen.
+              Last opp PDF eller lim inn stillingsbeskrivelsen for å starte skanningsprosessen.
             </CardDescription>
           </div>
 
@@ -124,7 +125,7 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "pdf" ? "default" : "outline"}
-              className={mode === "pdf" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-500"}
+              className={mode === "pdf" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-100"}
               onClick={() => setMode("pdf")}
             >
               PDF
@@ -133,7 +134,7 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "text" ? "default" : "outline"}
-              className={mode === "text" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-500"}
+              className={mode === "text" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-100"}
               onClick={() => setMode("text")}
             >
               Tekst
@@ -160,10 +161,12 @@ function UploadJobDescriptionCard({
                   </Label>
 
                   <Input
+                    ref={fileInputRef}
                     id={fileInputId}
                     type="file"
                     accept="application/pdf, .pdf"
                     className="sr-only"
+                    tabIndex={-1}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={fieldState.invalid ? fileErrorId : undefined}
                     onChange={(event) => {
@@ -195,12 +198,13 @@ function UploadJobDescriptionCard({
                     ) : (
                       <p className="mt-4 text-sm text-slate-600">
                         Velg en PDF-fil, eller{" "}
-                        <Label
-                          htmlFor={fileInputId}
-                          className="inline cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-700"
+                        <button
+                          type="button"
+                          className="inline cursor-pointer rounded-sm text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+                          onClick={() => fileInputRef.current?.click()}
                         >
                           bla gjennom filer
-                        </Label>
+                        </button>
                       </p>
                     )}
                   </div>
@@ -250,7 +254,7 @@ function UploadJobDescriptionCard({
             <Button
               type="button"
               variant="outline"
-              className="border-slate-300 bg-white hover:bg-slate-500"
+              className="border-slate-300 bg-white hover:bg-slate-100"
               onClick={() => {
                 setPickedFile(undefined);
                 form.setValue("jobDescriptionText", "", {
