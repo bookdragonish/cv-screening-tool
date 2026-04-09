@@ -69,19 +69,18 @@ Returner KUN gyldig JSON med dette formatet:
   "evaluations": [
     {
       "candidate_id": string,
-      "candidate_label": string,
-      "candidate_role": string,
+      "candidate_name": string,
+      "summary": string,
       "qualified": boolean,
       "overall_score": number,
-      "experience_highlights": string[],
-      "education": string[],
       "strengths": [{"point": string, "explanation": string}],
-      "gaps": [{"point": string, "explanation": string, "impact": "high"|"medium"|"low"}],
-      "unknowns": string[]
+      "gaps": [{"point": string, "explanation": string}],
+      "unknowns": [{"point": string, "explanation": string}]
     }
   ]
 }
 </output_format>
+
 
 Final output:
 JSON:
