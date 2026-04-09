@@ -7,7 +7,7 @@ function CandidateSidbar({ candidates }: { candidates: RankedCandidate[] }) {
       {candidates.some((c) => c.qualified) ? (
         <article className="flex flex-col">
           <h3 className="subsection-title sm:grid-">Kvalifiserte Kandidater</h3>
-          {candidates.map((candidate) => (
+          {candidates .filter((candidate) => candidate.qualified).map((candidate) => (
             <a
               key={candidate.candidateId}
               href={`#${candidate.candidateId}`}
@@ -27,7 +27,7 @@ function CandidateSidbar({ candidates }: { candidates: RankedCandidate[] }) {
       {candidates.some((c) => !c.qualified) ? (
         <article className="flex flex-col">
           <h3 className="subsection-title">Ikke-kvalifiserte Kandidater</h3>
-          {candidates.map((candidate) => (
+          {candidates .filter((candidate) => !candidate.qualified).map((candidate) => (
             <a
               key={candidate.candidateId}
               href={`#${candidate.candidateId}`}

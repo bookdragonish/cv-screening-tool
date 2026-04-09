@@ -57,5 +57,6 @@ function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
       </footer>
     </section>
   );
+  
 }
 export default CandidateOverview;
