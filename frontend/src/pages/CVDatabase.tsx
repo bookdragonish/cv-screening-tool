@@ -1,7 +1,6 @@
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import { useState } from "react";
 import PdfPreviewOverlay from "../components/PdfPreviewOverlay";
-import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Spinner } from "@/components/ui/spinner";
 import type { CandidatePreview } from "@/types/candidate";
 import ErrorBox from "@/components/ErrorBox";
@@ -10,6 +9,7 @@ import Searchbar from "@/components/Searchbar";
 import CandidateTable from "@/components/CVDatabase/CandidateTable";
 import HeaderSection from "@/components/HeaderSection";
 import CheckMarkPopUp from "@/components/CheckMarkPopUp";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 
 function CVDatabase() {
   const [reloadKey, setReloadKey] = useState(0);

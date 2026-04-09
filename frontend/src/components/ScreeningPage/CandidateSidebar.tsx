@@ -14,7 +14,7 @@ function CandidateSidbar({ candidates }: { candidates: RankedCandidate[] }) {
               className=" px-3 py-2 flex text-sm opacity-70 hover:opacity-100 uppercase"
             >
               <p>{candidate.candidateName}</p> 
-              {candidate.aml ? (<p className="mx-1">§</p>) : ("")} 
+              {(candidate.aml46 || candidate.aml47) ? (<p className="mx-1">§</p>) : ("")} 
             </a>
           ))}
         </article>

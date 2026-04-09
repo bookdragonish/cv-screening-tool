@@ -17,7 +17,8 @@ export type RankedCandidate = {
   unknowns: string[];
   summary?: string;
   createdAt: string;
-  aml?: "4.6" | "4.7";
+  aml46?: boolean,
+  aml47?: boolean,
 };
 
 export type SaveScreeningRunPayload = {
