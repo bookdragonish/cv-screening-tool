@@ -36,7 +36,6 @@ type UploadJobDescriptionCardProps = {
 function UploadJobDescriptionCard({
   initialInput,
   showRetryLabel,
-  onCancel,
   onStartProcessing,
 }: UploadJobDescriptionCardProps) {
   const form = useForm<UploadJobDescriptionValues>({

@@ -12,7 +12,7 @@ function ScanningHistoryTable() {
       year: "numeric",
     }).format(new Date(dateValue));
   return (
-    <section className="lg:col-span-2 rounded-lg border border-(--color-primary) shadow-sm" aria-label="Nylig screeningaktivitet">
+    <section className="lg:col-span-2 lg:self-start rounded-lg border border-(--color-primary) shadow-sm" aria-label="Nylig screeningaktivitet">
 
         {/* Screening history header */}
         <header className="border-b border-(--color-primary) p-6 bg-(--color-light) rounded-t-lg ">
