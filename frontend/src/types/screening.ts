@@ -6,6 +6,7 @@ export type ScreeningDetails = {
   candidates: Array<RankedCandidate>;
 };
 
+
 export type RankedCandidate = {
   candidateId: number;
   candidateName: string;
@@ -17,7 +18,8 @@ export type RankedCandidate = {
   unknowns: string[];
   summary?: string;
   createdAt: string;
-  aml?: "4.6" | "4.7";
+  aml46?: boolean,
+  aml47?: boolean,
 };
 
 export type SaveScreeningRunPayload = {
