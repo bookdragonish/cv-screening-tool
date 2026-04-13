@@ -2,6 +2,7 @@ import { CheckCircle2, CircleHelp, FileText, XCircle } from "lucide-react";
 import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
 import { Badge } from "../ui/badge";
+import { Link } from "react-router";
 
 type CandidateCardProps = {
   candidate: RankedCandidate;
@@ -23,7 +24,12 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           <div>
             <h2 className="text-lg font-semibold text-(--color-dark)">
               {candidate.qualified && <>#{candidate.rank}</>}{" "}
-              {candidate.candidateName}
+              <Link
+                to={`/kandidater/${id}`}
+                className="hover:underline"
+              >
+                {candidate.candidateName}
+              </Link>
             </h2>
           </div>
         </div>
@@ -50,9 +56,8 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
       )}
 
       <div
-        className={`mt-5 grid gap-3 ${
-          candidate.unknowns.length ? "lg:grid-cols-3" : "md:grid-cols-2"
-        }`}
+        className={`mt-5 grid gap-3 ${candidate.unknowns.length ? "lg:grid-cols-3" : "md:grid-cols-2"
+          }`}
       >
         <section className="py-1">
           <div className="mb-3">

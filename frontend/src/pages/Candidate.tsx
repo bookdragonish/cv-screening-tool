@@ -9,6 +9,7 @@ import { useFetchScreenings } from '@/hooks/useFetchScreening';
 import React from 'react'
 import { Download } from 'lucide-react';
 import { Link, useParams } from 'react-router';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 function Candidate() {
     const { candidateId } = useParams<{ candidateId: string }>();
@@ -24,10 +25,8 @@ function Candidate() {
       );
     }
 
-  // Fetch candidates (name, email, cv_pdf)
   const { data: candidate, isLoading: candidateLoading, isError: candidateError } = useFetchCandidate(candidateId);
 
-  // Fetch all screenings to show candidate's participation history
   const { screeningData: allScreenings, isLoading: allScreeningsLoading, isError: allScreeningsError } = useFetchScreenings();
 
  
@@ -69,24 +68,8 @@ function Candidate() {
   
   return (
     <main className="min-h-screen px-8 py-6">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <Link
-          to="/screening-historikk"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Kandidater
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">{candidate.name}</span>
-      </nav>
-
+      <Breadcrumbs second_site_name={"Kandidater"} second_site_link='/kandidater' third_site_name={candidate.name} />
+      
       <div className="space-y-4">
         <div className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between gap-4">
@@ -197,9 +180,9 @@ function Candidate() {
                             ? 'bg-green-100 text-green-800'
                             : screen.candidateResult.score >= 50
                             ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
+                            : 'bg-gray-300 text-gray-800'
                         }`}>
-                          {Math.round(screen.candidateResult.score)}%
+                          {screen.candidateResult.score < 50? "N/A": Math.round(screen.candidateResult.score)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
