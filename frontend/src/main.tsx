@@ -16,8 +16,8 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/new-screening" element={<NewScreeningPage />} />
-            <Route path="/screening-historikk" element={<ScreeningHistory />} />
-            <Route path="/screening-historikk/:jobPostId" element={<Screening />} />
+            <Route path="/skanning-historikk" element={<ScreeningHistory />} />
+            <Route path="/skanning-historikk/:jobPostId" element={<Screening />} />
             <Route path="/kandidater" element={<CVDatabase />} />
           </Route>
         </Routes>

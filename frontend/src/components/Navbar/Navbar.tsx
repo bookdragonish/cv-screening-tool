@@ -5,7 +5,7 @@ import NavItem from "./NavItem";
 const navItems = [
   { to: "/", label: "Hjem", icon: Home },
   { to: "/kandidater", label: "Kandidater", icon: FileText },
-  { to: "/screening-historikk", label: "Skanninghistorikk", icon: Clock },
+  { to: "/skanning-historikk", label: "Skanninghistorikk", icon: Clock },
 ];
 
 function Navbar() {
