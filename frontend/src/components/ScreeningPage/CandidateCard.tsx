@@ -9,6 +9,7 @@ type CandidateCardProps = {
 };
 
 function CandidateCard({ candidate, id }: CandidateCardProps) {
+  console.log(candidate)
   return (
     <div
       id={id + ""}
@@ -27,14 +28,8 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           </div>
         </div>
 
-        {candidate.aml ? (
-          <Badge variant="secondary">
-            {"AML §" + candidate.aml}
-          </Badge>
-        
-        ) : (
-          ""
-        )}
+        {candidate.aml46 ? <Badge variant="secondary">{"AML §4.6"}</Badge> : ""}
+        {candidate.aml47 ? <Badge variant="secondary">{"AML §4.7"}</Badge> : ""}
       </div>
 
       <article className="flex justify-between">

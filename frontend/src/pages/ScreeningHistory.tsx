@@ -102,7 +102,7 @@ function ScreeningHistory() {
                       </h3>
                       <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
                         <span className="flex items-center">
-                          <Clock className="h-4 w-4" aria-hidden="true" />
+                          <Clock className="h-4 w-4 m-1" aria-hidden="true" />
                           <span>{formatDate(screening.screenedAt)}</span>
                         </span>
                       </div>

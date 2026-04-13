@@ -30,10 +30,11 @@ import type { Candidate } from "@/types/candidate"
 
 type AddNewCVModalProps = {
   onCreated?: () => void
+  onDelete?: (id: number, name: string) => Promise<Boolean>
   candidateToEdit?: Partial<Candidate>
   customTrigger?: React.ReactNode
 }
-function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVModalProps) {
+function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: AddNewCVModalProps) {
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const isEditing = !!candidateToEdit
@@ -43,8 +44,10 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     shouldFocusError: true,
     defaultValues: {
       name: candidateToEdit?.name ?? "",
-      email: candidateToEdit?.email ?? "",
       cv: undefined as unknown as File,
+      aml46: false,
+      aml47: false,
+      ansiennitet: null,
     },
   })
 
@@ -52,8 +55,10 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
     if (candidateToEdit) {
       form.reset({
         name: candidateToEdit.name ?? "",
-        email: candidateToEdit.email ?? "",
         cv: undefined,
+        aml46: candidateToEdit.aml46 ?? false,
+        aml47: candidateToEdit.aml47 ?? false,
+        ansiennitet: candidateToEdit.ansiennitet ?? null,
       })
     }
   }, [candidateToEdit, form])
@@ -69,11 +74,12 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
   const uid = useId()
   const nameDescId = `add-cv-name-desc-${uid}`
   const nameErrId = `add-cv-name-err-${uid}`
-  const emailDescId = `add-cv-email-desc-${uid}`
-  const emailErrId = `add-cv-email-err-${uid}`
   const cvDescId = `add-cv-pdf-desc-${uid}`
   const cvErrId = `add-cv-pdf-err-${uid}`
   const submitErrId = `add-cv-submit-err-${uid}`
+  const amlGroupLabelId = `add-cv-aml-label-${uid}`
+  const ansienitetDescId = `add-cv-ansiennitet-desc-${uid}`
+  const ansienitetErrId = `add-cv-ansiennitet-err-${uid}`
   async function onSubmit(values: AddNewCvValues) {
     setSubmitError(null)
     if (!isEditing && !values.cv) {
@@ -88,7 +94,9 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: values.name,
-            email: values.email,
+            aml46: values.aml46,
+            aml47: values.aml47,
+            ansiennitet: values.ansiennitet,
           }),
         })
         if (!updateRes.ok) {
@@ -103,8 +111,10 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: values.name,
-            email: values.email,
             cv_pdf: null,
+            aml46: values.aml46,
+            aml47: values.aml47,
+            ansiennitet: values.ansiennitet,
           }),
         })
         if (!createRes.ok) {
@@ -201,36 +211,6 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
               )}
             />
             <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="add-cv-email">
-                    E-post <span aria-hidden="true">*</span>
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="add-cv-email"
-                    type="email"
-                    placeholder="ola@example.com"
-                    autoComplete="email"
-                    required
-                    aria-required="true"
-                    aria-invalid={fieldState.invalid}
-                    aria-describedby={`${emailDescId} ${fieldState.invalid ? emailErrId : ""}`.trim()}
-                  />
-                  <FieldDescription id={emailDescId}>
-                    Må være en gyldig e-postadresse.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <div id={emailErrId}>
-                      <FieldError errors={[fieldState.error]} />
-                    </div>
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
               name="cv"
               control={form.control}
               render={({ field, fieldState }) => (
@@ -274,6 +254,93 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
                 </Field>
               )}
             />
+            <Field>
+              <FieldLabel id={amlGroupLabelId}>Arbeidsmiljøloven</FieldLabel>
+              <div role="group" aria-labelledby={amlGroupLabelId} className="flex items-center gap-4">
+                <Controller
+                  name="aml46"
+                  control={form.control}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="add-cv-aml-46"
+                        checked={field.value}
+                        onClick={() => {
+                          if (field.value) {
+                            field.onChange(false)
+                          } else {
+                            field.onChange(true)
+                            form.setValue("aml47", false)
+                          }
+                        }}
+                        onChange={() => {}}
+                      />
+                      <FieldLabel htmlFor="add-cv-aml-46">§ 4.6</FieldLabel>
+                    </div>
+                  )}
+                />
+                <Controller
+                  name="aml47"
+                  control={form.control}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="add-cv-aml-47"
+                        checked={field.value}
+                        onClick={() => {
+                          if (field.value) {
+                            field.onChange(false)
+                          } else {
+                            field.onChange(true)
+                            form.setValue("aml46", false)
+                          }
+                        }}
+                        onChange={() => {}}
+                      />
+                      <FieldLabel htmlFor="add-cv-aml-47">§ 4.7</FieldLabel>
+                    </div>
+                  )}
+                />
+              </div>
+            </Field>
+            <Controller 
+              name="ansiennitet"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="add-cv-ansiennitet">
+                    Ansiennitet
+                  </FieldLabel>
+                  <Input
+                    type="number"
+                    id="add-cv-ansiennitet"
+                    step={1}
+                    min={0}
+                    max={100}
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      field.onChange(val === "" ? null : Number(val))
+                    }}
+                    onBlur={field.onBlur}
+                    aria-invalid={fieldState.invalid}
+                    aria-describedby={`${ansienitetDescId} ${fieldState.invalid ? ansienitetErrId : ""}`.trim()}
+                  />
+                  {!fieldState.invalid && (
+                    <FieldDescription id={ansienitetDescId}>
+                      Antall år, valgfritt (0–100).
+                    </FieldDescription>
+                  )}
+                  {fieldState.invalid && (
+                    <div id={ansienitetErrId}>
+                      <FieldError errors={[fieldState.error]} />
+                    </div>
+                  )}
+                </Field>
+              )}
+            />
             {submitError && (
               <p className="text-sm text-red-600" role="alert" aria-live="polite">
                 {submitError}
@@ -286,6 +353,26 @@ function AddNewCVModal({ onCreated, candidateToEdit, customTrigger }: AddNewCVMo
             type="button"
             variant="secondary"
             className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
+            hidden={!isEditing}
+            onClick={async () => {
+              if (candidateToEdit?.id == null) return
+
+              const deleted = await onDelete?.(
+                candidateToEdit.id,
+                candidateToEdit.name ?? `Kandidat ${candidateToEdit.id}`
+              )
+              if (deleted) {
+                setOpen(false)
+                form.reset()
+              }
+            }}
+          >
+            Slett
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
             onClick={() => {
               setOpen(false)
               form.reset()
