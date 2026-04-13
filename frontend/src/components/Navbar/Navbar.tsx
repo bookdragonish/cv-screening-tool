@@ -37,10 +37,8 @@ function Logo() {
       className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
       aria-label="Gå til hovedside"
     >
-      <div className="rounded-lg bg-(--color-primary) p-2">
-        <FileText className="h-5 w-5 text-white" aria-hidden="true" />
-      </div>
-      <h1 className="section-title font-semibold text-(--color-dark)">Job-Scan</h1>
+      <img src="/favicon.svg" alt="" className="h-8 w-auto" aria-hidden="true" />
+      <h1 className="section-title font-semibold text-(--color-dark)">Jobb-skanner</h1>
     </Link>
   );
 }
