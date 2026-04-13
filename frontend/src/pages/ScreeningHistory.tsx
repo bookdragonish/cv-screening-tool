@@ -149,7 +149,7 @@ function ScreeningHistory() {
 
         <footer>
           <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-            Viser {filteredHistory.length} av {screeningData.length} kandidater
+            Viser {filteredHistory.length} av {screeningData.length} skanninger
           </p>
         </footer>
 
