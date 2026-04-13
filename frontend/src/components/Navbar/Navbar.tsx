@@ -1,6 +1,8 @@
 import { FileText, User, Home, Clock } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import NavItem from "./NavItem";
+import { Button } from "@/components/ui/button";
+import { AUTH_KEY } from "@/pages/LoginPage";
 
 const navItems = [
   { to: "/", label: "Hjem", icon: Home },
@@ -44,13 +46,28 @@ function Logo() {
 }
 
 function Profile() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem(AUTH_KEY);
+    navigate("/login");
+  }
+
   return (
     <section
       aria-label="Innlogget bruker"
-      className="flex items-center gap-2 text-(--color-dark) sm:self-auto"
+      className="flex items-center gap-3 sm:self-auto"
     >
-      <User className="h-5 w-5" aria-hidden="true" />
-      <span className="text-regular font-medium">HR-bruker</span>
+      <User className="h-5 w-5 text-(--color-dark)" aria-hidden="true" />
+      <span className="text-regular font-medium text-(--color-dark)">HR-bruker</span>
+      <Button
+        onClick={handleLogout}
+        variant="secondary"
+        size="sm"
+        className="bg-(--color-primary) text-white hover:bg-red-600 hover:text-white cursor-pointer"
+      >
+        Logg ut
+      </Button>
     </section>
   );
 }
