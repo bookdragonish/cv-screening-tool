@@ -30,7 +30,7 @@ function ScreeningHistory() {
       <section className="w-full flex justify-center my-10">
         <ErrorBox
           title={"Kan ikke hente screeninghistorikk"}
-          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+          message={"Prøv å refresh eller sjekke internett-tilkoblingen"}
         />
       </section>
     );
