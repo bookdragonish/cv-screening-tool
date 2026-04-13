@@ -146,7 +146,7 @@ export function mapToScreeningCandidates(params: {
       const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
       const qualificationResult = RawQualificationsToUsableQualifications({
-        requirements: jobProfile.must_haves,
+        requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.nice_to_haves ?? [])],
         metRaw: evalResult?.strengths.map((item) => item.point),
         missingRaw: evalResult?.gaps.map((item) => item.point),
         unknownRaw: evalResult?.unknowns.map((item) => item.point)
@@ -217,7 +217,7 @@ export function buildScreeningRecord(params: {
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
     const qualificationResult = RawQualificationsToUsableQualifications({
-      requirements: jobProfile.must_haves,
+      requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.nice_to_haves ?? [])],
       metRaw: evalResult?.strengths.map((item) => item.point),
       missingRaw: evalResult?.gaps.map((item) => item.point),
       unknownRaw: evalResult?.unknowns.map((item) => item.point)
