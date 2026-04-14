@@ -50,7 +50,7 @@ function Screening() {
       <Breadcrumbs
         second_site_name={"Skanninghistorikk"}
         third_site_name={"Resultat"}
-        second_site_link={"/screening-historikk"}
+        second_site_link={"/skanning-historikk"}
       />
 
       <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
