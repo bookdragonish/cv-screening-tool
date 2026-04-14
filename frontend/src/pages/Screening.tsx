@@ -58,6 +58,11 @@ function Screening() {
           {data.title}
         </h1>
         <p> {data.aiJobDescription}</p>
+        <p> Kvalifikasjoner som må oppnås for å være kvalifisert: </p>
+        <ul className="list-disc list-inside">
+          {data.hardQualifications}
+        </ul>
+        <p> Kvalifikasjoner som hjelper, men ikke kreves for å være kvalifisert: {data.softQualifications} </p>
         <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
           <Clock className="h-4 w-4" aria-hidden="true" />
           <span>{formatDate(data.screenedAt)}</span>

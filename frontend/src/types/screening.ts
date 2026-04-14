@@ -3,6 +3,8 @@ export type ScreeningDetails = {
   title: string;
   screenedAt: string;
   aiJobDescription?: string,
+  hardQualifications: string[];
+  softQualifications: string[];
   candidates: Array<RankedCandidate>;
 };
 

@@ -300,6 +300,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
         jp.id as "jobPostId",
         jp.title,
         jp.created_at as "screenedAt",
+        jp.hardqualifications as "hardQualifications",
+        jp.softqualifications as "softQualifications",
         json_agg(
           json_build_object(
             'candidateId', c.id,

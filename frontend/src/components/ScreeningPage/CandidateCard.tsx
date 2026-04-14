@@ -9,7 +9,6 @@ type CandidateCardProps = {
 };
 
 function CandidateCard({ candidate, id }: CandidateCardProps) {
-  console.log(candidate)
   return (
     <div
       id={id + ""}
