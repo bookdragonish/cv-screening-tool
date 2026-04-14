@@ -15,6 +15,7 @@ export type RankedCandidate = {
   qualified: boolean;
   qualificationsMet: string[];
   qualificationsMissing: string[];
+  courseRecommendations: string[];
   unknowns: string[];
   summary?: string;
   createdAt: string;

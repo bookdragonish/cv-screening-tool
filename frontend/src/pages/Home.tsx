@@ -16,6 +16,7 @@ function Home() {
       id="main-content"
       className="mx-auto max-w-7xl px-6 py-8 grid grid-cols-1 gap-6 lg:grid-cols-3"
     >
+
       {/* Left column - actions */}
       <aside className="space-y-6 mt-5" aria-label="Screeninghandlinger">
         <HeaderSection
