@@ -67,7 +67,7 @@ function Candidate() {
     }).format(new Date(dateValue));
   
   return (
-    <main className="min-h-screen px-8 py-6">
+    <main className="mx-auto max-w-7xl p-6">
       <Breadcrumbs second_site_name={"Kandidater"} second_site_link='/kandidater' third_site_name={candidate.name} />
       
       <div className="space-y-4">
