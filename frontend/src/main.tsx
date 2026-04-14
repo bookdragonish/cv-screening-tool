@@ -8,17 +8,22 @@ import NewScreeningPage from '@/pages/NewScreeningPage'
 import Screening from '@/pages/Screening'
 import ScreeningHistory from '@/pages/ScreeningHistory'
 import CVDatabase from '@/pages/CVDatabase'
+import LoginPage from '@/pages/LoginPage'
+import ProtectedRoute from '@/pages/ProtectedRoute'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
         <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/new-screening" element={<NewScreeningPage />} />
-            <Route path="/skanning-historikk" element={<ScreeningHistory />} />
-            <Route path="/skanning-historikk/:jobPostId" element={<Screening />} />
-            <Route path="/kandidater" element={<CVDatabase />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/ny-skanning" element={<NewScreeningPage />} />
+              <Route path="/skanning-historikk" element={<ScreeningHistory />} />
+              <Route path="/skanning-historikk/:jobPostId" element={<Screening />} />
+              <Route path="/kandidater" element={<CVDatabase />} />
+            </Route>
           </Route>
         </Routes>
     </BrowserRouter>
