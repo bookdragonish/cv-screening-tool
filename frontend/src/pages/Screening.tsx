@@ -43,7 +43,7 @@ function Screening() {
       <Breadcrumbs
         second_site_name={"Skanninghistorikk"}
         third_site_name={"Resultat"}
-        second_site_link={"/screening-historikk"}
+        second_site_link={"/skanning-historikk"}
       />
 
        <ScreeningHeader title={data.title} hardQualifications={data.hardQualifications} softQualifications={data.softQualifications} screenedAt={data.screenedAt} />
