@@ -10,7 +10,6 @@ import ScreeningHeader from "@/components/ScreeningPage/ScreeningHeader";
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
   const { data, isLoading, isError } = useFetchScreening(jobPostId);
-  console.log(data)
 
   if (isError) {
     return (

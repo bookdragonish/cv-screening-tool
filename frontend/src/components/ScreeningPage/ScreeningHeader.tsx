@@ -2,8 +2,8 @@ import { Clock } from "lucide-react";
 
 type ScreeningHeaderProps = {
   title: string;
-  hardQualifications: string;
-  softQualifications: string;
+  hardQualifications: string[];
+  softQualifications: string[];
   screenedAt: string;
 };
 
@@ -19,9 +19,6 @@ function ScreeningHeader({
       month: "short",
       year: "numeric",
     }).format(new Date(dateValue));
-
-    const hQual = hardQualifications.split(",");
-    const sQual = softQualifications.split(",");
 
 
   return (
@@ -39,7 +36,7 @@ function ScreeningHeader({
               Kvalifikasjoner som må fylles:
             </h3>
            <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
-            {hQual?.map((qualification, index) => (
+            {hardQualifications?.map((qualification, index) => (
               <li key={index}>{qualification}</li>
             ))}
           </ul> 
@@ -51,7 +48,7 @@ function ScreeningHeader({
             </h3>
             
            <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
-            {sQual?.map((qualification, index) => (
+            {softQualifications?.map((qualification, index) => (
               <li key={index}>{qualification}</li>
             ))}
           </ul> 
