@@ -2,14 +2,15 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ErrorBox from "@/components/ErrorBox";
 import { Spinner } from "@/components/ui/spinner";
 import { useFetchScreening } from "@/hooks/useFetchScreening";
-import { Clock } from "lucide-react";
 import { useParams } from "react-router";
 import CandidateSidbar from "@/components/ScreeningPage/CandidateSidebar";
 import CandidateOverview from "@/components/ScreeningPage/CandidateOverview";
+import ScreeningHeader from "@/components/ScreeningPage/ScreeningHeader";
 
 function Screening() {
   const { jobPostId } = useParams<{ jobPostId: string }>();
   const { data, isLoading, isError } = useFetchScreening(jobPostId);
+  console.log(data)
 
   if (isError) {
     return (
@@ -35,13 +36,6 @@ function Screening() {
     );
   }
 
-  const formatDate = (dateValue: string) =>
-    new Intl.DateTimeFormat("nb-NO", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(dateValue));
-
   return (
     <main
       id="main-content"
@@ -53,21 +47,8 @@ function Screening() {
         second_site_link={"/screening-historikk"}
       />
 
-      <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-        <h1 className="text-3xl font-semibold text-(--color-dark)">
-          {data.title}
-        </h1>
-        <p> {data.aiJobDescription}</p>
-        <p> Kvalifikasjoner som må oppnås for å være kvalifisert: </p>
-        <ul className="list-disc list-inside">
-          {data.hardQualifications}
-        </ul>
-        <p> Kvalifikasjoner som hjelper, men ikke kreves for å være kvalifisert: {data.softQualifications} </p>
-        <div className="mt-3 flex items-center gap-2 text-sm text-(--color-dark) opacity-75">
-          <Clock className="h-4 w-4" aria-hidden="true" />
-          <span>{formatDate(data.screenedAt)}</span>
-        </div>
-      </header>
+       <ScreeningHeader title={data.title} hardQualifications={data.hardQualifications} softQualifications={data.softQualifications} screenedAt={data.screenedAt} />
+
 
       <div id="result-container" className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 

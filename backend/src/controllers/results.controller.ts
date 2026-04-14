@@ -140,8 +140,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       title?: string;
       header?: string;
       description?: string;
-      hardQualifications?: unknown;
-      softQualifications?: unknown;
+      hardQualifications?: string[];
+      softQualifications?: string[];
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
