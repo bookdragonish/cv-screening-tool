@@ -16,7 +16,7 @@ function Screening() {
       <section className="w-full flex justify-center my-10">
         <ErrorBox
           title={"Kan ikke hente resultatet med id " + jobPostId}
-          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+          message={"Prøv å refresh eller sjekke internett-tilkoblingen"}
         />
       </section>
     );

@@ -32,11 +32,11 @@ export function buildRankingFromEvaluations(params: {
 
       return {
         candidate_id: evaluation.candidate_id,
-        candidate_label: normalizeString(evaluation.candidate_label),
+        candidate_label: normalizeString(evaluation.candidate_name),
         overall_score: score,
         qualified: evaluation.qualified,
         summary:
-          normalizeString(evaluation.strengths?.[0]?.point) ||
+          normalizeString(evaluation.summary) ||
           "Ingen oppsummering gitt av modellen.",
       };
     })
@@ -99,7 +99,7 @@ function RawQualificationsToUsableQualifications(args: {
     if (missingSet.has(key)) {
       missing.push(requirement);
     }
-    
+
     else {
       unknowns.push(requirement);
     }
@@ -146,10 +146,10 @@ export function mapToScreeningCandidates(params: {
       const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
       const qualificationResult = RawQualificationsToUsableQualifications({
-        requirements: jobProfile.must_haves,
+        requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.nice_to_haves ?? [])],
         metRaw: evalResult?.strengths.map((item) => item.point),
         missingRaw: evalResult?.gaps.map((item) => item.point),
-        unknownRaw: evalResult?.unknowns,
+        unknownRaw: evalResult?.unknowns.map((item) => item.point)
       });
 
       const experience =
@@ -161,21 +161,11 @@ export function mapToScreeningCandidates(params: {
         id: dbCandidate.id,
         rank: rankedItem.rank ?? index + 1,
         name: dbCandidate.name?.trim() || "Navn ikke funnet",
-        role: evalResult?.candidate_role?.trim() || "Ingen rolle funnet",
         score: normalizedScore,
         met: qualificationResult.met,
         missing: qualificationResult.missing,
         summary: rankedItem.summary || "Ingen oppsummering gitt av modellen.",
-        experience: evalResult?.experience_highlights?.length
-          ? evalResult.experience_highlights.slice(0, 4)
-          : experience.length
-            ? experience.slice(0, 4)
-            : [],
-        education: evalResult?.education?.length
-          ? evalResult.education.slice(0, 3)
-          : qualificationResult.unknowns.length
-            ? qualificationResult.unknowns.slice(0, 3)
-            : [],
+
         email: dbCandidate.email ?? "",
       };
     })
@@ -227,10 +217,10 @@ export function buildScreeningRecord(params: {
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
     const qualificationResult = RawQualificationsToUsableQualifications({
-      requirements: jobProfile.must_haves,
+      requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.nice_to_haves ?? [])],
       metRaw: evalResult?.strengths.map((item) => item.point),
       missingRaw: evalResult?.gaps.map((item) => item.point),
-      unknownRaw: evalResult?.unknowns,
+      unknownRaw: evalResult?.unknowns.map((item) => item.point)
     });
 
     const normalizedScore = Math.round(rankedItem.overall_score);

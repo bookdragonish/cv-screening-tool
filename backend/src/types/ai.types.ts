@@ -6,15 +6,13 @@ export type JobProfile = {
 
 export type CandidateEval = {
   candidate_id: string;
-  candidate_label: string;
-  candidate_role?: string;
+  candidate_name: string;
+  summary: string;
   qualified: boolean;
   overall_score: number;
-  experience_highlights?: string[];
-  education?: string[];
   strengths: Array<{ point: string; explanation: string }>;
-  gaps: Array<{ point: string; explanation: string; impact: "high" | "medium" | "low" }>;
-  unknowns: string[];
+  gaps: Array<{ point: string; explanation: string }>;
+  unknowns: Array<{ point: string; explanation: string }>;
 };
 
 export type Ranking = {
