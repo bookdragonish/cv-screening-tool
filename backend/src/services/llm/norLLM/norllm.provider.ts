@@ -73,6 +73,7 @@ export function createNorllmProvider() {
         schemaDescription: `{
   "role_title": string,
   "must_haves": string[],
+  "must_haves_can_be_coursed": string[],
   "nice_to_haves": string[],
 }`,
         parse: parseJobProfile,

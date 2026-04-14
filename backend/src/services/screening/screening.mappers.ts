@@ -135,6 +135,7 @@ export function mapToScreeningCandidates(params: {
   const evalByCandidateId = new Map(
     evals.map((item) => [item.candidate_id, item]),
   );
+  const courseRecommendations = normalizeStringList(jobProfile.must_haves_can_be_coursed);
 
   return ranking.ranking
     .map((rankedItem, index) => {
@@ -164,6 +165,7 @@ export function mapToScreeningCandidates(params: {
         score: normalizedScore,
         met: qualificationResult.met,
         missing: qualificationResult.missing,
+        courseRecommendations,
         summary: rankedItem.summary || "Ingen oppsummering gitt av modellen.",
 
         email: dbCandidate.email ?? "",
@@ -204,6 +206,7 @@ export function buildScreeningRecord(params: {
     getFallbackJobTitle(jobDescriptionInput);
 
   const hardQualifications = normalizeStringList(jobProfile.must_haves);
+  const courseRecommendations = normalizeStringList(jobProfile.must_haves_can_be_coursed);
   const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
 
   const candidates: SaveScreeningRunPayload["candidates"] = [];
@@ -232,6 +235,7 @@ export function buildScreeningRecord(params: {
       qualified: rankedItem.qualified,
       qualificationsMet: qualificationResult.met,
       qualificationsMissing: qualificationResult.missing,
+      courseRecommendations,
       unknowns: qualificationResult.unknowns,
       summary: normalizeString(rankedItem.summary) || "Ingen oppsummering gitt av modellen.",
     });
