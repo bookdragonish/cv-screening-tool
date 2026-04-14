@@ -111,6 +111,7 @@ export function fixCandidateEval(params: {
     const strengthsRaw = Array.isArray(raw.strengths) ? raw.strengths : [];
     const gapsRaw = Array.isArray(raw.gaps) ? raw.gaps : [];
     const unknownsRaw = Array.isArray(raw.unknowns) ? raw.unknowns : [];
+    const courseRecommendationsRaw = Array.isArray(raw.courseRecommendations) ? raw.courseRecommendations : [];
 
     const strengths = strengthsRaw
       .map((item) => {
@@ -181,6 +182,29 @@ export function fixCandidateEval(params: {
         (item): item is { point: string; explanation: string } => item !== null,
       );
 
+    const courseRecommendations = courseRecommendationsRaw
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as Record<string, unknown>;
+
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
+        );
+
+        if (!point && !explanation) return null;
+
+        return {
+          point: point || "Uspesifisert kursanbefaling",
+          explanation: explanation || "Ikke oppgitt",
+        };
+      })
+      .filter(
+        (item): item is { point: string; explanation: string } => item !== null,
+      );
+
     return {
       candidate_id:
         normalizeString(
@@ -205,6 +229,9 @@ export function fixCandidateEval(params: {
       unknowns: unknowns.length
         ? unknowns
         : [{ point: "Ingen tydelige unknows", explanation: "Ikke oppgitt" }],
+      courseRecommendations: courseRecommendations.length
+        ? courseRecommendations
+        : [{ point: "Ingen tydelige kursanbefalinger", explanation: "Ikke oppgitt" }],
     };
   }
 }

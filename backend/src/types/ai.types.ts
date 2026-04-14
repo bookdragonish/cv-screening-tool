@@ -14,6 +14,7 @@ export type CandidateEval = {
   strengths: Array<{ point: string; explanation: string }>;
   gaps: Array<{ point: string; explanation: string }>;
   unknowns: Array<{ point: string; explanation: string }>;
+  courseRecommendations: Array<{ point: string; explanation: string }>;
 };
 
 export type Ranking = {

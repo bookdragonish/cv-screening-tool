@@ -31,6 +31,7 @@ export const CandidateEvalSchema = z.object({
   strengths: z.array(z.object({ point: z.string(), explanation: z.string() })),
   gaps: z.array(z.object({ point: z.string(), explanation: z.string() })),
   unknowns: z.array(z.object({ point: z.string(), explanation: z.string() })),
+  courseRecommendations: z.array(z.object({ point: z.string(), explanation: z.string() })),
 });
 
 export const CandidateEvalsSchema = z.object({

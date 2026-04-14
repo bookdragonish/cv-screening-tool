@@ -114,7 +114,8 @@ export function createNorllmProvider() {
     "overall_score": number,
     "strengths": [{"point": string, "explanation": string}],
     "gaps": [{"point": string, "explanation": string}],
-    "unknowns": [{"point": string, "explanation": string}]
+    "unknowns": [{"point": string, "explanation": string}],
+    "courseRecommendations": [{"point": string, "explanation": string}]
   }]
 }`,
         parse: parseCandidateEvals,
