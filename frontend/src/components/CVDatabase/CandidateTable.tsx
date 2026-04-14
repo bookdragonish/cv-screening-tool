@@ -1,6 +1,6 @@
 import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
-import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
+import { AddNewCVModal } from "@/components/AddNewCv/AddNewCVModal";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
   type CandidateTableProps = {
