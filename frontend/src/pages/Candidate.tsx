@@ -179,7 +179,7 @@ function Candidate() {
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-gray-300 text-gray-800'
                         }`}>
-                          {screen.candidateResult.score < 50? "N/A": Math.round(screen.candidateResult.score)}
+                          {Math.round(screen.candidateResult.score)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -192,7 +192,7 @@ function Candidate() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center text-sm text-(--color-dark)">
-                        {screen.candidateResult.rank 
+                        {screen.candidateResult.rank
                           ? `#${screen.candidateResult.rank} av ${screen.candidates.length}`
                           : "—"}
                       </td>
