@@ -83,9 +83,6 @@ function Candidate() {
               <div className="mt-4 flex items-start gap-3">
                 <div>
                   <p className="text-sm text-(--color-dark) opacity-75">
-                    Email: {candidate.email}
-                  </p>
-                  <p className="text-sm text-(--color-dark) opacity-75">
                     Opprettet: {formatDate(candidate.created_at)}
                   </p>
                 </div>
@@ -172,7 +169,7 @@ function Candidate() {
                         </Link>
                       </td>
                       <td className="px-4 py-3 text-sm text-(--color-dark)">
-                        {formatDate(screen.screenedAt)}
+      at                   {formatDate(screen.screenedAt)}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
