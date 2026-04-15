@@ -1,18 +1,11 @@
 import type { Request } from "express";
 import type { JobDescriptionInput } from "../../types/ai.types.js";
 
-export const MAX_CANDIDATES_PER_RUN = 20;
 export const DEFAULT_TEXT_JOB_TITLE = "Innlimt stillingsbeskrivelse";
 
-// Ensures the candidateLimit is set as a number or returns default
-export function parseCandidateLimit(value: number ){
+export function parseCandidateLimit(value: number): number {
   const parsed = Number(value);
-
-  if (!Number.isFinite(parsed)) {
-    return MAX_CANDIDATES_PER_RUN;
-  }
-
-  return Math.max(1, Math.min(MAX_CANDIDATES_PER_RUN, Math.floor(parsed)));
+  return Number.isFinite(parsed) && parsed >= 1 ? parsed : Number.MAX_SAFE_INTEGER;
 }
 
 // Checks for pdf or text job input.
