@@ -3,8 +3,10 @@ import { test, expect } from '@playwright/test';
 test('test', async ({ page }) => {
     
     test.setTimeout(300000);
-    // Gå til nettsiden/hovedsiden på nettsiden
-    await page.goto('http://localhost:5173/');
+    // Gå til nettsiden
+    await page.goto('http://localhost:5173/login');
+
+    await page.getByRole('button', { name: 'Logg inn' }).click();
 
     // Skjekker om vi faktisk kom til hovedsiden. Forventer å se teksten "Velkommen tilbake".
     await expect(page.getByRole('heading', { name: 'Velkommen tilbake!' })).toBeVisible();
