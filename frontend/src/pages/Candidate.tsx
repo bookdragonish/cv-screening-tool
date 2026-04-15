@@ -162,7 +162,7 @@ function Candidate() {
                     <tr key={screen.jobPostId} className="border-b border-(--color-primary) hover:bg-(--color-light) transition-colors">
                       <td className="px-4 py-3 text-sm text-(--color-dark)">
                         <Link
-                          to={`/screening-historikk/${screen.jobPostId}`}
+                          to={`/skanning-historikk/${screen.jobPostId}`}
                           className="cursor-pointer text-(--color-primary) hover:underline"
                         >
                           {screen.title}

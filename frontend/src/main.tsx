@@ -24,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/skanning-historikk" element={<ScreeningHistory />} />
               <Route path="/skanning-historikk/:jobPostId" element={<Screening />} />
               <Route path="/kandidater" element={<CVDatabase />} />
+              <Route path="/kandidater/:candidateId" element={<Candidate />} />
             </Route>
           </Route>
         </Routes>
