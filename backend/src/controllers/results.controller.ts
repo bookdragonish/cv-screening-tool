@@ -267,7 +267,9 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'qualificationsMissing', r.qualifications_missing,
             'unknowns', r.unknowns,
             'summary', r.summary,
-            'createdAt', r.created_at
+            'createdAt', r.created_at,
+            'aml46', c.aml46,
+            'aml47', c.aml47
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -311,7 +313,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'qualificationsMissing', r.qualifications_missing,
             'unknowns', r.unknowns,
             'summary', r.summary,
-            'createdAt', r.created_at
+            'createdAt', r.created_at,
+            'aml46', c.aml46,
+            'aml47', c.aml47
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp

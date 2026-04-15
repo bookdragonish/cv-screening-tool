@@ -93,8 +93,8 @@ function NewScreeningPage() {
         showRetryLabel={hasProcessingError}
         resultsHref={
           savedScreeningJobPostId
-            ? `/screening-historikk/${savedScreeningJobPostId}`
-            : "/screening-historikk"
+            ? `/skanning-historikk/${savedScreeningJobPostId}`
+            : "/skanning-historikk"
         }
         onCancel={() => {
           setErrorBox(null);
