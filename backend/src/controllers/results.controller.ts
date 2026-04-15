@@ -244,10 +244,10 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
 }
 
 /**
- * Gets screening history for all job posts that have been screened, including the top 3 candidates for each job post.
+ * Gets screening history for all job posts that have been screened.
  *
  * Response:
- * - 200: JSON array of screening history, where each item includes 'jobPostId', 'title', 'screenedAt', and 'candidates' (array of top 3 candidates with their screening results)
+ * - 200: JSON array of screening history, where each item includes 'jobPostId', 'title', 'screenedAt', and 'candidates' (array of all candidates with their screening results)
  */
 export async function getScreeningHistory(_req: Request, res: Response, next: NextFunction) {
   try {
@@ -267,11 +267,13 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'qualificationsMissing', r.qualifications_missing,
             'unknowns', r.unknowns,
             'summary', r.summary,
-            'createdAt', r.created_at
+            'createdAt', r.created_at,
+            'aml46', c.aml46,
+            'aml47', c.aml47
           ) ORDER BY r.rank
-        ) FILTER (WHERE r.rank <= 3) as candidates
+        ) as candidates
       FROM job_posts jp
-      LEFT JOIN results r ON jp.id = r.job_post_id AND r.rank <= 3
+      LEFT JOIN results r ON jp.id = r.job_post_id
       LEFT JOIN candidates c ON r.candidate_id = c.id
       WHERE jp.id IN (SELECT DISTINCT job_post_id FROM results)
       GROUP BY jp.id, jp.title, jp.created_at
@@ -311,7 +313,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'qualificationsMissing', r.qualifications_missing,
             'unknowns', r.unknowns,
             'summary', r.summary,
-            'createdAt', r.created_at
+            'createdAt', r.created_at,
+            'aml46', c.aml46,
+            'aml47', c.aml47
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp

@@ -137,7 +137,7 @@ function ScreeningHistory() {
                 </div>
 
                 <Link
-                  to={`/screening-historikk/${screening.jobPostId}`}
+                  to={`/skanning-historikk/${screening.jobPostId}`}
                   className="rounded-lg hover-dark-button border-(--color-primary) p-2 border-2"
                 >
                   Se resultater

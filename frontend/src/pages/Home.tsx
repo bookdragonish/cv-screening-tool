@@ -42,7 +42,7 @@ function Home() {
             className="w-full border-2 border-white hover-dark-button"
           >
             <Link
-              to="/new-screening"
+              to="/ny-skanning"
               className="flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
