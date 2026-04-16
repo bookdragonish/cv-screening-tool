@@ -42,10 +42,11 @@ ${RUBRIC}
 </constraints>
 
 <qualification_rules>
-- strengths.point, gaps.point og unknowns[] MÅ være eksakt tekst fra job_profile_json.must_haves eller job_profile_json.nice_to_haves.
+- strengths.point, gaps.point, unknowns.point og courseRecommendations.point MÅ være eksakt tekst fra job_profile_json.must_haves, job_profile_json.nice_to_haves eller job_profile_json.must_haves_can_be_coursed.
 - Ikke legg til egne krav eller tolkninger som ikke står i must_haves.
 - For hver kandidat: Hver kvalifikasjon i must_haves skal kun havne i én av disse: strengths.point, gaps.point eller unknowns.
 - Hvis dokumentasjon i CV er uklar, legg kvalifikasjonen i unknowns.
+- Hvis en kvalifikasjon i must_haves_can_be_coursed er oppylt skal denne plasseres i strengths, og hvis den ikke er oppfylt skal den plasseres i courseRecommendations.
 </qualification_rules>
 
 <language_rules>
@@ -75,7 +76,8 @@ Returner KUN gyldig JSON med dette formatet:
       "overall_score": number,
       "strengths": [{"point": string, "explanation": string}],
       "gaps": [{"point": string, "explanation": string}],
-      "unknowns": [{"point": string, "explanation": string}]
+      "unknowns": [{"point": string, "explanation": string}],
+      "courseRecommendations": [{"point": string, "explanation": string}]
     }
   ]
 }

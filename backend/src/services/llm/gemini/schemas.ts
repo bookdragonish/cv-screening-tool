@@ -15,6 +15,7 @@ const ImpactSchema = z.preprocess(
 export const JobProfileSchema = z.object({
   role_title: z.string(),
   must_haves: z.array(z.string()),
+  must_haves_can_be_coursed: z.array(z.string()).optional(),
   nice_to_haves: z.array(z.string()).optional(),
 });
 
@@ -30,6 +31,7 @@ export const CandidateEvalSchema = z.object({
   strengths: z.array(z.object({ point: z.string(), explanation: z.string() })),
   gaps: z.array(z.object({ point: z.string(), explanation: z.string() })),
   unknowns: z.array(z.object({ point: z.string(), explanation: z.string() })),
+  courseRecommendations: z.array(z.object({ point: z.string(), explanation: z.string() })),
 });
 
 export const CandidateEvalsSchema = z.object({
