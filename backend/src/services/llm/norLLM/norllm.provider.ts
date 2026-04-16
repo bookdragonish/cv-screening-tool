@@ -73,6 +73,7 @@ export function createNorllmProvider() {
         schemaDescription: `{
   "role_title": string,
   "must_haves": string[],
+  "must_haves_can_be_coursed": string[],
   "nice_to_haves": string[],
 }`,
         parse: parseJobProfile,
@@ -113,7 +114,8 @@ export function createNorllmProvider() {
     "overall_score": number,
     "strengths": [{"point": string, "explanation": string}],
     "gaps": [{"point": string, "explanation": string}],
-    "unknowns": [{"point": string, "explanation": string}]
+    "unknowns": [{"point": string, "explanation": string}],
+    "courseRecommendations": [{"point": string, "explanation": string}]
   }]
 }`,
         parse: parseCandidateEvals,

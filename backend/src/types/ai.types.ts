@@ -1,6 +1,7 @@
 export type JobProfile = {
   role_title: string;
   must_haves: string[];
+  must_haves_can_be_coursed?: string[];
   nice_to_haves?: string[];
 };
 
@@ -13,6 +14,7 @@ export type CandidateEval = {
   strengths: Array<{ point: string; explanation: string }>;
   gaps: Array<{ point: string; explanation: string }>;
   unknowns: Array<{ point: string; explanation: string }>;
+  courseRecommendations: Array<{ point: string; explanation: string }>;
 };
 
 export type Ranking = {
@@ -49,6 +51,7 @@ export type ScreeningCandidate = {
   score: number;
   met: string[];
   missing: string[];
+  courseRecommendations: string[];
   summary: string;
   experience: string[];
   education: string[];
@@ -69,6 +72,7 @@ export type SaveScreeningRunPayload = {
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    courseRecommendations: string[];
     unknowns: string[];
     summary?: string;
   }>;

@@ -27,7 +27,6 @@ export async function deleteCandidate(id: number) {
     throw new Error(`Response Status: ${response.status}`);
   }
   const result = await response.json();
-  console.log(result)
   return result;
 }
 

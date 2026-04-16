@@ -1,4 +1,4 @@
-import { CheckCircle2, CircleHelp, FileText, XCircle } from "lucide-react";
+import { CheckCircle2, CircleHelp, FileText, Info, XCircle } from "lucide-react";
 import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
 import { Badge } from "../ui/badge";
@@ -10,7 +10,6 @@ type CandidateCardProps = {
 };
 
 function CandidateCard({ candidate, id }: CandidateCardProps) {
-  console.log(candidate)
   return (
     <div
       id={id + ""}
@@ -56,15 +55,17 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
       )}
 
       <div
-        className={`mt-5 grid gap-3 ${candidate.unknowns.length ? "lg:grid-cols-3" : "md:grid-cols-2"
-          }`}
+        className={`mt-5 grid gap-3 ${
+          candidate.unknowns.length + candidate.courseRecommendations.length
+            ? "lg:grid-cols-3"
+            : "md:grid-cols-2"
+        }`}
       >
         <section className="py-1">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-(--color-dark)">
-              Oppnådde kvalifikasjoner:
-            </h3>
-          </div>
+          <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
+            Oppnådde kvalifikasjoner:
+          </h3>
+
           {(() => {
             const fallbackMet = "Ingen kvalifikasjoner oppnådd.";
             const metItems = candidate.qualificationsMet.length
@@ -93,11 +94,10 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
         </section>
 
         <section className="py-1">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-(--color-dark)">
-              Manglende kvalifikasjoner:
-            </h3>
-          </div>
+          <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
+            Manglende kvalifikasjoner:
+          </h3>
+
           {(() => {
             const fallbackMissing = "Ingen manglende kvalifikasjoner";
             const missingItems = candidate.qualificationsMissing.length
@@ -125,11 +125,11 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           })()}
         </section>
 
-        {candidate.unknowns.length ? (
+        {candidate.unknowns.length + candidate.courseRecommendations.length ? (
           <section className="py-1">
             <div className="mb-3">
               <h3 className="text-sm font-semibold text-(--color-dark)">
-                Usikkerheter:
+                Må sees gjennom:
               </h3>
             </div>
             <ul className="space-y-2 text-sm text-(--color-dark)">
@@ -141,6 +141,19 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                   <CircleHelp
                     className="mt-0.5 h-3.5 w-3.5 shrink-0"
                     style={{ color: "var(--status-unknown)" }}
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+
+              {candidate.courseRecommendations.map((item, index) => (
+                <li
+                  key={`${item}-${index}`}
+                  className="flex items-start gap-2 leading-5"
+                >
+                  <Info
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                    style={{ color: "var(--status-course)" }}
                   />
                   <span>{item}</span>
                 </li>
