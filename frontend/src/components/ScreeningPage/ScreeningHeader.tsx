@@ -33,7 +33,7 @@ function ScreeningHeader({
       <section className="grid grid-cols-2 pt-3">
         <article>
            <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
-              Kvalifikasjoner som må fylles:
+              Harde kvalifikasjoner:
             </h3>
            <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
             {hardQualifications?.map((qualification, index) => (
@@ -44,7 +44,7 @@ function ScreeningHeader({
 
         <article>
            <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
-              Gode egenskaper:
+              Ønskede kvalifikasjoner:
             </h3>
             
            <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
