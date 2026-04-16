@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-//test.setTimeout(120000); // 2 minutter
+
 test('test', async ({ page }) => {
     
     test.setTimeout(300000);
@@ -28,8 +28,8 @@ test('test', async ({ page }) => {
     
 
     // Skjekker at vi ender på rikitg side (resultatsiden). Forventer å se f.eks teksten "Kvalifiserte kandidater".
-    await expect(page.getByRole('heading', { name: 'Kvalifiserte kandidater', exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Ikke kvalifiserte kandidater', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Kvalifiserte kandidater', exact: true, level: 2 })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('heading', { name: 'Ikke kvalifiserte kandidater', exact: true, level: 2 })).toBeVisible({ timeout: 15000 });
 
 
 });
