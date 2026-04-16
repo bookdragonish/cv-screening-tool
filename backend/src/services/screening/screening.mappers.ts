@@ -228,7 +228,7 @@ export function buildScreeningRecord(params: {
     normalizeString(jobProfile.role_title) ||
     getFallbackJobTitle(jobDescriptionInput);
 
-  const hardQualifications = normalizeStringList(jobProfile.must_haves);
+  const hardQualifications = normalizeStringList((jobProfile.must_haves ?? []).concat(jobProfile.must_haves_can_be_coursed ?? []));
   const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
 
   const candidates: SaveScreeningRunPayload["candidates"] = [];
