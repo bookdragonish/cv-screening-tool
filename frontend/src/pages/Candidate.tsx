@@ -10,6 +10,7 @@ import React from 'react'
 import { Download } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { Badge } from "../components/ui/badge"
 
 function Candidate() {
     const { candidateId } = useParams<{ candidateId: string }>();
@@ -80,6 +81,27 @@ function Candidate() {
               <h2 className="text-sm font-semibold text-(--color-dark) opacity-75">
                 Kandidatprofil
               </h2>
+              <p className="text-sm text-(--color-dark) opacity-75 mt-1">
+                  Arbeidsmiljøloven:{" "}
+                  {!candidate.aml46 && !candidate.aml47 ? (
+                    "Ingen"
+                  ) : (
+                    <>
+                      {candidate.aml46 ? <Badge variant="secondary">{"AML §4.6"}</Badge> : ""}
+                      {candidate.aml47 ? <Badge variant="secondary">{"AML §4.7"}</Badge> : ""}
+                    </>
+                  )}
+              </p>
+              <p className="text-sm text-(--color-dark) opacity-75">
+                Ansiennitet:{" "}
+                  {!candidate.ansiennitet ? (
+                    "Ingen"
+                  ) : (
+                    <>
+                      {candidate.ansiennitet}
+                    </>
+                  )}
+              </p>
               <div className="mt-4 flex items-start gap-3">
                 <div>
                   <p className="text-sm text-(--color-dark) opacity-75">
@@ -169,7 +191,7 @@ function Candidate() {
                         </Link>
                       </td>
                       <td className="px-4 py-3 text-sm text-(--color-dark)">
-      at                   {formatDate(screen.screenedAt)}
+                        {formatDate(screen.screenedAt)}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
