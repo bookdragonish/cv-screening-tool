@@ -8,6 +8,7 @@ import NewScreeningPage from '@/pages/NewScreeningPage'
 import Screening from '@/pages/Screening'
 import ScreeningHistory from '@/pages/ScreeningHistory'
 import CVDatabase from '@/pages/CVDatabase'
+import Candidate from './pages/Candidate'
 import LoginPage from '@/pages/LoginPage'
 import ProtectedRoute from '@/pages/ProtectedRoute'
 
@@ -19,10 +20,11 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="/new-screening" element={<NewScreeningPage />} />
-              <Route path="/screening-historikk" element={<ScreeningHistory />} />
-              <Route path="/screening-historikk/:jobPostId" element={<Screening />} />
+              <Route path="/ny-skanning" element={<NewScreeningPage />} />
+              <Route path="/skanning-historikk" element={<ScreeningHistory />} />
+              <Route path="/skanning-historikk/:jobPostId" element={<Screening />} />
               <Route path="/kandidater" element={<CVDatabase />} />
+              <Route path="/kandidater/:candidateId" element={<Candidate />} />
             </Route>
           </Route>
         </Routes>

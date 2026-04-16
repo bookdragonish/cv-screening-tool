@@ -2,45 +2,46 @@ import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 
-  type CandidateTableProps = {
-    filteredData: Candidate[];
-    setPreviewId: (value: number) => void;
-    setReloadKey: React.Dispatch<React.SetStateAction<number>>;
-    dataLength: number;
-    setPopup: (popup: { message: string; type: "success" | "error" }) => void;
-  };
+type CandidateTableProps = {
+  filteredData: Candidate[];
+  setPreviewId: (value: number) => void;
+  setReloadKey: React.Dispatch<React.SetStateAction<number>>;
+  dataLength: number;
+  setPopup: (popup: { message: string; type: "success" | "error" }) => void;
+};
 
-  function CandidateTable({
-    filteredData,
-    setPreviewId,
-    dataLength,
-    setReloadKey,
-    setPopup,
-  }: CandidateTableProps) {
-    function showPreview(id: number) {
-      setPreviewId(id);
-    }
+function CandidateTable({
+  filteredData,
+  setPreviewId,
+  dataLength,
+  setReloadKey,
+  setPopup,
+}: CandidateTableProps) {
+  function showPreview(id: number) {
+    setPreviewId(id);
+  }
 
-    const handleDelete = async (id: number, name: string) => {
-      if (
-        !window.confirm(
-          "Er du sikker på at du vil slette " +
-            name +
-            "? Denne handlingen kan ikke angres.",
-        )
+  const handleDelete = async (id: number, name: string) => {
+    if (
+      !window.confirm(
+        "Er du sikker på at du vil slette " +
+        name +
+        "? Denne handlingen kan ikke angres.",
       )
-        return false;
-      try {
-        await deleteCandidate(id);
-        setReloadKey((prev) => prev + 1);
-        setPopup({ message: `Kandidat ${name} er slettet!`, type: "error" });
-        return true;
-      } catch (error) {
-        alert("Feil ved sletting: " + (error as Error).message);
-        return false;
-      }
-    };
+    )
+      return false;
+    try {
+      await deleteCandidate(id);
+      setReloadKey((prev) => prev + 1);
+      setPopup({ message: `Kandidat ${name} er slettet!`, type: "error" });
+      return true;
+    } catch (error) {
+      alert("Feil ved sletting: " + (error as Error).message);
+      return false;
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -89,7 +90,12 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
                   className="group transition-colors duration-150 hover:bg-(--color-light)/70"
                 >
                   <td className="px-5 py-7 text-regular text-(--color-dark) transition-colors duration-150 group-hover:text-(--color-primary)">
-                    {candidate.name ?? candidate.id}
+                    <Link
+                      to={`/kandidater/${candidate.id}`}
+                      className="hover:underline"
+                    >
+                      {candidate.name ?? candidate.id}
+                    </Link>
                   </td>
 
                   <td className="px-5 py-7 text-regular text-(--color-primary)">
@@ -116,35 +122,35 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
                     <td className="text-center text-sm text-slate-500">-</td>
                   )}
 
-                    <td className="px-5 py-3.5 text-right">
-                      <AddNewCVModal
-                        candidateToEdit={{
-                          id: candidate.id,
-                          name: candidate.name ?? "",
-                          email: candidate.email ?? "",
-                          aml46: candidate.aml46,
-                          aml47: candidate.aml47,
-                          ansiennitet: candidate.ansiennitet,
-                        }}
-                        onCreated={() => {
-                            setReloadKey((prev) => prev + 1);
-                            setPopup({ message: `${candidate.name} er oppdatert!`, type: "success" });
-                          }}
-                          onDelete={handleDelete}
-                        customTrigger={
-                          <button
-                            type="button"
-                            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
-                            title="Rediger kandidat"
-                            aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
-                          >
-                            <Pencil
+                  <td className="px-5 py-3.5 text-right">
+                    <AddNewCVModal
+                      candidateToEdit={{
+                        id: candidate.id,
+                        name: candidate.name ?? "",
+                        email: candidate.email ?? "",
+                        aml46: candidate.aml46,
+                        aml47: candidate.aml47,
+                        ansiennitet: candidate.ansiennitet,
+                      }}
+                      onCreated={() => {
+                        setReloadKey((prev) => prev + 1);
+                        setPopup({ message: `${candidate.name} er oppdatert!`, type: "success" });
+                      }}
+                      onDelete={handleDelete}
+                      customTrigger={
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
+                          title="Rediger kandidat"
+                          aria-label={`Rediger kandidat ${candidate.name ?? candidate.id}`}
+                        >
+                          <Pencil
                             className="h-5 w-5 opacity-70 hover:opacity-100"
                             aria-hidden="true"
                           />
-                          </button>
-                        }
-                      />
+                        </button>
+                      }
+                    />
 
                     <button
                       type="button"
@@ -180,4 +186,4 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
   );
 }
 
-  export default CandidateTable;
+export default CandidateTable;
