@@ -10,7 +10,6 @@ type CandidateCardProps = {
 };
 
 function CandidateCard({ candidate, id }: CandidateCardProps) {
-  console.log(candidate)
   return (
     <div
       id={id + ""}
@@ -60,11 +59,10 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           }`}
       >
         <section className="py-1">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-(--color-dark)">
-              Oppnådde kvalifikasjoner:
-            </h3>
-          </div>
+          <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
+            Oppnådde kvalifikasjoner:
+          </h3>
+
           {(() => {
             const fallbackMet = "Ingen kvalifikasjoner oppnådd.";
             const metItems = candidate.qualificationsMet.length
@@ -93,11 +91,10 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
         </section>
 
         <section className="py-1">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-(--color-dark)">
-              Manglende kvalifikasjoner:
-            </h3>
-          </div>
+          <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
+            Manglende kvalifikasjoner:
+          </h3>
+
           {(() => {
             const fallbackMissing = "Ingen manglende kvalifikasjoner";
             const missingItems = candidate.qualificationsMissing.length

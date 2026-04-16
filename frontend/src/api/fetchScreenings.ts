@@ -19,6 +19,7 @@ export async function getScreeningByJobPostId(
     throw new Error(`Response Status: ${response.status}`);
   }
   const result: ScreeningDetails = await response.json();
+  console.log(result)
 
   return result;
 }

@@ -14,6 +14,5 @@ export async function getPDF(id: string) {
   const blob = await getPDFBlob(id);
   if (!blob) return null;
   const url = URL.createObjectURL(blob);
-  console.log(url);
   return url;
 }

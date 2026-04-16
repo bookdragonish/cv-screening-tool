@@ -26,6 +26,7 @@ ${RULES}
 <must_haves_rules>
 - Kvalifikasjonskrav i "must_haves" skal være de mest kritiske kravene for stillingen, altså de som er avgjørende for om en kandidat er kvalifisert eller ikke.
 - Kvalifikasjonskrav du fyller inn i "must_haves" MÅ være hentet fra jobbannonsen OG IKKE noe du finner på selv.
+- Om annonsen eksplisitt inneholder at et krav kan kompensere for et annet, skal disse slås sammen til ett krav i must_haves.
 </must_haves_rules>
 
 <nice_to_haves_rules>
