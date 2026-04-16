@@ -30,28 +30,28 @@ function ScreeningHeader({
         <span>{formatDate(screenedAt)}</span>
       </section>
 
-      <section className="grid grid-cols-2 pt-3">
+      <section className="grid grid-cols-2 gap-x-10 pt-3">
         <article>
            <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
               Harde kvalifikasjoner:
             </h3>
-           <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
+           <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
             {hardQualifications?.map((qualification, index) => (
               <li key={index}>{qualification}</li>
             ))}
-          </ul> 
+          </ul>
         </article>
 
         <article>
            <h3 className="mb-3 text-sm font-semibold text-(--color-dark)">
               Ønskede kvalifikasjoner:
             </h3>
-            
-           <ul className="list-disc list-inside space-y-2 text-sm text-(--color-dark)">
+
+           <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
             {softQualifications?.map((qualification, index) => (
               <li key={index}>{qualification}</li>
             ))}
-          </ul> 
+          </ul>
         </article>
       </section>
     </header>
