@@ -8,7 +8,7 @@ export type Candidate = {
     created_at: string,
     aml46?: boolean,
     aml47?: boolean,
-    ansiennitet?: number | null,
+    ansiennitet?: [number | null, number | null, number | null] | null,
 }
 
 export type CandidatePreview = {
