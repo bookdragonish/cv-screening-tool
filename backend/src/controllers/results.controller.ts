@@ -200,8 +200,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
-        normalizedHardQualifications.join("\n"),
-        normalizedSoftQualifications.join("\n"),
+        normalizedHardQualifications,
+        normalizedSoftQualifications,
       ],
     );
 
