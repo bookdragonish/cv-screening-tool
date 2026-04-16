@@ -21,8 +21,8 @@ create table
         header text not null,
         title text not null,
         description text not null,
-        hardQualifications text,
-        softQualifications text,
+        hardQualifications text[],
+        softQualifications text[],
         created_at timestamptz default now ()
     );
 
@@ -45,13 +45,13 @@ VALUES
         'Do you want to be our new contract manager?',
         'Contract manager',
         'Responsible for enforcing and updating the rules of the group contract',
-        'minimum 10 years experience with vinstraff.no, saved children from a burning hospital, must work at nasa',
-        'good at giving vinstraffer, fair, cool'
+          ARRAY['minimum 10 years experience with vinstraff.no', 'saved children from a burning hospital', 'must work at nasa'],
+          ARRAY['good at giving vinstraffer', 'fair', 'cool']
     ),
     (
         'Do you want to be our new meeting coordinator?',
         'Meeting coordinator',
         'Responsible booking rooms and reminding the group of meetings',
-        'must be named Marius, must have drivers licence',
-        'should know ball, should be able to book rooms'
+        ARRAY['must be named Marius', 'must have drivers licence'],
+        ARRAY['should know ball', 'should be able to book rooms']
     );

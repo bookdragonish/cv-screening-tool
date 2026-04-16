@@ -143,8 +143,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       title?: string;
       header?: string;
       description?: string;
-      hardQualifications?: unknown;
-      softQualifications?: unknown;
+      hardQualifications?: string[];
+      softQualifications?: string[];
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
@@ -205,8 +205,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
-        normalizedHardQualifications.join("\n"),
-        normalizedSoftQualifications.join("\n"),
+        normalizedHardQualifications,
+        normalizedSoftQualifications,
       ],
     );
 
@@ -309,6 +309,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
         jp.id as "jobPostId",
         jp.title,
         jp.created_at as "screenedAt",
+        jp.hardqualifications as "hardQualifications",
+        jp.softqualifications as "softQualifications",
         json_agg(
           json_build_object(
             'candidateId', c.id,
