@@ -26,7 +26,15 @@ ${RULES}
 <must_haves_rules>
 - Kvalifikasjonskrav i "must_haves" skal være de mest kritiske kravene for stillingen, altså de som er avgjørende for om en kandidat er kvalifisert eller ikke.
 - Kvalifikasjonskrav du fyller inn i "must_haves" MÅ være hentet fra jobbannonsen OG IKKE noe du finner på selv.
+- Om annonsen eksplisitt inneholder at et krav kan kompensere for et annet, skal disse slås sammen til ett krav i must_haves.
+- Kvalifikasjonskrav i must_haves skal være krav som ikke er mulige å oppnå gjennom kursing på 6 måneder eller mindre.
 </must_haves_rules>
+
+<must_haves_can_be_coursed_rules>
+- Kvalifikasjonskrav i "must_haves_can_be_coursed" skal være de mest kritiske kravene for stillingen, altså de som er avgjørende for om en kandidat er kvalifisert eller ikke.
+- Kvalifikasjonskrav du fyller inn i "must_haves_can_be_coursed" MÅ være hentet fra jobbannonsen OG IKKE noe du finner på selv.
+- Kvalifikasjonskrav i "must_haves_can_be_coursed" skal være krav som er mulige å oppnå gjennom kursing på 6 måneder eller mindre.
+</must_haves_can_be_coursed_rules>
 
 <nice_to_haves_rules>
 - Kvalifikasjonskrav i "nice_to_haves" skal være de kravene som omhandler erfaring og kompetanse som er ønskelig, og som er naturlig å skrive inn i en CV, i motsetning til personlige egenskaper og myke kvalifikasjoner.
@@ -39,6 +47,7 @@ Returner KUN gyldig JSON med dette formatet:
 {
   "role_title": string,
   "must_haves": string[],
+  "must_haves_can_be_coursed": string[],
   "nice_to_haves": string[],
 }
 </output_format>

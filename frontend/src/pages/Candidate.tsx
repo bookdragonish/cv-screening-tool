@@ -191,7 +191,7 @@ function Candidate() {
                         </Link>
                       </td>
                       <td className="px-4 py-3 text-sm text-(--color-dark)">
-      at                   {formatDate(screen.screenedAt)}
+                        {formatDate(screen.screenedAt)}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${

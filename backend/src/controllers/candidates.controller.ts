@@ -142,8 +142,6 @@ export async function uploadCV(req: Request, res: Response, next: NextFunction) 
       });
     }
 
-    console.log(parsedCvText)
-
     const result = await pool.query(
       "UPDATE candidates SET cv_pdf = $1, cv_markdown = $2 WHERE id = $3",
       [req.file.buffer, parsedCvText, id],
