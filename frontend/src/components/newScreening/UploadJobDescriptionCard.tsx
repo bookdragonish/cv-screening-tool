@@ -24,6 +24,7 @@ import { Field, FieldDescription, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Link } from "react-router";
 
 type UploadJobDescriptionCardProps = {
   initialInput: JobDescriptionInput | null;
@@ -35,7 +36,6 @@ type UploadJobDescriptionCardProps = {
 function UploadJobDescriptionCard({
   initialInput,
   showRetryLabel,
-  onCancel,
   onStartProcessing,
 }: UploadJobDescriptionCardProps) {
   const form = useForm<UploadJobDescriptionValues>({
@@ -44,16 +44,20 @@ function UploadJobDescriptionCard({
     shouldFocusError: true,
     defaultValues: {
       mode: initialInput?.mode ?? "pdf",
-      jobDescriptionFile: initialInput?.mode === "pdf" ? initialInput.file : undefined,
-      jobDescriptionText: initialInput?.mode === "text" ? initialInput.text : "",
+      jobDescriptionFile:
+        initialInput?.mode === "pdf" ? initialInput.file : undefined,
+      jobDescriptionText:
+        initialInput?.mode === "text" ? initialInput.text : "",
     },
   });
 
   useEffect(() => {
     form.reset({
       mode: initialInput?.mode ?? "pdf",
-      jobDescriptionFile: initialInput?.mode === "pdf" ? initialInput.file : undefined,
-      jobDescriptionText: initialInput?.mode === "text" ? initialInput.text : "",
+      jobDescriptionFile:
+        initialInput?.mode === "pdf" ? initialInput.file : undefined,
+      jobDescriptionText:
+        initialInput?.mode === "text" ? initialInput.text : "",
     });
   }, [initialInput, form]);
 
@@ -107,16 +111,21 @@ function UploadJobDescriptionCard({
   };
 
   const isSubmitDisabled =
-    mode === "pdf" ? !isPdfSelectionValid : jobDescriptionText.trim().length === 0;
+    mode === "pdf"
+      ? !isPdfSelectionValid
+      : jobDescriptionText.trim().length === 0;
 
   return (
     <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <CardTitle className="text-3xl text-slate-900">Last opp stillingsbeskrivelse</CardTitle>
+            <CardTitle className="text-2xl text-slate-900">
+              Last opp stillingsbeskrivelse
+            </CardTitle>
             <CardDescription className="text-base text-slate-500">
-              Last opp en PDF eller lim inn stillingsbeskrivelsen for å starte screeningprosessen.
+              Last opp PDF eller lim inn stillingsbeskrivelsen for å starte
+              skanningsprosessen.
             </CardDescription>
           </div>
 
@@ -125,7 +134,11 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "pdf" ? "default" : "outline"}
-              className={mode === "pdf" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-100"}
+              className={
+                mode === "pdf"
+                  ? "bg-primary hover:bg-primary/80"
+                  : "border-slate-300 bg-white hover:bg-slate-100"
+              }
               onClick={() => setMode("pdf")}
             >
               PDF
@@ -134,7 +147,11 @@ function UploadJobDescriptionCard({
               type="button"
               size="sm"
               variant={mode === "text" ? "default" : "outline"}
-              className={mode === "text" ? "bg-primary hover:bg-primary/80" : "border-slate-300 bg-white hover:bg-slate-100"}
+              className={
+                mode === "text"
+                  ? "bg-primary hover:bg-primary/80"
+                  : "border-slate-300 bg-white hover:bg-slate-100"
+              }
               onClick={() => setMode("text")}
             >
               Tekst
@@ -168,7 +185,9 @@ function UploadJobDescriptionCard({
                     className="sr-only"
                     tabIndex={-1}
                     aria-invalid={fieldState.invalid}
-                    aria-describedby={fieldState.invalid ? fileErrorId : undefined}
+                    aria-describedby={
+                      fieldState.invalid ? fileErrorId : undefined
+                    }
                     onChange={(event) => {
                       const file = event.target.files?.[0];
                       setPickedFile(file);
@@ -185,7 +204,9 @@ function UploadJobDescriptionCard({
                           <FileTextIcon className="h-4 w-4 text-primary" />
                           {selectedFile?.name}
                         </p>
-                        <p className="mt-2 text-xs text-slate-500">{formatBytes(selectedFile?.size ?? 0)}</p>
+                        <p className="mt-2 text-xs text-slate-500">
+                          {formatBytes(selectedFile?.size ?? 0)}
+                        </p>
                         <Button
                           variant="ghost"
                           type="button"
@@ -209,13 +230,20 @@ function UploadJobDescriptionCard({
                     )}
                   </div>
 
-                  {!fieldState.invalid && <FieldDescription className="mt-2">Kun PDF-filer er tillatt</FieldDescription>}
+                  {!fieldState.invalid && (
+                    <FieldDescription className="mt-2">
+                      Kun PDF-filer er tillatt
+                    </FieldDescription>
+                  )}
 
                   {fieldState.invalid && (
                     <div id={fileErrorId}>
-                      <FieldError errors={[fieldState.error]} className="mt-3" />
+                      <FieldError
+                        errors={[fieldState.error]}
+                        className="mt-3"
+                      />
                     </div>
-                  ) }
+                  )}
                 </Field>
               )}
             />
@@ -225,7 +253,9 @@ function UploadJobDescriptionCard({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <Label htmlFor={textAreaId}>Stillingsbeskrivelse (tekst)</Label>
+                  <Label htmlFor={textAreaId}>
+                    Stillingsbeskrivelse (tekst)
+                  </Label>
                   <Textarea
                     {...field}
                     id={textAreaId}
@@ -233,7 +263,9 @@ function UploadJobDescriptionCard({
                     placeholder="Lim inn stillingsbeskrivelsen her..."
                     maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
                     aria-invalid={fieldState.invalid}
-                    aria-describedby={fieldState.invalid ? textErrorId : undefined}
+                    aria-describedby={
+                      fieldState.invalid ? textErrorId : undefined
+                    }
                   />
                   <FieldDescription>
                     Lim inn hele stillingsbeskrivelsen. Minst 40 tegn, maks{" "}
@@ -242,7 +274,10 @@ function UploadJobDescriptionCard({
 
                   {fieldState.invalid && (
                     <div id={textErrorId}>
-                      <FieldError errors={[fieldState.error]} className="mt-1" />
+                      <FieldError
+                        errors={[fieldState.error]}
+                        className="mt-1"
+                      />
                     </div>
                   )}
                 </Field>
@@ -251,28 +286,21 @@ function UploadJobDescriptionCard({
           )}
 
           <div className="mt-6 flex justify-end gap-3">
+            <Link to="/">
+              <Button
+                type="button"
+                variant="outline"
+                className="border-slate-300 bg-white hover:bg-slate-100 hover:text-black"
+                asChild
+              >
+                <span>Avbryt</span>
+              </Button>
+            </Link>
             <Button
-              type="button"
-              variant="outline"
-              className="border-slate-300 bg-white hover:bg-slate-100"
-              onClick={() => {
-                setPickedFile(undefined);
-                form.setValue("jobDescriptionText", "", {
-                  shouldDirty: true,
-                  shouldTouch: false,
-                  shouldValidate: false,
-                });
-                form.setValue("mode", "pdf", {
-                  shouldDirty: true,
-                  shouldTouch: false,
-                  shouldValidate: false,
-                });
-                onCancel();
-              }}
+              type="submit"
+              className="bg-primary hover:bg-primary/80"
+              disabled={isSubmitDisabled}
             >
-              Avbryt
-            </Button>
-            <Button type="submit" className="bg-primary hover:bg-primary/80" disabled={isSubmitDisabled}>
               {showRetryLabel ? "Prøv igjen" : "Neste"}
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import { saveScreeningRun } from "@/api/fetchScreenings";
 import { runScreeningWithGemini } from "@/api/runScreeningWithGemini";
-import NewScreening from "@/components/NewScreening/NewScreening";
+import NewScreening from "@/components/newScreening/NewScreening";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
 import type { StepStatus } from "@/types/newScreeningTypes";
 import { useState } from "react";
@@ -93,8 +93,8 @@ function NewScreeningPage() {
         showRetryLabel={hasProcessingError}
         resultsHref={
           savedScreeningJobPostId
-            ? `/screening-historikk/${savedScreeningJobPostId}`
-            : "/screening-historikk"
+            ? `/skanning-historikk/${savedScreeningJobPostId}`
+            : "/skanning-historikk"
         }
         onCancel={() => {
           setErrorBox(null);

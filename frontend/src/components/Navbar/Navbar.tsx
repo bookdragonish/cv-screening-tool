@@ -1,11 +1,13 @@
 import { FileText, User, Home, Clock } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import NavItem from "./NavItem";
+import { Button } from "@/components/ui/button";
+import { AUTH_KEY } from "@/pages/LoginPage";
 
 const navItems = [
-  { to: "/", label: "Oversikt", icon: Home },
+  { to: "/", label: "Hjem", icon: Home },
   { to: "/kandidater", label: "Kandidater", icon: FileText },
-  { to: "/screening-historikk", label: "Skanninghistorikk", icon: Clock },
+  { to: "/skanning-historikk", label: "Skanninghistorikk", icon: Clock },
 ];
 
 function Navbar() {
@@ -37,22 +39,35 @@ function Logo() {
       className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
       aria-label="Gå til hovedside"
     >
-      <div className="rounded-lg bg-(--color-primary) p-2">
-        <FileText className="h-5 w-5 text-white" aria-hidden="true" />
-      </div>
-      <h1 className="text-xl font-semibold text-(--color-dark)">Job-Scan</h1>
+      <img src="/favicon.svg" alt="" className="h-8 w-auto" aria-hidden="true" />
+      <h1 className="section-title font-semibold text-(--color-dark)">Jobb-skanner</h1>
     </Link>
   );
 }
 
 function Profile() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem(AUTH_KEY);
+    navigate("/login");
+  }
+
   return (
     <section
       aria-label="Innlogget bruker"
-      className="flex items-center gap-2 text-(--color-dark) sm:self-auto"
+      className="flex items-center gap-3 sm:self-auto"
     >
-      <User className="h-5 w-5" aria-hidden="true" />
-      <span className="text-sm font-medium">HR-bruker</span>
+      <User className="h-5 w-5 text-(--color-dark)" aria-hidden="true" />
+      <span className="text-regular font-medium text-(--color-dark)">HR-bruker</span>
+      <Button
+        onClick={handleLogout}
+        variant="secondary"
+        size="sm"
+        className="bg-(--color-primary) text-white hover:bg-red-600 hover:text-white cursor-pointer"
+      >
+        Logg ut
+      </Button>
     </section>
   );
 }

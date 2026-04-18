@@ -27,7 +27,7 @@ app.get("/", (_req, res) => {
 
 app.get("/norllm", async (_req, res) => {
   try {
-    const buffer = await readFile("src/services/llm/norLLM/cv.pdf");
+    const buffer = await readFile("src/services/llm/norllm/cv.pdf");
     const data = await norLLM(buffer);
     res.json({ ok: true, message: data });
   } catch (error) {

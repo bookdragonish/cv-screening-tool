@@ -92,9 +92,9 @@ function toScore(value: unknown): number {
 export function fixCandidateEval(params: {
   text: string;
   fallbackCandidateId: string;
-  fallbackCandidateLabel: string;
+  fallbackCandidateName: string;
 }): CandidateEval {
-  const { text, fallbackCandidateId, fallbackCandidateLabel } = params;
+  const { text, fallbackCandidateId, fallbackCandidateName } = params;
 
   try {
     return parseCandidateEval(text);
@@ -110,6 +110,8 @@ export function fixCandidateEval(params: {
     const score = toScore(raw.overall_score);
     const strengthsRaw = Array.isArray(raw.strengths) ? raw.strengths : [];
     const gapsRaw = Array.isArray(raw.gaps) ? raw.gaps : [];
+    const unknownsRaw = Array.isArray(raw.unknowns) ? raw.unknowns : [];
+    const courseRecommendationsRaw = Array.isArray(raw.courseRecommendations) ? raw.courseRecommendations : [];
 
     const strengths = strengthsRaw
       .map((item) => {
@@ -119,19 +121,19 @@ export function fixCandidateEval(params: {
         const point = normalizeString(
           typeof record.point === "string" ? record.point : "",
         );
-        const evidence = normalizeString(
-          typeof record.evidence === "string" ? record.evidence : "",
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
         );
 
-        if (!point && !evidence) return null;
+        if (!point && !explanation) return null;
 
         return {
           point: point || "Uspesifisert styrke",
-          evidence: evidence || "Ikke oppgitt",
+          explanation: explanation || "Ikke oppgitt",
         };
       })
       .filter(
-        (item): item is { point: string; evidence: string } => item !== null,
+        (item): item is { point: string; explanation: string } => item !== null,
       );
 
     const gaps = gapsRaw
@@ -142,26 +144,65 @@ export function fixCandidateEval(params: {
         const point = normalizeString(
           typeof record.point === "string" ? record.point : "",
         );
-        const evidence = normalizeString(
-          typeof record.evidence === "string" ? record.evidence : "",
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
         );
 
-        if (!point && !evidence) return null;
+        if (!point && !explanation) return null;
 
         return {
           point: point || "Uspesifisert gap",
-          evidence: evidence || "Ikke oppgitt",
-          impact: normalizeImpact(record.impact),
+          explanation: explanation || "Ikke oppgitt",
         };
       })
       .filter(
-        (
-          item,
-        ): item is {
-          point: string;
-          evidence: string;
-          impact: "high" | "medium" | "low";
-        } => item !== null,
+        (item): item is { point: string; explanation: string } => item !== null,
+      );
+
+    const unknowns = unknownsRaw
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as Record<string, unknown>;
+
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
+        );
+
+        if (!point && !explanation) return null;
+
+        return {
+          point: point || "Uspesifisert unknown",
+          explanation: explanation || "Ikke oppgitt",
+        };
+      })
+      .filter(
+        (item): item is { point: string; explanation: string } => item !== null,
+      );
+
+    const courseRecommendations = courseRecommendationsRaw
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as Record<string, unknown>;
+
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
+        );
+
+        if (!point && !explanation) return null;
+
+        return {
+          point: point || "Uspesifisert kursanbefaling",
+          explanation: explanation || "Ikke oppgitt",
+        };
+      })
+      .filter(
+        (item): item is { point: string; explanation: string } => item !== null,
       );
 
     return {
@@ -169,28 +210,28 @@ export function fixCandidateEval(params: {
         normalizeString(
           typeof raw.candidate_id === "string" ? raw.candidate_id : "",
         ) || fallbackCandidateId,
-      candidate_label:
+      candidate_name:
         normalizeString(
-          typeof raw.candidate_label === "string" ? raw.candidate_label : "",
-        ) || fallbackCandidateLabel,
-      candidate_role:
-        normalizeString(
-          typeof raw.candidate_role === "string" ? raw.candidate_role : "",
-        ) || "Kandidat",
-      contact_phone:
-        normalizeString(
-          typeof raw.contact_phone === "string" ? raw.contact_phone : "",
-        ) || "Ikke oppgitt",
+          typeof raw.candidate_name === "string" ? raw.candidate_name : "",
+        ) || fallbackCandidateName,
+      summary: normalizeString(
+        typeof raw.summary === "string" ? raw.summary : "",
+      ),
       qualified:
         typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
       overall_score: score,
-      experience_highlights: toNonEmptyStringArray(raw.experience_highlights),
-      education: toNonEmptyStringArray(raw.education),
       strengths: strengths.length
         ? strengths
-        : [{ point: "Ingen tydelige styrker", evidence: "Ikke oppgitt" }],
-      gaps,
-      unknowns: toNonEmptyStringArray(raw.unknowns),
+        : [{ point: "Ingen tydelige styrker", explanation: "Ikke oppgitt" }],
+      gaps: gaps.length
+        ? gaps
+        : [{ point: "Ingen tydelige gaps", explanation: "Ikke oppgitt" }],
+      unknowns: unknowns.length
+        ? unknowns
+        : [{ point: "Ingen tydelige unknows", explanation: "Ikke oppgitt" }],
+      courseRecommendations: courseRecommendations.length
+        ? courseRecommendations
+        : [{ point: "Ingen tydelige kursanbefalinger", explanation: "Ikke oppgitt" }],
     };
   }
 }
@@ -291,7 +332,7 @@ export function buildFallbackRankingFromEvals(params: {
       return {
         candidate_id: String(candidate.id),
         candidate_label:
-          normalizeString(evaluation.candidate_label) ||
+          normalizeString(evaluation.candidate_name) ||
           normalizeString(candidate.name) ||
           `Kandidat ${candidate.id}`,
         overall_score: score,
@@ -300,8 +341,7 @@ export function buildFallbackRankingFromEvals(params: {
             ? evaluation.qualified
             : score >= 50,
         summary:
-          normalizeString(evaluation.strengths?.[0]?.point) ||
-          normalizeString(evaluation.candidate_role) ||
+          normalizeString(evaluation.summary) ||
           "Ingen oppsummering tilgjengelig.",
       };
     })

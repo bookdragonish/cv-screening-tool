@@ -2,16 +2,45 @@ export type ScreeningDetails = {
   jobPostId: number;
   title: string;
   screenedAt: string;
+  aiJobDescription?: string,
+  hardQualifications: string[];
+  softQualifications: string[];
+  candidates: Array<RankedCandidate>;
+};
+
+
+export type RankedCandidate = {
+  candidateId: number;
+  candidateName: string;
+  rank: number;
+  score: number;
+  qualified: boolean;
+  qualificationsMet: string[];
+  qualificationsMissing: string[];
+  courseRecommendations: string[];
+  unknowns: string[];
+  summary?: string;
+  createdAt: string;
+  aml46?: boolean,
+  aml47?: boolean,
+};
+
+export type SaveScreeningRunPayload = {
+  title: string;
+  header: string;
+  description: string;
+  hardQualifications: string[];
+  softQualifications: string[];
   candidates: Array<{
     candidateId: number;
-    candidateName: string;
     rank: number;
     score: number;
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    courseRecommendations: string[];
     unknowns: string[];
     summary?: string;
-    createdAt: string;
   }>;
 };
+

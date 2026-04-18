@@ -36,7 +36,7 @@ Right click on databases and choose create. This need no spesifications (I think
 ### Create limited user:
 We have a user called postgres, however this is similar to writing "sudo", we would like a user with a bit more limited access.
 
-In the pgAdmin cv_database choose Query Tool the top tab named "cv_database/postgres@PostgreSQL 18". Here you can write sql. **Change password before creating new user**. 
+In the pgAdmin cv_database choose Query Tool the top tab named "cv_database/postgres@PostgreSQL 18". Here you can write sql. **Change password before creating new user**.
 ```
 CREATE USER cv_app_user WITH PASSWORD 'strongpassword';
 GRANT CONNECT ON DATABASE cv_database TO cv_app_user;
@@ -85,17 +85,16 @@ create table if not exists job_posts (
   title text not null,
   description text not null,
   hardQualifications text,
-  softQualifications text,
   created_at timestamptz default now()
 );
 
 INSERT INTO candidates (name, email)
-VALUES 
+VALUES
   ('Alice Johnson', 'alice.johnson@example.com'),
   ('Mark Chen', 'mark.chen@example.com');
 
-INSERT INTO job_posts(header, title, description, hardQualifications, softQualifications)
-VALUES 
+INSERT INTO job_posts(header, title, description, hardQualifications )
+VALUES
   ('Do you want to be our new contract manager?', 'Contract manager', 'Responsible for enforcing and updating the rules of the group contract', 'minimum 10 years experience with vinstraff.no, saved children from a burning hospital, must work at nasa', 'good at giving vinstraffer, fair, cool'),
 ('Do you want to be our new meeting coordinator?', 'Meeting coordinator', 'Responsible booking rooms and reminding the group of meetings', 'must be named Marius, must have drivers licence', 'should know ball, should be able to book rooms');
 
@@ -123,7 +122,7 @@ In the future, if you need to reset test data:
 
 If you have not used it before it has a simple interface:
 ![alt text](/public/images/screenshot_postman.png)
-Here you can define if you like to get, post or whatever to the database link. You can also spesify params (do you want a certain ID or so on). 
+Here you can define if you like to get, post or whatever to the database link. You can also spesify params (do you want a certain ID or so on).
 
 Basically it checks that the database is up and you get the response that you want. You can also check this using the code we write, however if there is issues with the code, it might be difficult to know if the cause is frontend or backend.
 
@@ -167,7 +166,7 @@ You do not have a user. And if you do the username is set wrong so the system se
 ## Notes to my future self
 When moving on to using one hosted db this is the code for separate login roles:
 
-``` 
+```
 CREATE ROLE ingvi WITH LOGIN PASSWORD 'StrongPassword1!';
 GRANT CONNECT ON DATABASE cv_database TO ingvi;
 GRANT USAGE ON SCHEMA public TO ingvi;
