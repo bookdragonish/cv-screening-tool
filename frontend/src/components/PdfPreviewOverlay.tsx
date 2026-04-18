@@ -77,7 +77,7 @@ function PdfPreviewOverlay({
     <div className="fixed inset-0 flex items-center justify-center bg-primary/35" role="dialog" aria-modal="true" aria-label={`Forhåndsvisning for ${selectedCandidate.name}`}>
       <div className="bg-background w-full max-w-4xl h-[90vh] rounded-lg shadow-lg flex flex-col overflow-hidden border border-border">
         <header className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h3 className="text-lg font-semibold text-foreground"> {selectedCandidate.name} </h3>
+          <h1 className="text-lg font-semibold text-foreground"> {selectedCandidate.name} </h1>
           <Button
             ref={closeBtnRef}
             onClick={onClose}

@@ -30,9 +30,9 @@ function Home() {
 
         {/* Start new screening card */}
         <Card className="rounded-lg border-(--color-primary) bg-(--color-primary) p-6 shadow-sm">
-          <h3 className=" text-xl font-semibold text-white">
+          <h2 className=" text-xl font-semibold text-white">
             Start ny skanning
-          </h3>
+          </h2>
           <p className="text-sm text-white opacity-90 mb-2">
             Last opp en stillingsbeskrivelse for å finne de mest relevante
             kandidatene.
