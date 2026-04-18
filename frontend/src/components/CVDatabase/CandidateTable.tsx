@@ -180,7 +180,7 @@ function CandidateTable({
 
       <footer>
         <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-          Viser {filteredData.length} av {dataLength} kandidater
+          Viser {filteredData.length} av {dataLength} kandidater.
         </p>
       </footer>
     </div>

@@ -158,7 +158,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         {customTrigger ? (
           customTrigger
         ) : (
-          <Button className="hover-dark-button border-2 border-(--color-primary) p-2">
+          <Button className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer">
             <PlusIcon className="size-6" />
             <p className="text-regular p-2">
               Legg til kandidat

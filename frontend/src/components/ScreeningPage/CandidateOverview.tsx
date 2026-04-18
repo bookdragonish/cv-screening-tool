@@ -52,7 +52,7 @@ function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
 
       <footer>
         <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-          Her er slutten på lista
+          Ingen flere kandidater å vise.
         </p>
       </footer>
     </section>

@@ -22,7 +22,7 @@ function Home() {
         <HeaderSection
           header={"Velkommen tilbake!"}
           subsection={
-            "Her kan du se oversikten over de siste skanningene gjennomført, administrere kandidatene eller starte ny skanning"
+            "Her kan du se oversikten over de siste skanningene gjennomført, administrere kandidatene eller starte ny skanning."
           }
         />
 

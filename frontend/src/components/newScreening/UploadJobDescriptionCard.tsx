@@ -232,7 +232,7 @@ function UploadJobDescriptionCard({
 
                   {!fieldState.invalid && (
                     <FieldDescription className="mt-2">
-                      Kun PDF-filer er tillatt
+                      Kun PDF-filer er tillatt.
                     </FieldDescription>
                   )}
 

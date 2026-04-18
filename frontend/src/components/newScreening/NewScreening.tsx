@@ -45,7 +45,7 @@ function NewScreening({
       className="mx-auto w-full max-w-6xl px-4 sm:px-8"
       aria-labelledby="new-screening-title"
     >
-      <HeaderSection id="new-screening-title" header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen"} />
+      <HeaderSection id="new-screening-title" header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen."} />
 
       <ScreeningProgressSteps
         uploadStatus={uploadStatus}
