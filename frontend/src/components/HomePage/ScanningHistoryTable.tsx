@@ -1,16 +1,11 @@
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
+import { formatDate } from "@/utils/dateFormat";
 import { Clock } from "lucide-react";
 import { Link } from "react-router";
 
 function ScanningHistoryTable() {
   const { screeningData, isLoading, isError } = useFetchScreenings();
 
-  const formatDate = (dateValue: string) =>
-    new Intl.DateTimeFormat("nb-NO", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(dateValue));
   return (
     <section className="lg:col-span-2 lg:self-start rounded-lg border border-(--color-primary) shadow-sm" aria-label="Nylig screeningaktivitet">
 

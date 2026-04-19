@@ -6,7 +6,15 @@ import ErrorBox from "../ErrorBox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup } from "../ui/field";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import * as React from "react";
+import { ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 type CandidateScanningTableProps = {
   candidateId: string;
@@ -26,11 +34,10 @@ function CandidateScanningTable({
   candidateId,
   candidateName,
 }: CandidateScanningTableProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
     Object.fromEntries(TableFields.map((f) => [f, true])),
   );
-
-
 
   // TODO: simplify this - add backend functionality that does this
   const {
@@ -72,64 +79,82 @@ function CandidateScanningTable({
     );
   }
 
-  console.log(visibleFields);
-
   return (
     <section className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold text-(--color-dark)">
         Tidligere skanninger for {candidateName}
       </h2>
 
-      <article className="mb-6 p-4">
-        <div className="mb-3">
-          <p className="text-sm font-medium">
-            Velg hvilke felter som skal vises i tabellen
-          </p>
-        </div>
-
-        <FieldGroup className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
-          {TableFields.map((field) => {
-            const id = `${field}-checkbox`;
-
-            return (
-              <Field
-                key={field}
-                orientation="horizontal"
-                className="flex items-center gap-3 rounded-lg  px-3 py-2"
+      <article className="w-full">
+        <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="flex w-full flex-col gap-3"
+        >
+          <div className="flex justify-end">
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-md px-2 py-1 text-(--color-dark) transition hover:bg-(--color-light)"
               >
-                <Checkbox
-                  id={id}
-                  name={id}
-                  checked={visibleFields[field]}
-                  onCheckedChange={(checked) => {
-                    const isChecked = !!checked;
-
-                    if (field === "Alle") {
-                      setVisibleFields(
-                        Object.fromEntries(
-                          TableFields.map((f) => [f, isChecked]),
-                        ),
-                      );
-                    } else {
-                      setVisibleFields((prev) => ({
-                        ...prev,
-                        [field]: isChecked,
-                        Alle: false, // optional
-                      }));
-                    }
-                  }}
-                  className="cursor-pointer data-[state=checked]:border-(--color-primary) data-[state=checked]:bg-(--color-primary)"
+                <h3 className="text-sm font-semibold">
+                  Hvilke felter skal vises i tabellen
+                </h3>
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
                 />
-                <Label
-                  htmlFor={id}
-                  className="cursor-pointer text-sm font-medium"
-                >
-                  {field}
-                </Label>
-              </Field>
-            );
-          })}
-        </FieldGroup>
+              </button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent className="w-full">
+            <FieldGroup className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
+              {TableFields.map((field) => {
+                const id = `${field}-checkbox`;
+
+                return (
+                  <Field
+                    key={field}
+                    orientation="horizontal"
+                    className="flex items-center gap-3 px-3 py-2"
+                  >
+                    <Checkbox
+                      id={id}
+                      name={id}
+                      checked={visibleFields[field]}
+                      onCheckedChange={(checked) => {
+                        const isChecked = !!checked;
+
+                        if (field === "Alle") {
+                          setVisibleFields(
+                            Object.fromEntries(
+                              TableFields.map((f) => [f, isChecked]),
+                            ),
+                          );
+                        } else {
+                          setVisibleFields((prev) => ({
+                            ...prev,
+                            [field]: isChecked,
+                            Alle: false,
+                          }));
+                        }
+                      }}
+                      className="cursor-pointer data-[state=checked]:border-(--color-primary) data-[state=checked]:bg-(--color-primary)"
+                    />
+                    <Label
+                      htmlFor={id}
+                      className="cursor-pointer text-sm font-medium"
+                    >
+                      {field}
+                    </Label>
+                  </Field>
+                );
+              })}
+            </FieldGroup>
+          </CollapsibleContent>
+        </Collapsible>
       </article>
 
       <article className="overflow-x-auto">
