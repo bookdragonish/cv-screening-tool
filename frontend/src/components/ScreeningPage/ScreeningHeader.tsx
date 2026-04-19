@@ -1,3 +1,4 @@
+import { formatDate } from "@/utils/dateFormat";
 import { Clock } from "lucide-react";
 
 type ScreeningHeaderProps = {
@@ -13,14 +14,7 @@ function ScreeningHeader({
   softQualifications,
   screenedAt,
 }: ScreeningHeaderProps) {
-  const formatDate = (dateValue: string) =>
-    new Intl.DateTimeFormat("nb-NO", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(dateValue));
-
-
+  
   return (
     <header className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
       <h1 className="text-3xl font-semibold text-(--color-dark)">{title}</h1>
