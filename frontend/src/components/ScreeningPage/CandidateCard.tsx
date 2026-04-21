@@ -1,8 +1,15 @@
-import { CheckCircle2, CircleHelp, FileText, Info, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  CircleHelp,
+  FileText,
+  Info,
+  XCircle,
+} from "lucide-react";
 import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
 import { Badge } from "../ui/badge";
 import { Link } from "react-router";
+import HoverExplanationCard from "./HoverExplanationCard";
 import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 
 type CandidateCardProps = {
@@ -24,10 +31,7 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           <div>
             <h2 className="text-lg font-semibold text-(--color-dark)">
               {candidate.qualified && <>#{candidate.rank}</>}{" "}
-              <Link
-                to={`/kandidater/${id}`}
-                className="hover:underline"
-              >
+              <Link to={`/kandidater/${id}`} className="hover:underline">
                 {candidate.candidateName}
               </Link>
             </h2>
@@ -90,10 +94,15 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                     className="flex items-start gap-2 leading-5"
                   >
                     {item !== fallbackMet ? (
-                      <CheckCircle2
-                        className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                        style={{ color: "var(--status-qual-met)" }}
-                      />
+                      <HoverExplanationCard
+                        title="Kvalifikasjon oppnådd"
+                        description="Dette punktet mener KI at kandidaten har oppfylt."
+                      >
+                        <CheckCircle2
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                          style={{ color: "var(--status-qual-met)" }}
+                        />
+                      </HoverExplanationCard>
                     ) : null}
                     <span>{item}</span>
                   </li>
@@ -122,10 +131,15 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                     className="flex items-start gap-2 leading-5"
                   >
                     {item !== fallbackMissing ? (
-                      <XCircle
-                        className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                        style={{ color: "var(--status-qual-not-met)" }}
-                      />
+                      <HoverExplanationCard
+                        title="Kvalifikasjon mangler."
+                        description="I følge KI mangler kandidaten kunnskap eller erfaring som er spesifisert i jobb beskrivelsen."
+                      >
+                        <XCircle
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                          style={{ color: "var(--status-qual-not-met)" }}
+                        />
+                      </HoverExplanationCard>
                     ) : null}
                     <span>{item}</span>
                   </li>
@@ -148,10 +162,15 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                   key={`${item}-${index}`}
                   className="flex items-start gap-2 leading-5"
                 >
-                  <CircleHelp
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                    style={{ color: "var(--status-unknown)" }}
-                  />
+                  <HoverExplanationCard
+                    title="Usikkerhet"
+                    description="Dette punktet klarer ikke KI klassifisere, og må derfor vurderes av HR-personell."
+                  >
+                    <CircleHelp
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                      style={{ color: "var(--status-unknown)" }}
+                    />
+                  </HoverExplanationCard>
                   <span>{item}</span>
                 </li>
               ))}
@@ -161,10 +180,14 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                   key={`${item}-${index}`}
                   className="flex items-start gap-2 leading-5"
                 >
-                  <Info
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                    style={{ color: "var(--status-course)" }}
-                  />
+                  <HoverExplanationCard
+                    title="Forslag til opplæring."
+                    description="Dette er et krav KI mener at kandidaten mangler, men som kan kurses innen rimelig tid."                  >
+                    <Info
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                      style={{ color: "var(--status-course)" }}
+                    />
+                  </HoverExplanationCard>
                   <span>{item}</span>
                 </li>
               ))}
