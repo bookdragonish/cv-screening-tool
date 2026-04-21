@@ -15,6 +15,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "../components/ui/badge";
 import { formatDate } from "@/utils/dateFormat";
 import CandidateScanningTable from "@/components/CandidatePage/CandidateScanningTable";
+import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 
 function Candidate() {
   const { candidateId } = useParams<{ candidateId: string }>();
@@ -73,38 +74,19 @@ function Candidate() {
               <h1 className="mt-1 pb-3 text-3xl font-semibold text-(--color-dark)">
                 {candidate.name}
               </h1>
-
-              <div className="flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-                <Clock className="h-4 w-4" aria-hidden="true" />
-                <span>{formatDate(candidate.created_at)}</span>
-              </div>
-
-              <p className="text-sm text-(--color-dark) opacity-75 mt-1">
-                Arbeidsmiljøloven:{" "}
-                {!candidate.aml46 && !candidate.aml47 ? (
-                  "Ingen"
-                ) : (
-                  <>
-                    {candidate.aml46 ? (
-                      <Badge variant="secondary">{"AML §4.6"}</Badge>
-                    ) : (
-                      ""
-                    )}
-                    {candidate.aml47 ? (
-                      <Badge variant="secondary">{"AML §4.7"}</Badge>
-                    ) : (
-                      ""
-                    )}
-                  </>
-                )}
+              <p className="text-sm text-(--color-dark) mt-1">
+                  Arbeidsmiljøloven:{" "}
+                  {!candidate.aml46 && !candidate.aml47 ? (
+                    "Ingen"
+                  ) : (
+                    <>
+                      {candidate.aml46 ? <Badge variant="aml">{"AML §4.6"}</Badge> : ""}
+                      {candidate.aml47 ? <Badge variant="aml">{"AML §4.7"}</Badge> : ""}
+                    </>
+                  )}
               </p>
-              <p className="text-sm text-(--color-dark) opacity-75">
-                Ansiennitet:{" "}
-                {!candidate.ansiennitet ? (
-                  "Ingen"
-                ) : (
-                  <>{candidate.ansiennitet}</>
-                )}
+              <p className="text-sm text-(--color-dark)">
+                Ansiennitet: {formatAnsiennitet(candidate.ansiennitet)}
               </p>
             </div>
             <TooltipProvider>

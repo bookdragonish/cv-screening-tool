@@ -23,6 +23,7 @@ export type RankedCandidate = {
   createdAt: string;
   aml46?: boolean,
   aml47?: boolean,
+  ansiennitet?: [number | null, number | null, number | null] | null,
 };
 
 export type SaveScreeningRunPayload = {
