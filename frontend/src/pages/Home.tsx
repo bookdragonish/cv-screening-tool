@@ -76,7 +76,7 @@ function Home() {
             variant="outline"
             className="w-full border-(--color-primary) font-medium text-(--color-primary) transition-colors hover:bg-(--color-light)/50 hover:text-(--color-primary)"
           >
-            <Link to="/kandidater">Administrer Kandidater → </Link>
+            <Link to="/kandidater">Administrer kandidater → </Link>
           </Button>
         </Card>
       </aside>
