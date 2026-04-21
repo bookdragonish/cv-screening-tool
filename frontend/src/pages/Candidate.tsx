@@ -11,6 +11,7 @@ import { Download } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Badge } from "../components/ui/badge"
+import { formatAnsiennitet } from '@/utils/formatAnsiennitet';
 
 function Candidate() {
     const { candidateId } = useParams<{ candidateId: string }>();
@@ -93,14 +94,7 @@ function Candidate() {
                   )}
               </p>
               <p className="text-sm text-(--color-dark) opacity-75">
-                Ansiennitet:{" "}
-                  {!candidate.ansiennitet ? (
-                    "Ingen"
-                  ) : (
-                    <>
-                      {candidate.ansiennitet}
-                    </>
-                  )}
+                Ansiennitet: {formatAnsiennitet(candidate.ansiennitet)}
               </p>
               <div className="mt-4 flex items-start gap-3">
                 <div>
