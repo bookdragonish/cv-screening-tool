@@ -32,7 +32,7 @@ const defaultVisibleFields = Object.fromEntries(
   TableFields.map((field) => [field, true]),
 ) as Record<string, boolean>;
 
-const STORAGE_KEY = "candidate_table_visible_fields"
+const STORAGE_KEY = "candidate_table_visible_fields";
 
 function CandidateScanningTable({
   candidateId,
@@ -40,16 +40,17 @@ function CandidateScanningTable({
 }: CandidateScanningTableProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return defaultVisibleFields;
-    try{
-      const parsed = JSON.parse(saved) as Record<string, boolean>;
-      return parsed;
-    }catch{
-      return defaultVisibleFields
-    }
-  } 
+  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
+    () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return defaultVisibleFields;
+      try {
+        const parsed = JSON.parse(saved) as Record<string, boolean>;
+        return parsed;
+      } catch {
+        return defaultVisibleFields;
+      }
+    },
   );
 
   // TODO: simplify this - add backend functionality that does this
@@ -74,8 +75,10 @@ function CandidateScanningTable({
     }));
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleFields))
-  })
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleFields));
+  });
+
+  console.log(candidateScreenings)
 
   if (isLoading) {
     return (
@@ -251,7 +254,7 @@ function CandidateScanningTable({
                 )}
 
                 {visibleFields["Status"] && (
-                  <td className="px-4 py-3 min-w-33 text-center">
+                  <td className="px-4 py-3 min-w-40 text-center">
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-medium ${
                         screen.candidateResult.qualified
@@ -275,8 +278,16 @@ function CandidateScanningTable({
                 )}
 
                 {visibleFields["Forslag til opplæring"] && (
-                  <td className="px-4 py-3 text-center text-sm text-(--color-dark)">
-                    {screen.candidateResult.courseRecommendations.join(", ")}
+                  <td className="px-4 py-3 text-center text-sm text-(--color-dark) min-w-50">
+                    {screen.candidateResult.courseRecommendations.length ? (
+                      <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark) text-left">
+                        {screen.candidateResult.courseRecommendations.map(
+                          (recommandation: string) => (
+                            <li key={recommandation}>{recommandation}</li>
+                          ),
+                        )}
+                      </ul>
+                    ):("")}
                   </td>
                 )}
               </tr>
