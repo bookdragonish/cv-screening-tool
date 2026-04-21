@@ -27,6 +27,14 @@ export type RankedCandidate = {
   hasPdf?: boolean,
 };
 
+export type CandidateScreeningEntry = {
+  jobPostId: number;
+  title: string;
+  screenedAt: string;
+  candidateResult: RankedCandidate;
+  totalCandidates: number;
+};
+
 export type SaveScreeningRunPayload = {
   title: string;
   header: string;
