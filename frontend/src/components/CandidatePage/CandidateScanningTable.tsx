@@ -1,7 +1,7 @@
 import { useFetchScreeningsByCandidate } from "@/hooks/useFetchScreening";
 import { Spinner } from "../ui/spinner";
 import { Link } from "react-router";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate } from "@/utils/formatDate";
 import ErrorBox from "../ErrorBox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup } from "../ui/field";
@@ -13,6 +13,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { formatCapitalizeFirstLetter } from "@/utils/formatCapitalizeFirstLetter";
 
 type CandidateScanningTableProps = {
   candidateId: string;
@@ -262,7 +263,7 @@ function CandidateScanningTable({
                       <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark) text-left">
                         {screen.candidateResult.courseRecommendations.map(
                           (recommandation: string) => (
-                            <li key={recommandation}>{recommandation}</li>
+                            <li key={recommandation}>{formatCapitalizeFirstLetter(recommandation)}</li>
                           ),
                         )}
                       </ul>

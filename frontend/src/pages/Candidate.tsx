@@ -13,7 +13,7 @@ import { Clock, Download } from "lucide-react";
 import { useParams } from "react-router";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "../components/ui/badge";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate } from "@/utils/formatDate";
 import CandidateScanningTable from "@/components/CandidatePage/CandidateScanningTable";
 import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 
