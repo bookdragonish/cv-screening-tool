@@ -12,8 +12,8 @@ const navItems = [
 
 function Navbar() {
   return (
-    <header className="border-b border-(--color-primary) bg-white px-4 py-4 sm:px-6">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <header className="border-b border-(--color-primary) bg-white">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-4 sm:gap-8">
           <Logo />
 
