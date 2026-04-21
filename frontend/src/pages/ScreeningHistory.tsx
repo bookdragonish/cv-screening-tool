@@ -90,12 +90,6 @@ function ScreeningHistory() {
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <div className="flex items-start space-x-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">
-                      <FileText
-                        className="h-5 w-5 text-(--color-primary)"
-                        aria-hidden="true"
-                      />
-                    </div>
                     <div className="flex-1">
                       <h2 className="text-lg font-semibold text-(--color-dark)">
                         {screening.title}
