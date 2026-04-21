@@ -17,11 +17,3 @@ create table
         foreign key (candidate_id) references candidates (id) on delete cascade,
         created_at timestamptz default now ()
     );
-
-INSERT INTO
-    results (job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary)
-VALUES
-    (1, 1, 1, 95.5, true, ARRAY['Bachelor i informatikk', 'Lang erfaring med JavaScript', 'God teknisk bredde'], ARRAY['Lite dokumentert ledererfaring'], ARRAY[]::text[], 'Sterk kandidat med relevant erfaring.'),
-    (1, 2, 2, 85.0, false, ARRAY['Bachelor i informatikk', 'Erfaring med frontend'], ARRAY['For lite JavaScript-erfaring', 'Manglende seniorprofil', 'Lite dokumentert ansvar'], ARRAY[]::text[], 'Har noe relevant bakgrunn, men mangler tyngde.'),
-    (2, 1, 2, 88.0, true, ARRAY['Bachelor i informatikk', 'Erfaring med Python', 'Vant til analysearbeid'], ARRAY['Lite dokumentert SQL-optimalisering'], ARRAY['erfaring med cobol'], 'Oppfyller kravene og virker stabil.'),
-    (2, 2, 1, 92.0, true, ARRAY['Bachelor i informatikk', 'Solid Python-erfaring', 'Relevant analyseerfaring'], ARRAY['Begrenset domeneerfaring', 'Uklart nivå på visualisering'], ARRAY[]::text[], 'Svært god match for stillingen.');
