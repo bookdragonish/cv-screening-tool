@@ -34,8 +34,8 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           </div>
         </div>
 
-        {candidate.aml46 ? <Badge variant="secondary">{"AML §4.6"}</Badge> : ""}
-        {candidate.aml47 ? <Badge variant="secondary">{"AML §4.7"}</Badge> : ""}
+        {candidate.aml46 ? <Badge variant="aml" className='px-3 py-1 text-sm'>{"AML §4.6"}</Badge> : ""}
+        {candidate.aml47 ? <Badge variant="aml" className='px-3 py-1 text-sm'>{"AML §4.7"}</Badge> : ""}
       </div>
 
       <article className="flex justify-between">
