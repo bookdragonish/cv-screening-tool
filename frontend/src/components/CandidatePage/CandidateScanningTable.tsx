@@ -6,10 +6,8 @@ import ErrorBox from "../ErrorBox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup } from "../ui/field";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import * as React from "react";
-import { ChevronDown, ChevronsUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -30,13 +28,28 @@ const TableFields = [
   "Forslag til opplæring",
 ];
 
+ const defaultVisibleFields = Object.fromEntries(
+  TableFields.map((field) => [field, true]),
+) as Record<string, boolean>;
+
+const STORAGE_KEY = "candidate_table_visible_fields"
+
 function CandidateScanningTable({
   candidateId,
   candidateName,
 }: CandidateScanningTableProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
-    Object.fromEntries(TableFields.map((f) => [f, true])),
+
+  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return defaultVisibleFields;
+    try{
+      const parsed = JSON.parse(saved) as Record<string, boolean>;
+      return parsed;
+    }catch{
+      return defaultVisibleFields
+    }
+  } 
   );
 
   // TODO: simplify this - add backend functionality that does this
@@ -59,6 +72,10 @@ function CandidateScanningTable({
         (c) => c.candidateId === Number(candidateId),
       )!,
     }));
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleFields))
+  })
 
   if (isLoading) {
     return (
@@ -110,7 +127,7 @@ function CandidateScanningTable({
           </div>
 
           <CollapsibleContent className="w-full">
-            <FieldGroup className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
+            <FieldGroup className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
               {TableFields.map((field) => {
                 const id = `${field}-checkbox`;
 
