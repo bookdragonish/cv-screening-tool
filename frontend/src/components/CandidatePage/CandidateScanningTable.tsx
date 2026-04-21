@@ -28,7 +28,7 @@ const TableFields = [
   "Forslag til opplæring",
 ];
 
- const defaultVisibleFields = Object.fromEntries(
+const defaultVisibleFields = Object.fromEntries(
   TableFields.map((field) => [field, true]),
 ) as Record<string, boolean>;
 
