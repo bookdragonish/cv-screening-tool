@@ -24,6 +24,7 @@ export type RankedCandidate = {
   aml46?: boolean,
   aml47?: boolean,
   ansiennitet?: [number | null, number | null, number | null] | null,
+  hasPdf?: boolean,
 };
 
 export type SaveScreeningRunPayload = {

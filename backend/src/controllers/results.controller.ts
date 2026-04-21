@@ -277,7 +277,8 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'createdAt', r.created_at,
             'aml46', c.aml46,
             'aml47', c.aml47,
-            'ansiennitet', c.ansiennitet
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -327,7 +328,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'createdAt', r.created_at,
             'aml46', c.aml46,
             'aml47', c.aml47,
-            'ansiennitet', c.ansiennitet
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
