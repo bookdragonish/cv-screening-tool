@@ -1,7 +1,12 @@
 import type { RankedCandidate } from "@/types/screening";
 import CandidateCard from "./CandidateCard";
+import { useState } from "react";
+import PdfPreviewOverlay from "../PdfPreviewOverlay";
 
 function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
+  
+  const [previewId, setPreviewId] = useState<number | null>(null);
+
   return (
     <section className="lg:col-span-2">
       <article>
@@ -16,6 +21,7 @@ function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
                     id={candidate.candidateId}
                     key={candidate.candidateId}
                     candidate={candidate}
+                    setPreviewId={setPreviewId}
                   />
                 ),
             )}
@@ -39,6 +45,7 @@ function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
                     id={candidate.candidateId}
                     key={candidate.candidateId}
                     candidate={candidate}
+                    setPreviewId={setPreviewId}
                   />
                 ),
             )}
@@ -55,6 +62,14 @@ function CandidateOverview({ candidates }: { candidates: RankedCandidate[] }) {
           Ingen flere kandidater å vise.
         </p>
       </footer>
+
+      {previewId != null && (
+        <PdfPreviewOverlay
+          candidates={candidates.map(c => ({ id: c.candidateId, name: c.candidateName }))}
+          initialId={previewId}
+          onClose={() => setPreviewId(null)}
+        />
+      )}
     </section>
   );
   

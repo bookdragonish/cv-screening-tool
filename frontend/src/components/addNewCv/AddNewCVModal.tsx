@@ -7,6 +7,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "lucide-react"
 import { useId, useState, useEffect } from "react"
+import { DeleteCandidateDialog } from "@/components/DeleteCandidateDialog"
 import { Controller, useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -37,6 +38,8 @@ type AddNewCVModalProps = {
 function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: AddNewCVModalProps) {
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const isEditing = !!candidateToEdit
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
@@ -310,32 +313,69 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="add-cv-ansiennitet">
-                    Ansiennitet
-                  </FieldLabel>
-                  <Input
-                    type="number"
-                    id="add-cv-ansiennitet"
-                    step={1}
-                    min={0}
-                    max={100}
-                    value={field.value ?? ""}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      field.onChange(val === "" ? null : Number(val))
-                    }}
-                    onBlur={field.onBlur}
-                    aria-invalid={fieldState.invalid}
-                    aria-describedby={`${ansienitetDescId} ${fieldState.invalid ? ansienitetErrId : ""}`.trim()}
-                  />
+                  <FieldLabel>Ansiennitet</FieldLabel>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <Input
+                      type="number"
+                      id="add-cv-ansiennitet-years"
+                      placeholder="År"
+                      step={1}
+                      min={0}
+                      max={100}
+                      value={field.value?.[0] ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        field.onChange([val === "" ? null : Number(val), field.value?.[1] ?? null, field.value?.[2] ?? null])
+                      }}
+                      aria-invalid={fieldState.invalid}
+                      aria-label="Ansiennitet år"
+                    />
+                    <Input
+                      type="number"
+                      id="add-cv-ansiennitet-months"
+                      placeholder="Måneder"
+                      step={1}
+                      min={0}
+                      max={11}
+                      value={field.value?.[1] ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        field.onChange([field.value?.[0] ?? null, val === "" ? null : Number(val), field.value?.[2] ?? null])
+                      }}
+                      aria-invalid={fieldState.invalid}
+                      aria-label="Ansiennitet måneder"
+                    />
+                    <Input
+                      type="number"
+                      id="add-cv-ansiennitet-days"
+                      placeholder="Dager"
+                      step={1}
+                      min={0}
+                      max={30}
+                      value={field.value?.[2] ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        field.onChange([field.value?.[0] ?? null, field.value?.[1] ?? null, val === "" ? null : Number(val)])
+                      }}
+                      aria-invalid={fieldState.invalid}
+                      aria-label="Ansiennitet dager"
+                    />
+                  </div>
                   {!fieldState.invalid && (
                     <FieldDescription id={ansienitetDescId}>
-                      Antall år, valgfritt (0–100).
+                      Antall år, måneder og dager (valgfritt).
                     </FieldDescription>
                   )}
                   {fieldState.invalid && (
                     <div id={ansienitetErrId}>
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError errors={[
+                        fieldState.error?.message 
+                          ? fieldState.error 
+                          : (form.formState.errors.ansiennitet as any)?.[0] ??
+                            (form.formState.errors.ansiennitet as any)?.[1] ??
+                            (form.formState.errors.ansiennitet as any)?.[2] ??
+                            { message: "Ugyldig verdi i ansiennitet" }
+                      ]} />
                     </div>
                   )}
                 </Field>
@@ -354,21 +394,30 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
             variant="secondary"
             className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
             hidden={!isEditing}
-            onClick={async () => {
+            onClick={() => setDeleteConfirmOpen(true)}
+          >
+            Slett
+          </Button>
+          <DeleteCandidateDialog
+            open={deleteConfirmOpen}
+            onOpenChange={(open) => { if (!open) setDeleteConfirmOpen(false); }}
+            candidateName={candidateToEdit?.name ?? `Kandidat ${candidateToEdit?.id}`}
+            isDeleting={isDeleting}
+            onConfirm={async () => {
               if (candidateToEdit?.id == null) return
-
+              setIsDeleting(true)
               const deleted = await onDelete?.(
                 candidateToEdit.id,
                 candidateToEdit.name ?? `Kandidat ${candidateToEdit.id}`
               )
+              setIsDeleting(false)
+              setDeleteConfirmOpen(false)
               if (deleted) {
                 setOpen(false)
                 form.reset()
               }
             }}
-          >
-            Slett
-          </Button>
+          />
           <Button
             type="button"
             variant="secondary"

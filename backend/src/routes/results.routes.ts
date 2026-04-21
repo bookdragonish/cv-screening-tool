@@ -15,6 +15,7 @@ router.post("/screenings/run", upload.single("jobDescriptionFile"), ai.runScreen
 router.post("/screenings", results.createScreeningRun);
 router.get("/history", results.getScreeningHistory);
 router.get("/job_posts/:jobPostId", results.getScreeningByJobPostId);
+router.get("/candidates/:candidateId", results.getScreeningByCandidateId);
 router.get("/:jobPostId/:candidateId", results.getById);
 router.delete("/:jobPostId/:candidateId", results.deleteById);
 

@@ -116,7 +116,7 @@ function UploadJobDescriptionCard({
       : jobDescriptionText.trim().length === 0;
 
   return (
-    <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
+    <Card className="mt-6 gap-0 px-2 border border-(--color-primary) shadow-sm bg-white">
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -132,26 +132,25 @@ function UploadJobDescriptionCard({
           <div className="flex items-center gap-2">
             <Button
               type="button"
-              size="sm"
-              variant={mode === "pdf" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "pdf"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
+              }`}
               onClick={() => setMode("pdf")}
+
             >
               PDF
             </Button>
             <Button
               type="button"
-              size="sm"
-              variant={mode === "text" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "text"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
+              }`}
               onClick={() => setMode("text")}
             >
               Tekst
@@ -195,7 +194,7 @@ function UploadJobDescriptionCard({
                     }}
                   />
 
-                  <div className="rounded-lg border border-dashed border-slate-300 px-6 min-h-52 mt-7 py-12 text-center transition">
+                  <div className="rounded-lg border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 min-h-52 mt-7 py-12 text-center transition hover:bg-(--color-light)/20">
                     <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
                     {isPdfSelectionValid ? (
@@ -259,7 +258,7 @@ function UploadJobDescriptionCard({
                   <Textarea
                     {...field}
                     id={textAreaId}
-                    className="min-h-52 text-foreground rounder-lg"
+                    className="min-h-52 text-foreground rounded-lg border-2 border-(--color-primary) focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-(--color-light)/50"
                     placeholder="Lim inn stillingsbeskrivelsen her..."
                     maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
                     aria-invalid={fieldState.invalid}
@@ -286,27 +285,25 @@ function UploadJobDescriptionCard({
           )}
 
           <div className="mt-6 flex justify-end gap-3">
-            <Link to="/">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-slate-300 bg-white hover:bg-slate-100 hover:text-black"
-                asChild
-              >
-                <span>Avbryt</span>
-              </Button>
-            </Link>
             <Button
-              type="submit"
-              className="bg-primary hover:bg-primary/80"
-              disabled={isSubmitDisabled}
+              type="button"
+              variant="outline"
+              className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+              asChild
             >
-              {showRetryLabel ? "Prøv igjen" : "Neste"}
+              <Link to="/">Avbryt</Link>
             </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          <Button
+            type="submit"
+            className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+            disabled={isSubmitDisabled}
+          >
+            {showRetryLabel ? "Prøv igjen" : "Neste"}
+          </Button>
+        </div>
+      </form>
+    </CardContent>
+    </Card >
   );
 }
 

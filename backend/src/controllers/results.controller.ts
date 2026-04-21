@@ -276,7 +276,9 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'summary', r.summary,
             'createdAt', r.created_at,
             'aml46', c.aml46,
-            'aml47', c.aml47
+            'aml47', c.aml47,
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -325,7 +327,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'summary', r.summary,
             'createdAt', r.created_at,
             'aml46', c.aml46,
-            'aml47', c.aml47
+            'aml47', c.aml47,
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -337,6 +341,53 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
     );
     if (r.rowCount === 0) return res.status(404).json({ error: "Job post not found" });
     res.json(r.rows[0]);
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
+ * Gets all screenings a specific candidate has participated in.
+ *
+ * Request should include 'candidateId' as a URL parameter.
+ *
+ * Responses:
+ * - 200: JSON array where each item includes 'jobPostId', 'title', 'screenedAt', 'candidateResult', and 'totalCandidates'
+ */
+export async function getScreeningByCandidateId(req: Request, res: Response, next: NextFunction) {
+  try {
+    const candidate_id = Number(req.params.candidateId);
+    const r = await pool.query(
+      `SELECT
+        jp.id as "jobPostId",
+        jp.title,
+        jp.created_at as "screenedAt",
+        json_build_object(
+          'candidateId', c.id,
+          'candidateName', c.name,
+          'rank', r.rank,
+          'score', r.score,
+          'qualified', r.qualified,
+          'qualificationsMet', r.qualifications_met,
+          'qualificationsMissing', r.qualifications_missing,
+          'courseRecommendations', r.course_recommendations,
+          'unknowns', r.unknowns,
+          'summary', r.summary,
+          'createdAt', r.created_at,
+          'aml46', c.aml46,
+          'aml47', c.aml47,
+          'ansiennitet', c.ansiennitet,
+          'hasPdf', (c.cv_pdf IS NOT NULL)
+        ) as "candidateResult",
+        (SELECT COUNT(*) FROM results r2 WHERE r2.job_post_id = jp.id)::int as "totalCandidates"
+      FROM results r
+      JOIN job_posts jp ON r.job_post_id = jp.id
+      JOIN candidates c ON r.candidate_id = c.id
+      WHERE r.candidate_id = $1
+      ORDER BY jp.created_at DESC`,
+      [candidate_id],
+    );
+    res.json(r.rows);
   } catch (e) {
     next(e);
   }
