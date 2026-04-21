@@ -20,7 +20,7 @@ function HoverExplanationCard({ title, description, children }: HoverCardProps) 
         <div className="font-semibold">{title}</div>
         <div>{description}</div>
         <div className="mt-1 text-xs text-muted-foreground">
-          Husk at vår KI kan gjøre feil.
+          Husk at KI kan gjøre feil.
         </div>
       </HoverCardContent>
     </HoverCard>

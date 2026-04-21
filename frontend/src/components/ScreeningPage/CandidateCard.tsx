@@ -182,7 +182,7 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                 >
                   <HoverExplanationCard
                     title="Forslag til opplæring."
-                    description="KI forslag til opplæring som kunne gjort kandidaten mer kvalifisert for jobben."                  >
+                    description="Dette er et krav KI mener at kandidaten mangler, men som kan kurses innen rimelig tid."                  >
                     <Info
                       className="mt-0.5 h-3.5 w-3.5 shrink-0"
                       style={{ color: "var(--status-course)" }}
