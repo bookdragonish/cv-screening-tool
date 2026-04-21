@@ -7,6 +7,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "lucide-react"
 import { useId, useState, useEffect } from "react"
+import { DeleteCandidateDialog } from "@/components/DeleteCandidateDialog"
 import { Controller, useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -37,6 +38,8 @@ type AddNewCVModalProps = {
 function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: AddNewCVModalProps) {
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const isEditing = !!candidateToEdit
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
@@ -391,21 +394,30 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
             variant="secondary"
             className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
             hidden={!isEditing}
-            onClick={async () => {
+            onClick={() => setDeleteConfirmOpen(true)}
+          >
+            Slett
+          </Button>
+          <DeleteCandidateDialog
+            open={deleteConfirmOpen}
+            onOpenChange={(open) => { if (!open) setDeleteConfirmOpen(false); }}
+            candidateName={candidateToEdit?.name ?? `Kandidat ${candidateToEdit?.id}`}
+            isDeleting={isDeleting}
+            onConfirm={async () => {
               if (candidateToEdit?.id == null) return
-
+              setIsDeleting(true)
               const deleted = await onDelete?.(
                 candidateToEdit.id,
                 candidateToEdit.name ?? `Kandidat ${candidateToEdit.id}`
               )
+              setIsDeleting(false)
+              setDeleteConfirmOpen(false)
               if (deleted) {
                 setOpen(false)
                 form.reset()
               }
             }}
-          >
-            Slett
-          </Button>
+          />
           <Button
             type="button"
             variant="secondary"
