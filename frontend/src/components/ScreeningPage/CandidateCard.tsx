@@ -32,6 +32,7 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                 {candidate.candidateName}
               </Link>
             </h2>
+          </div>
             <p className="text-sm text-(--color-dark) mt-1">
               {!candidate.ansiennitet ? (
                 ""
@@ -41,7 +42,6 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                 </>
               )}
             </p>
-          </div>
         </div>
 
         {candidate.aml46 ? <Badge variant="aml" className='px-3 py-1 text-sm'>{"AML §4.6"}</Badge> : ""}
