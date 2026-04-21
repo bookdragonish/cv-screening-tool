@@ -133,10 +133,10 @@ function UploadJobDescriptionCard({
             <Button
               type="button"
               variant="outline"
-              className={`p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "pdf"
-                  ? "bg-(--color-primary) text-white hover:bg-(--color-primary) hover:text-white hover:opacity-90"
-                  : "bg-white text-(--color-dark) hover-dark-button"
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
               }`}
               onClick={() => setMode("pdf")}
 
@@ -146,10 +146,10 @@ function UploadJobDescriptionCard({
             <Button
               type="button"
               variant="outline"
-              className={`p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "text"
-                  ? "bg-(--color-primary) text-white hover:bg-(--color-primary) hover:text-white hover:opacity-90"
-                  : "bg-white text-(--color-dark) hover-dark-button"
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
               }`}
               onClick={() => setMode("text")}
             >
@@ -194,7 +194,7 @@ function UploadJobDescriptionCard({
                     }}
                   />
 
-                  <div className="rounded-lg border border-dashed border-slate-300 px-6 min-h-52 mt-7 py-12 text-center transition">
+                  <div className="rounded-lg border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 min-h-52 mt-7 py-12 text-center transition hover:bg-(--color-light)/20">
                     <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
                     {isPdfSelectionValid ? (
@@ -258,7 +258,7 @@ function UploadJobDescriptionCard({
                   <Textarea
                     {...field}
                     id={textAreaId}
-                    className="min-h-52 text-foreground rounder-lg"
+                    className="min-h-52 text-foreground rounded-lg border-2 border-(--color-primary) focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-(--color-light)/50"
                     placeholder="Lim inn stillingsbeskrivelsen her..."
                     maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
                     aria-invalid={fieldState.invalid}
@@ -288,14 +288,14 @@ function UploadJobDescriptionCard({
             <Button
               type="button"
               variant="outline"
-              className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+              className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
               asChild
             >
               <Link to="/">Avbryt</Link>
             </Button>
           <Button
             type="submit"
-            className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+            className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
             disabled={isSubmitDisabled}
           >
             {showRetryLabel ? "Prøv igjen" : "Neste"}

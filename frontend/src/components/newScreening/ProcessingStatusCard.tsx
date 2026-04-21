@@ -27,7 +27,7 @@ function ProcessingStatusCard({
             </p>
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center" role="status" aria-live="polite">
+          <div className="rounded-xl border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 py-12 text-center" role="status" aria-live="polite">
             <CheckCircle2Icon className="mx-auto h-14 w-14 text-emerald-600" aria-hidden="true" />
             <h1 className="mt-4 text-2xl font-semibold text-slate-900">Behandling fullført</h1>
             <p className="mt-2 text-base text-slate-500">
