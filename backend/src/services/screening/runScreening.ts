@@ -70,6 +70,12 @@ export async function runScreeningService({
       );
     }
 
+    if (candidates.length < candidatesWithCv.length) {
+      throw new Error(
+        `Screening feilet: For få kandidater i output (${candidates.length}/${candidatesWithCv.length}).`,
+      );
+    }
+
     const screeningRecord = buildScreeningRecord({
       jobDescriptionInput,
       jobDescriptionText,
@@ -122,6 +128,12 @@ export async function runScreeningService({
   if (!candidates.length) {
     throw new Error(
       "Fant ingen kandidater som kunne matches mot screeningresultatet.",
+    );
+  }
+
+  if (candidates.length < candidatesWithCv.length) {
+    throw new Error(
+      `Screening feilet: For få kandidater i output (${candidates.length}/${candidatesWithCv.length}).`,
     );
   }
 

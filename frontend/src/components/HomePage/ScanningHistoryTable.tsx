@@ -19,9 +19,9 @@ function ScanningHistoryTable() {
         {/* Screening activity list */}
         <ul className="divide-y divide-(--color-primary)" aria-live="polite">
           {screeningData.slice(0, 5).map((activity) => (
-            <Link to={`/skanning-historikk/${activity.jobPostId}`}>
-              <li
-                key={activity.jobPostId}
+            <li key={activity.jobPostId}>
+              <Link
+                to={`/skanning-historikk/${activity.jobPostId}`}
                 className="flex items-center justify-between p-6 transition-colors hover:bg-(--color-light)/50"
               >
                 <div>
@@ -37,8 +37,8 @@ function ScanningHistoryTable() {
                 <p className="rounded-md text-smaller text-(--color-primary) transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2">
                   Se resultater
                 </p>
-              </li>
-            </Link>
+              </Link>
+            </li>
           ))}
           {isLoading && (
             <li className="flex justify-center w-full p-6 text-sm text-(--color-dark) opacity-75">

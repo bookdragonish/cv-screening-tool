@@ -34,7 +34,7 @@ export function buildRankingFromEvaluations(params: {
     candidatesWithCv.map((item) => String(item.candidate.id)),
   );
 
-  const ranking = evals
+  const rankedCandidates = evals
     .filter((evaluation) => candidateIdSet.has(evaluation.candidate_id))
     .map((evaluation) => {
       const score = Math.round(evaluation.overall_score);
@@ -49,11 +49,37 @@ export function buildRankingFromEvaluations(params: {
           "Ingen oppsummering gitt av modellen.",
       };
     })
-    .sort((a, b) => b.overall_score - a.overall_score)
-    .map((item, index) => ({
-      rank: index + 1,
+    .sort((a, b) => {
+      const scoreDiff = b.overall_score - a.overall_score;
+      if (scoreDiff !== 0) {
+        return scoreDiff;
+      }
+
+      if (a.qualified === b.qualified) {
+        return 0;
+      }
+
+      return a.qualified ? -1 : 1;
+    });
+
+  const ranking: Ranking["ranking"] = [];
+
+  for (const [index, item] of rankedCandidates.entries()) {
+    const previousCandidate = rankedCandidates[index - 1];
+    const hasSameRankAsPrevious =
+      previousCandidate !== undefined
+      && previousCandidate.overall_score === item.overall_score
+      && previousCandidate.qualified === item.qualified;
+
+    const rank = hasSameRankAsPrevious
+      ? ranking[index - 1]?.rank ?? index + 1
+      : index + 1;
+
+    ranking.push({
+      rank,
       ...item,
-    }));
+    });
+  }
 
   return {
     role_title: normalizeString(jobProfile.role_title) || "Screening",
