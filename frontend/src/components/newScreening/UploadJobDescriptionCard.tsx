@@ -116,7 +116,7 @@ function UploadJobDescriptionCard({
       : jobDescriptionText.trim().length === 0;
 
   return (
-    <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
+    <Card className="mt-6 gap-0 px-2 border border-(--color-primary) shadow-sm bg-white">
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -132,26 +132,25 @@ function UploadJobDescriptionCard({
           <div className="flex items-center gap-2">
             <Button
               type="button"
-              size="sm"
-              variant={mode === "pdf" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "pdf"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-(--color-primary) text-white hover:bg-(--color-primary) hover:text-white hover:opacity-90"
+                  : "bg-white text-(--color-dark) hover-dark-button"
+              }`}
               onClick={() => setMode("pdf")}
+
             >
               PDF
             </Button>
             <Button
               type="button"
-              size="sm"
-              variant={mode === "text" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "text"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-(--color-primary) text-white hover:bg-(--color-primary) hover:text-white hover:opacity-90"
+                  : "bg-white text-(--color-dark) hover-dark-button"
+              }`}
               onClick={() => setMode("text")}
             >
               Tekst
@@ -286,27 +285,25 @@ function UploadJobDescriptionCard({
           )}
 
           <div className="mt-6 flex justify-end gap-3">
-            <Link to="/">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-slate-300 bg-white hover:bg-slate-100 hover:text-black"
-                asChild
-              >
-                <span>Avbryt</span>
-              </Button>
-            </Link>
             <Button
-              type="submit"
-              className="bg-primary hover:bg-primary/80"
-              disabled={isSubmitDisabled}
+              type="button"
+              variant="outline"
+              className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+              asChild
             >
-              {showRetryLabel ? "Prøv igjen" : "Neste"}
+              <Link to="/">Avbryt</Link>
             </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          <Button
+            type="submit"
+            className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+            disabled={isSubmitDisabled}
+          >
+            {showRetryLabel ? "Prøv igjen" : "Neste"}
+          </Button>
+        </div>
+      </form>
+    </CardContent>
+    </Card >
   );
 }
 
