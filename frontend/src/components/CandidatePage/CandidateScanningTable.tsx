@@ -251,7 +251,7 @@ function CandidateScanningTable({
                 )}
 
                 {visibleFields["Status"] && (
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 min-w-33 text-center">
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-medium ${
                         screen.candidateResult.qualified
