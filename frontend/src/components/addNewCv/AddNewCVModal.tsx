@@ -5,7 +5,7 @@ import {
   type AddNewCvValues,
 } from "@/validations/AddNewCvSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, XIcon } from "lucide-react"
 import { useId, useState, useEffect } from "react"
 import { DeleteCandidateDialog } from "@/components/DeleteCandidateDialog"
 import { Controller, useForm } from "react-hook-form"
@@ -44,7 +44,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
     mode: "onTouched",
-    shouldFocusError: true,
+    shouldFocusError: false,
     defaultValues: {
       name: candidateToEdit?.name ?? "",
       cv: undefined as unknown as File,
@@ -170,10 +170,23 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent aria-describedby={submitErrId}>
+      <DialogContent aria-describedby={submitErrId} showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Rediger kandidat" : "Legg til ny kandidat"}</DialogTitle>
         </DialogHeader>
+        <button
+          type="button"
+          aria-label="Lukk"
+          className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 cursor-pointer [&_svg]:size-4"
+          onMouseDown={(e) => {
+            e.preventDefault()
+            setOpen(false)
+            setSubmitError(null)
+            form.reset()
+          }}
+        >
+          <XIcon />
+        </button>
         <p
           id={submitErrId}
           className="sr-only"
