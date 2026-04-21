@@ -161,7 +161,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         {customTrigger ? (
           customTrigger
         ) : (
-          <Button className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer">
+          <Button variant="primary" className="p-2 cursor-pointer">
             <PlusIcon className="size-6" />
             <p className="text-regular p-2">
               Legg til kandidat
@@ -391,8 +391,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         <DialogFooter>
           <Button
             type="button"
-            variant="secondary"
-            className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
+            variant="destructive"
+            className="cursor-pointer"
             hidden={!isEditing}
             onClick={() => setDeleteConfirmOpen(true)}
           >
@@ -420,8 +420,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           />
           <Button
             type="button"
-            variant="secondary"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
+            variant="cancel"
+            className="cursor-pointer"
             onClick={() => {
               setOpen(false)
               form.reset()
@@ -434,7 +434,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           <Button
             type="submit"
             form="add-cv-form"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
+            variant="primary"
+            className="cursor-pointer"
             disabled={form.formState.isSubmitting || !isCvSelectionValid}
           >
             {form.formState.isSubmitting ? "Lagrer..." : (isEditing ? "Oppdater" : "Legg til")}

@@ -37,7 +37,7 @@ export function DeleteCandidateDialog({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" disabled={isDeleting} className="cursor-pointer bg-white hover:bg-white">
+            <Button variant="cancel" disabled={isDeleting} className="cursor-pointer">
               Avbryt
             </Button>
           </DialogClose>
