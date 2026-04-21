@@ -1,4 +1,4 @@
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate } from "@/utils/formatDate";
 import { Clock } from "lucide-react";
 
 type ScreeningHeaderProps = {

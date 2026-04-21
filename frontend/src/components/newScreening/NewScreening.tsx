@@ -1,9 +1,9 @@
 import ErrorBox from "@/components/ErrorBox";
-import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
+import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
 import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
-import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
+import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
-import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
+import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
 import HeaderSection from "../HeaderSection";
 
 type NewScreeningError = {

@@ -1,7 +1,7 @@
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "../ui/spinner";
 import { Link } from "react-router";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate } from "@/utils/formatDate";
 import ErrorBox from "../ErrorBox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup } from "../ui/field";

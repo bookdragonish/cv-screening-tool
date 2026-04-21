@@ -11,7 +11,7 @@ import {
   type UploadJobDescriptionValues,
   toJobDescriptionInput,
 } from "@/validations/UploadJobDescriptionSchema";
-import { formatBytes } from "@/utils/newScreeningUtils";
+import { formatBytes } from "@/utils/formatBytes";
 import { Button } from "@/components/ui/button";
 import {
   Card,
