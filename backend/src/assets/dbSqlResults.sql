@@ -1,4 +1,4 @@
-DROP TABLE results;
+DROP TABLE IF EXISTS results CASCADE;
 
 create table
     if not exists results (

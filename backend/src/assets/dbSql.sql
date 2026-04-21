@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS results CASCADE;
+DROP TABLE IF EXISTS job_posts CASCADE;
 DROP TABLE candidates CASCADE;
 
 create table

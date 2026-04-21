@@ -3,6 +3,7 @@ import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
 import { Badge } from "../ui/badge";
 import { Link } from "react-router";
+import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 
 type CandidateCardProps = {
   candidate: RankedCandidate;
@@ -31,6 +32,15 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
                 {candidate.candidateName}
               </Link>
             </h2>
+            <p className="text-sm text-(--color-dark) mt-1">
+              {!candidate.ansiennitet ? (
+                ""
+              ) : (
+                <>
+                  Ansiennitet: {formatAnsiennitet(candidate.ansiennitet)}
+                </>
+              )}
+            </p>
           </div>
         </div>
 
