@@ -201,6 +201,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                     aria-required="true"
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${nameDescId} ${fieldState.invalid ? nameErrId : ""}`.trim()}
+                    className="bg-white"
                   />
                   <FieldDescription id={nameDescId}>
                     Skriv inn fullt navn.
@@ -235,6 +236,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                     aria-required={!isEditing ? "true" : "false"}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${cvDescId} ${fieldState.invalid ? cvErrId : ""}`.trim()}
+                    className="bg-white"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       field.onChange(file)
@@ -329,6 +331,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet år"
+                      className="bg-white"
                     />
                     <Input
                       type="number"
@@ -344,6 +347,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet måneder"
+                      className="bg-white"
                     />
                     <Input
                       type="number"
@@ -359,6 +363,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet dager"
+                      className="bg-white"
                     />
                   </div>
                   {!fieldState.invalid && (
