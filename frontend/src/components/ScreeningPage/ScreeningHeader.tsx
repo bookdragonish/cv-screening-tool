@@ -1,3 +1,4 @@
+import { formatCapitalizeFirstLetter } from "@/utils/formatCapitalizeFirstLetter";
 import { formatDate } from "@/utils/formatDate";
 import { Clock } from "lucide-react";
 
@@ -31,7 +32,7 @@ function ScreeningHeader({
             </h2>
            <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
             {hardQualifications?.map((qualification, index) => (
-              <li key={index}>{qualification}</li>
+              <li key={index}>{formatCapitalizeFirstLetter(qualification)}</li>
             ))}
           </ul>
         </article>
@@ -43,7 +44,7 @@ function ScreeningHeader({
 
            <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
             {softQualifications?.map((qualification, index) => (
-              <li key={index}>{qualification}</li>
+              <li key={index}>{formatCapitalizeFirstLetter(qualification)}</li>
             ))}
           </ul>
         </article>

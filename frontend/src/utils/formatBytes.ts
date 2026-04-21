@@ -12,13 +12,3 @@ export function formatBytes(sizeInBytes: number): string {
 
   return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
-
-export function formatAnalyzedDate(dateValue: string) {
-  return new Intl.DateTimeFormat("nb-NO", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(dateValue));
-}
