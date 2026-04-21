@@ -43,7 +43,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
   const isEditing = !!candidateToEdit
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
-    mode: "onTouched",
+    mode: "onSubmit",
     shouldFocusError: true,
     defaultValues: {
       name: candidateToEdit?.name ?? "",
