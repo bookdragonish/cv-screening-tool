@@ -12,7 +12,7 @@ import { normalizeString, normalizeStringList as normalizeStringArray } from "..
 export async function list(_req: Request, res: Response, next: NextFunction) {
   try {
     const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at from results order by job_post_id, candidate_id desc",
+      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at from results order by job_post_id, candidate_id desc",
     );
     res.json(r.rows);
   } catch (e) {
@@ -34,7 +34,7 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
     const job_post_id = Number(req.params.jobPostId);
     const candidate_id = Number(req.params.candidateId);
     const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at from results where job_post_id=$1 and candidate_id=$2",
+      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at from results where job_post_id=$1 and candidate_id=$2",
       [job_post_id, candidate_id],
     );
     if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
@@ -63,6 +63,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       qualified,
       qualifications_met,
       qualifications_missing,
+      course_recommendations,
       unknowns = [],
       summary,
     } = req.body as {
@@ -73,6 +74,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
       qualified: boolean;
       qualifications_met: string[];
       qualifications_missing: string[];
+      course_recommendations?: string[];
       unknowns?: string[];
       summary?: string;
     };
@@ -94,7 +96,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
         });
 
     const r = await pool.query(
-      "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at",
+      "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at",
       [
         job_post_id,
         candidate_id,
@@ -103,6 +105,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
         qualified,
         qualifications_met,
         qualifications_missing,
+        course_recommendations ?? [],
         unknowns,
         summary,
       ],
@@ -140,8 +143,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       title?: string;
       header?: string;
       description?: string;
-      hardQualifications?: unknown;
-      softQualifications?: unknown;
+      hardQualifications?: string[];
+      softQualifications?: string[];
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
@@ -149,6 +152,7 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         qualified?: boolean;
         qualificationsMet?: unknown;
         qualificationsMissing?: unknown;
+        courseRecommendations?: unknown;
         unknowns?: unknown;
         summary?: string;
       }>;
@@ -173,6 +177,7 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       qualified: candidate.qualified,
       qualificationsMet: normalizeStringArray(candidate.qualificationsMet),
       qualificationsMissing: normalizeStringArray(candidate.qualificationsMissing),
+      courseRecommendations: normalizeStringArray(candidate.courseRecommendations),
       unknowns: normalizeStringArray(candidate.unknowns),
       summary: normalizeString(candidate.summary),
     }));
@@ -200,8 +205,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
-        normalizedHardQualifications.join("\n"),
-        normalizedSoftQualifications.join("\n"),
+        normalizedHardQualifications,
+        normalizedSoftQualifications,
       ],
     );
 
@@ -213,7 +218,7 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
 
     for (const candidate of normalizedCandidates) {
       await client.query(
-        "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
         [
           createdJobPost.id,
           candidate.candidateId,
@@ -222,6 +227,7 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
           candidate.qualified,
           candidate.qualificationsMet,
           candidate.qualificationsMissing,
+          candidate.courseRecommendations,
           candidate.unknowns,
           candidate.summary || null,
         ],
@@ -265,6 +271,7 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'qualified', r.qualified,
             'qualificationsMet', r.qualifications_met,
             'qualificationsMissing', r.qualifications_missing,
+            'courseRecommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
@@ -303,6 +310,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
         jp.id as "jobPostId",
         jp.title,
         jp.created_at as "screenedAt",
+        jp.hardqualifications as "hardQualifications",
+        jp.softqualifications as "softQualifications",
         json_agg(
           json_build_object(
             'candidateId', c.id,
@@ -312,6 +321,7 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'qualified', r.qualified,
             'qualificationsMet', r.qualifications_met,
             'qualificationsMissing', r.qualifications_missing,
+            'courseRecommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,

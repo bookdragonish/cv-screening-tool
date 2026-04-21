@@ -12,6 +12,15 @@ import {
 } from "./screening.helpers.js";
 import { normalizeString, normalizeStringList } from "../../utils/normailizers.js";
 
+function normalizeRecommendationPoints(
+  recommendations: CandidateEval["courseRecommendations"] | undefined,
+): string[] {
+  if (!Array.isArray(recommendations)) {
+    return [];
+  }
+  return normalizeStringList(recommendations.map((item) => item?.point));
+}
+
 // These mappers takes output from AI and creates the objects in the format we want.
 
 export function buildRankingFromEvaluations(params: {
@@ -25,26 +34,52 @@ export function buildRankingFromEvaluations(params: {
     candidatesWithCv.map((item) => String(item.candidate.id)),
   );
 
-  const ranking = evals
+  const rankedCandidates = evals
     .filter((evaluation) => candidateIdSet.has(evaluation.candidate_id))
     .map((evaluation) => {
       const score = Math.round(evaluation.overall_score);
 
       return {
         candidate_id: evaluation.candidate_id,
-        candidate_label: normalizeString(evaluation.candidate_label),
+        candidate_label: normalizeString(evaluation.candidate_name),
         overall_score: score,
         qualified: evaluation.qualified,
         summary:
-          normalizeString(evaluation.strengths?.[0]?.point) ||
+          normalizeString(evaluation.summary) ||
           "Ingen oppsummering gitt av modellen.",
       };
     })
-    .sort((a, b) => b.overall_score - a.overall_score)
-    .map((item, index) => ({
-      rank: index + 1,
+    .sort((a, b) => {
+      const scoreDiff = b.overall_score - a.overall_score;
+      if (scoreDiff !== 0) {
+        return scoreDiff;
+      }
+
+      if (a.qualified === b.qualified) {
+        return 0;
+      }
+
+      return a.qualified ? -1 : 1;
+    });
+
+  const ranking: Ranking["ranking"] = [];
+
+  for (const [index, item] of rankedCandidates.entries()) {
+    const previousCandidate = rankedCandidates[index - 1];
+    const hasSameRankAsPrevious =
+      previousCandidate !== undefined
+      && previousCandidate.overall_score === item.overall_score
+      && previousCandidate.qualified === item.qualified;
+
+    const rank = hasSameRankAsPrevious
+      ? ranking[index - 1]?.rank ?? index + 1
+      : index + 1;
+
+    ranking.push({
+      rank,
       ...item,
-    }));
+    });
+  }
 
   return {
     role_title: normalizeString(jobProfile.role_title) || "Screening",
@@ -57,7 +92,8 @@ function RawQualificationsToUsableQualifications(args: {
   metRaw: string[] | undefined;
   missingRaw: string[] | undefined;
   unknownRaw: string[] | undefined;
-}): { met: string[]; missing: string[]; unknowns: string[] } {
+  courseRaw: string[] | undefined;
+}): { met: string[]; missing: string[]; unknowns: string[]; courses: string[]; } {
   const requirements = normalizeStringList(args.requirements);
   const requirementSet = new Set(requirements.map((item) => item.toLowerCase()));
 
@@ -79,9 +115,16 @@ function RawQualificationsToUsableQualifications(args: {
       .map((item) => item.toLowerCase()),
   );
 
+  const courseSet = new Set(
+    normalizeStringList(args.courseRaw)
+      .filter((item) => requirementSet.has(item.toLowerCase()))
+      .map((item) => item.toLowerCase()),
+  );
+
   const met: string[] = [];
   const unknowns: string[] = [];
   const missing: string[] = [];
+  const courses: string[] = [];
 
   for (const requirement of requirements) {
     const key = requirement.toLowerCase();
@@ -98,14 +141,20 @@ function RawQualificationsToUsableQualifications(args: {
 
     if (missingSet.has(key)) {
       missing.push(requirement);
+      continue;
     }
-    
+
+    if (courseSet.has(key)) {
+      courses.push(requirement);
+      continue;
+    }
+
     else {
       unknowns.push(requirement);
     }
   }
 
-  return { met, missing, unknowns };
+  return { met, missing, unknowns, courses };
 }
 
 // Looks at jobs and maps musthaves to nice to haves
@@ -146,10 +195,11 @@ export function mapToScreeningCandidates(params: {
       const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
       const qualificationResult = RawQualificationsToUsableQualifications({
-        requirements: jobProfile.must_haves,
+        requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.must_haves_can_be_coursed ?? []), ...(jobProfile.nice_to_haves ?? []),],
         metRaw: evalResult?.strengths.map((item) => item.point),
         missingRaw: evalResult?.gaps.map((item) => item.point),
-        unknownRaw: evalResult?.unknowns,
+        unknownRaw: evalResult?.unknowns.map((item) => item.point),
+        courseRaw: normalizeRecommendationPoints(evalResult?.courseRecommendations),
       });
 
       const experience =
@@ -161,21 +211,12 @@ export function mapToScreeningCandidates(params: {
         id: dbCandidate.id,
         rank: rankedItem.rank ?? index + 1,
         name: dbCandidate.name?.trim() || "Navn ikke funnet",
-        role: evalResult?.candidate_role?.trim() || "Ingen rolle funnet",
         score: normalizedScore,
         met: qualificationResult.met,
         missing: qualificationResult.missing,
+        courseRecommendations: qualificationResult.courses,
         summary: rankedItem.summary || "Ingen oppsummering gitt av modellen.",
-        experience: evalResult?.experience_highlights?.length
-          ? evalResult.experience_highlights.slice(0, 4)
-          : experience.length
-            ? experience.slice(0, 4)
-            : [],
-        education: evalResult?.education?.length
-          ? evalResult.education.slice(0, 3)
-          : qualificationResult.unknowns.length
-            ? qualificationResult.unknowns.slice(0, 3)
-            : [],
+
         email: dbCandidate.email ?? "",
       };
     })
@@ -213,7 +254,7 @@ export function buildScreeningRecord(params: {
     normalizeString(jobProfile.role_title) ||
     getFallbackJobTitle(jobDescriptionInput);
 
-  const hardQualifications = normalizeStringList(jobProfile.must_haves);
+  const hardQualifications = normalizeStringList((jobProfile.must_haves ?? []).concat(jobProfile.must_haves_can_be_coursed ?? []));
   const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
 
   const candidates: SaveScreeningRunPayload["candidates"] = [];
@@ -227,10 +268,11 @@ export function buildScreeningRecord(params: {
     const evalResult = evalByCandidateId.get(rankedItem.candidate_id);
 
     const qualificationResult = RawQualificationsToUsableQualifications({
-      requirements: jobProfile.must_haves,
+      requirements: [...(jobProfile.must_haves ?? []), ...(jobProfile.must_haves_can_be_coursed ?? []), ...(jobProfile.nice_to_haves ?? [])],
       metRaw: evalResult?.strengths.map((item) => item.point),
       missingRaw: evalResult?.gaps.map((item) => item.point),
-      unknownRaw: evalResult?.unknowns,
+      unknownRaw: evalResult?.unknowns.map((item) => item.point),
+      courseRaw: normalizeRecommendationPoints(evalResult?.courseRecommendations),
     });
 
     const normalizedScore = Math.round(rankedItem.overall_score);
@@ -242,6 +284,7 @@ export function buildScreeningRecord(params: {
       qualified: rankedItem.qualified,
       qualificationsMet: qualificationResult.met,
       qualificationsMissing: qualificationResult.missing,
+      courseRecommendations: qualificationResult.courses,
       unknowns: qualificationResult.unknowns,
       summary: normalizeString(rankedItem.summary) || "Ingen oppsummering gitt av modellen.",
     });

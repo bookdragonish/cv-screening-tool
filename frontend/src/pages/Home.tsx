@@ -16,12 +16,13 @@ function Home() {
       id="main-content"
       className="mx-auto max-w-7xl px-6 py-8 grid grid-cols-1 gap-6 lg:grid-cols-3"
     >
+
       {/* Left column - actions */}
       <aside className="space-y-6 mt-5" aria-label="Screeninghandlinger">
         <HeaderSection
           header={"Velkommen tilbake!"}
           subsection={
-            "Her kan du se oversikten over de siste skanningene gjennomført, administrere kandidatene eller starte ny skanning"
+            "Her kan du se oversikten over de siste skanningene gjennomført, administrere kandidatene eller starte ny skanning."
           }
         />
 
@@ -29,9 +30,9 @@ function Home() {
 
         {/* Start new screening card */}
         <Card className="rounded-lg border-(--color-primary) bg-(--color-primary) p-6 shadow-sm">
-          <h3 className=" text-xl font-semibold text-white">
+          <h2 className=" text-xl font-semibold text-white">
             Start ny skanning
-          </h3>
+          </h2>
           <p className="text-sm text-white opacity-90 mb-2">
             Last opp en stillingsbeskrivelse for å finne de mest relevante
             kandidatene.

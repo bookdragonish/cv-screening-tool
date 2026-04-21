@@ -31,6 +31,7 @@
   --status-qual-met: oklch(0.627 0.164 144.2);
   --status-qual-not-met: oklch(0.637 0.237 25.3);
   --status-unknown: oklch(0.769 0.168 81.6);
+  --status-course: oklch(42.663% 0.28935 266.3);
 }
 
 @theme inline {

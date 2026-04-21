@@ -3,6 +3,8 @@ export type ScreeningDetails = {
   title: string;
   screenedAt: string;
   aiJobDescription?: string,
+  hardQualifications: string[];
+  softQualifications: string[];
   candidates: Array<RankedCandidate>;
 };
 
@@ -15,6 +17,7 @@ export type RankedCandidate = {
   qualified: boolean;
   qualificationsMet: string[];
   qualificationsMissing: string[];
+  courseRecommendations: string[];
   unknowns: string[];
   summary?: string;
   createdAt: string;
@@ -36,6 +39,7 @@ export type SaveScreeningRunPayload = {
     qualified: boolean;
     qualificationsMet: string[];
     qualificationsMissing: string[];
+    courseRecommendations: string[];
     unknowns: string[];
     summary?: string;
   }>;
