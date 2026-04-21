@@ -1,4 +1,4 @@
-import { useFetchScreenings } from "@/hooks/useFetchScreening";
+import { useFetchScreeningsByCandidate } from "@/hooks/useFetchScreening";
 import { Spinner } from "../ui/spinner";
 import { Link } from "react-router";
 import { formatDate } from "@/utils/dateFormat";
@@ -53,32 +53,11 @@ function CandidateScanningTable({
     },
   );
 
-  // TODO: simplify this - add backend functionality that does this
-  const {
-    screeningData: allScreenings,
-    isLoading,
-    isError,
-  } = useFetchScreenings();
-
-  // Filter all screenings to show only ones where this candidate participated
-  const candidateScreenings = allScreenings
-    .filter((s) =>
-      s.candidates.some(
-        (candidate) => candidate.candidateId === Number(candidateId),
-      ),
-    )
-    .map((s) => ({
-      ...s,
-      candidateResult: s.candidates.find(
-        (c) => c.candidateId === Number(candidateId),
-      )!,
-    }));
+  const { data: candidateScreenings, isLoading, isError } = useFetchScreeningsByCandidate(candidateId);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleFields));
   });
-
-  console.log(candidateScreenings)
 
   if (isLoading) {
     return (
@@ -272,7 +251,7 @@ function CandidateScanningTable({
                 {visibleFields["Rangering"] && (
                   <td className="px-4 py-3 text-center text-sm text-(--color-dark)">
                     {screen.candidateResult.rank
-                      ? `#${screen.candidateResult.rank} av ${screen.candidates.length}`
+                      ? `#${screen.candidateResult.rank} av ${screen.totalCandidates}`
                       : "—"}
                   </td>
                 )}

@@ -1,8 +1,9 @@
 import {
   getScreeningByJobPostId,
   getScreeningHistory,
+  getScreeningsByCandidateId,
 } from "@/api/fetchScreenings";
-import type { ScreeningDetails } from "@/types/screening";
+import type { CandidateScreeningEntry, ScreeningDetails } from "@/types/screening";
 import { useEffect, useState } from "react";
 
 /**
@@ -73,6 +74,37 @@ export function useFetchScreening(jobPostId?: string) {
     }
     fetchDetails();
   }, [jobPostId]);
+
+  return { data, isLoading, isError };
+}
+
+export function useFetchScreeningsByCandidate(candidateId?: string) {
+  const [data, setData] = useState<CandidateScreeningEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!candidateId) {
+      setIsError(true);
+      setIsLoading(false);
+      setData([]);
+      return;
+    }
+
+    async function fetchScreenings() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const response = await getScreeningsByCandidateId(Number(candidateId));
+        setData(response);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchScreenings();
+  }, [candidateId]);
 
   return { data, isLoading, isError };
 }
