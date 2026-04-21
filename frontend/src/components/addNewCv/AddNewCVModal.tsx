@@ -224,7 +224,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                   </FieldLabel>
                   {isEditing && (
                     <p className="text-sm text-gray-500 mb-2">
-                      Kandidaten har allerede en CV lagret. Velg en ny fil kun hvis du ønsker å ersatte den.
+                      Kandidaten har allerede en CV lagret. Velg en ny fil kun hvis du ønsker å erstatte den.
                     </p>
                   )}
                   <Input
