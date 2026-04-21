@@ -12,7 +12,9 @@ export default function Layout() {
         Hopp til hovedinnhold
       </a>
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="outline-none">
       <Outlet />
+      </main>
     </div>
   );
 }

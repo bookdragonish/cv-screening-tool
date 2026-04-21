@@ -97,9 +97,9 @@ function ScreeningHistory() {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-(--color-dark)">
+                      <h2 className="text-lg font-semibold text-(--color-dark)">
                         {screening.title}
-                      </h3>
+                      </h2>
                       <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
                         <span className="flex items-center">
                           <Clock className="h-4 w-4 m-1" aria-hidden="true" />
@@ -149,7 +149,7 @@ function ScreeningHistory() {
 
         <footer>
           <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-            Viser {filteredHistory.length} av {screeningData.length} skanninger
+            Viser {filteredHistory.length} av {screeningData.length} skanninger.
           </p>
         </footer>
 

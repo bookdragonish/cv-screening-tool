@@ -1,6 +1,6 @@
 import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
-import { AddNewCVModal } from "@/components/AddNewCv/AddNewCVModal";
+import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -111,6 +111,7 @@ function CandidateTable({
                         onClick={() => showPreview(candidate.id)}
                         className="cursor-pointer rounded-md p-2 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                         aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
+                        title="Forhåndsvis PDF"
                       >
                         <Eye
                           className="h-6 w-6 opacity-70 hover:opacity-100"
@@ -179,7 +180,7 @@ function CandidateTable({
 
       <footer>
         <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-          Viser {filteredData.length} av {dataLength} kandidater
+          Viser {filteredData.length} av {dataLength} kandidater.
         </p>
       </footer>
     </div>

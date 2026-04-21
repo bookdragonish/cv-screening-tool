@@ -46,7 +46,7 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
           {Math.round(candidate.score)}%
         </p>
       </article>
-      <Progress value={Math.round(candidate.score)} />
+      <Progress value={Math.round(candidate.score)} aria-label={`Matchscore for ${candidate.candidateName}`} />
 
       {candidate.summary && (
         <p className="mt-4 text-sm text-(--color-dark) opacity-90">
