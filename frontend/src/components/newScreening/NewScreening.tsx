@@ -42,7 +42,7 @@ function NewScreening({
 }: NewScreeningProps) {
   return (
     <section
-      className="mx-auto w-full max-w-6xl px-4 sm:px-8"
+      className="w-full"
       aria-labelledby="new-screening-title"
     >
       <HeaderSection id="new-screening-title" header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen."} />
