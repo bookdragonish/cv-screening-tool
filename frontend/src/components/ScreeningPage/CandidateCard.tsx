@@ -3,6 +3,7 @@ import { Progress } from "../ui/progress";
 import type { RankedCandidate } from "@/types/screening";
 import { Badge } from "../ui/badge";
 import { Link } from "react-router";
+import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 
 type CandidateCardProps = {
   candidate: RankedCandidate;
@@ -31,10 +32,19 @@ function CandidateCard({ candidate, id }: CandidateCardProps) {
               </Link>
             </h2>
           </div>
+            <p className="text-sm text-(--color-dark) mt-1">
+              {!candidate.ansiennitet ? (
+                ""
+              ) : (
+                <>
+                  Ansiennitet: {formatAnsiennitet(candidate.ansiennitet)}
+                </>
+              )}
+            </p>
         </div>
 
-        {candidate.aml46 ? <Badge variant="secondary">{"AML §4.6"}</Badge> : ""}
-        {candidate.aml47 ? <Badge variant="secondary">{"AML §4.7"}</Badge> : ""}
+        {candidate.aml46 ? <Badge variant="aml" className='px-3 py-1 text-sm'>{"AML §4.6"}</Badge> : ""}
+        {candidate.aml47 ? <Badge variant="aml" className='px-3 py-1 text-sm'>{"AML §4.7"}</Badge> : ""}
       </div>
 
       <article className="flex justify-between">

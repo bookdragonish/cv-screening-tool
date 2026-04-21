@@ -1,4 +1,4 @@
-DROP TABLE course_rec;
+DROP TABLE IF EXISTS course_rec;
 
 create table
     if not exists course_rec (
@@ -11,9 +11,3 @@ create table
         foreign key (candidate_id) references candidates (id) on delete cascade,
         created_at timestamptz default now ()
     );
-
-INSERT INTO
-    results (course_rec_id, candidate_id, qualifications_missing, summary, preffered_field)
-VALUES
-    (1, 1, ARRAY['Lite dokumentert ledererfaring'], '', ARRAY['Vaskehjelp', 'Sykepleier']),
-    (2, 2, ARRAY['For lite JavaScript-erfaring', 'Manglende seniorprofil'], '', ARRAY['IT'] )

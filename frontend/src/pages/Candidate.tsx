@@ -11,6 +11,7 @@ import { Download } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Badge } from "../components/ui/badge"
+import { formatAnsiennitet } from '@/utils/formatAnsiennitet';
 
 function Candidate() {
     const { candidateId } = useParams<{ candidateId: string }>();
@@ -78,29 +79,22 @@ function Candidate() {
               <h1 className="mt-1 pb-3 text-3xl font-semibold text-(--color-dark)">
                 {candidate.name}
               </h1>
-              <h2 className="text-sm font-semibold text-(--color-dark) opacity-75">
+              <h2 className="text-sm font-semibold text-(--color-dark)">
                 Kandidatprofil
               </h2>
-              <p className="text-sm text-(--color-dark) opacity-75 mt-1">
+              <p className="text-sm text-(--color-dark) mt-1">
                   Arbeidsmiljøloven:{" "}
                   {!candidate.aml46 && !candidate.aml47 ? (
                     "Ingen"
                   ) : (
                     <>
-                      {candidate.aml46 ? <Badge variant="secondary">{"AML §4.6"}</Badge> : ""}
-                      {candidate.aml47 ? <Badge variant="secondary">{"AML §4.7"}</Badge> : ""}
+                      {candidate.aml46 ? <Badge variant="aml">{"AML §4.6"}</Badge> : ""}
+                      {candidate.aml47 ? <Badge variant="aml">{"AML §4.7"}</Badge> : ""}
                     </>
                   )}
               </p>
-              <p className="text-sm text-(--color-dark) opacity-75">
-                Ansiennitet:{" "}
-                  {!candidate.ansiennitet ? (
-                    "Ingen"
-                  ) : (
-                    <>
-                      {candidate.ansiennitet}
-                    </>
-                  )}
+              <p className="text-sm text-(--color-dark)">
+                Ansiennitet: {formatAnsiennitet(candidate.ansiennitet)}
               </p>
               <div className="mt-4 flex items-start gap-3">
                 <div>
