@@ -1,4 +1,4 @@
-DROP TABLE course_rec;
+DROP TABLE IF EXISTS course_rec;
 
 create table
     if not exists course_rec (
