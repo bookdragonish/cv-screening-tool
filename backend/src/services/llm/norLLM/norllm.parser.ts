@@ -6,7 +6,6 @@ import type {
 } from "../../../types/ai.types.js";
 import {
   normalizeString,
-  normalizeStringList as toNonEmptyStringArray,
 } from "../../../utils/normailizers.js";
 
 // These parsers ensueres that norllm gets information in a reable way after its collected from the database
@@ -72,15 +71,6 @@ function pickLikelyJsonRoot(value: unknown): Record<string, unknown> {
   }
 
   return record;
-}
-
-function normalizeImpact(value: unknown): "high" | "medium" | "low" {
-  const s = typeof value === "string" ? value.trim().toLowerCase() : "";
-
-  if (s === "high" || s === "hoy" || s === "høy") return "high";
-  if (s === "low" || s === "lav") return "low";
-
-  return "medium";
 }
 
 function toScore(value: unknown): number {

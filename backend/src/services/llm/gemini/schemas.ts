@@ -2,14 +2,6 @@ import { z } from "zod";
 import type { CandidateEval, JobProfile, Ranking } from "../../../types/ai.types.js";
 
 /**
- * Normalizes impact labels before validating allowed values.
- */
-const ImpactSchema = z.preprocess(
-  (val) => (typeof val === "string" ? val.trim().toLowerCase() : val),
-  z.enum(["high", "medium", "low"])
-);
-
-/**
  * Expected JSON shape for the extracted job profile.
  */
 export const JobProfileSchema = z.object({

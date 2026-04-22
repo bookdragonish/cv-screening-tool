@@ -201,10 +201,7 @@ export function mapToScreeningCandidates(params: {
         unknownRaw: evalResult?.unknowns.map((item) => item.point),
         courseRaw: normalizeRecommendationPoints(evalResult?.courseRecommendations),
       });
-
-      const experience =
-        evalResult?.strengths.map((item) => item.explanation).filter(Boolean) ?? [];
-
+      
       const normalizedScore = Math.round(rankedItem.overall_score);
 
       return {
