@@ -11,6 +11,7 @@ import { Badge } from "../ui/badge";
 import { Link } from "react-router";
 import HoverExplanationCard from "./HoverExplanationCard";
 import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
+import { formatCapitalizeFirstLetter } from "@/utils/formatCapitalizeFirstLetter";
 
 type CandidateCardProps = {
   candidate: RankedCandidate;
@@ -117,7 +118,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
                         />
                       </HoverExplanationCard>
                     ) : null}
-                    <span>{item}</span>
+                    <span>{formatCapitalizeFirstLetter(item)}</span>
                   </li>
                 ))}
               </ul>
@@ -154,7 +155,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
                         />
                       </HoverExplanationCard>
                     ) : null}
-                    <span>{item}</span>
+                    <span>{formatCapitalizeFirstLetter(item)}</span>
                   </li>
                 ))}
               </ul>
@@ -184,7 +185,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
                       style={{ color: "var(--status-unknown)" }}
                     />
                   </HoverExplanationCard>
-                  <span>{item}</span>
+                  <span>{formatCapitalizeFirstLetter(item)}</span>
                 </li>
               ))}
 
@@ -201,7 +202,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
                       style={{ color: "var(--status-course)" }}
                     />
                   </HoverExplanationCard>
-                  <span>{item}</span>
+                  <span>{formatCapitalizeFirstLetter(item)}</span>
                 </li>
               ))}
             </ul>

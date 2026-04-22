@@ -11,7 +11,7 @@ import {
   type UploadJobDescriptionValues,
   toJobDescriptionInput,
 } from "@/validations/UploadJobDescriptionSchema";
-import { formatBytes } from "@/utils/newScreeningUtils";
+import { formatBytes } from "@/utils/formatBytes";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -194,7 +194,10 @@ function UploadJobDescriptionCard({
                     }}
                   />
 
-                  <div className="rounded-lg border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 min-h-52 mt-7 py-12 text-center transition hover:bg-(--color-light)/20">
+                  <div
+                    className="rounded-lg border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 min-h-52 mt-7 py-12 text-center transition hover:bg-(--color-light)/20 cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
                     {isPdfSelectionValid ? (
@@ -210,7 +213,7 @@ function UploadJobDescriptionCard({
                           variant="ghost"
                           type="button"
                           className="mt-2 text-sm text-red-500 hover:text-red-600"
-                          onClick={() => setPickedFile(undefined)}
+                          onClick={(e) => { e.stopPropagation(); setPickedFile(undefined); }}
                         >
                           Fjern fil
                         </Button>
@@ -221,7 +224,7 @@ function UploadJobDescriptionCard({
                         <button
                           type="button"
                           className="inline cursor-pointer rounded-sm text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                         >
                           bla gjennom filer
                         </button>
@@ -287,15 +290,16 @@ function UploadJobDescriptionCard({
           <div className="mt-6 flex justify-end gap-3">
             <Button
               type="button"
-              variant="outline"
-              className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+              variant="cancel"
+              className="w-28 cursor-pointer"
               asChild
             >
               <Link to="/">Avbryt</Link>
             </Button>
           <Button
             type="submit"
-            className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+            variant="primary"
+            className="w-28 cursor-pointer"
             disabled={isSubmitDisabled}
           >
             {showRetryLabel ? "Prøv igjen" : "Neste"}

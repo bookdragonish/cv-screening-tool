@@ -36,7 +36,7 @@ export default function LoginPage() {
             <Input id="password" type="password" autoComplete="current-password" />
           </div>
 
-          <Button type="submit" className="hover-dark-button mt-2 w-full border-2 border-(--color-primary)">
+          <Button type="submit" variant="primary" className="mt-2 w-full cursor-pointer">
             Logg inn
           </Button>
         </form>

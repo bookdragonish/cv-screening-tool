@@ -5,7 +5,7 @@ import {
   type AddNewCvValues,
 } from "@/validations/AddNewCvSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, XIcon } from "lucide-react"
 import { useId, useState, useEffect } from "react"
 import { DeleteCandidateDialog } from "@/components/DeleteCandidateDialog"
 import { Controller, useForm } from "react-hook-form"
@@ -44,7 +44,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
   const form = useForm<AddNewCvValues>({
     resolver: zodResolver(AddNewCvSchema),
     mode: "onSubmit",
-    shouldFocusError: true,
+    shouldFocusError: false,
     defaultValues: {
       name: candidateToEdit?.name ?? "",
       cv: undefined as unknown as File,
@@ -161,7 +161,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         {customTrigger ? (
           customTrigger
         ) : (
-          <Button className="hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer">
+          <Button variant="primary" className="p-2 cursor-pointer">
             <PlusIcon className="size-6" />
             <p className="text-regular p-2">
               Legg til kandidat
@@ -170,10 +170,23 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent aria-describedby={submitErrId}>
+      <DialogContent aria-describedby={submitErrId} showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Rediger kandidat" : "Legg til ny kandidat"}</DialogTitle>
         </DialogHeader>
+        <button
+          type="button"
+          aria-label="Lukk"
+          className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 cursor-pointer [&_svg]:size-4"
+          onMouseDown={(e) => {
+            e.preventDefault()
+            setOpen(false)
+            setSubmitError(null)
+            form.reset()
+          }}
+        >
+          <XIcon />
+        </button>
         <p
           id={submitErrId}
           className="sr-only"
@@ -201,6 +214,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                     aria-required="true"
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${nameDescId} ${fieldState.invalid ? nameErrId : ""}`.trim()}
+                    className="bg-white"
                   />
                   <FieldDescription id={nameDescId}>
                     Skriv inn fullt navn.
@@ -224,7 +238,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                   </FieldLabel>
                   {isEditing && (
                     <p className="text-sm text-gray-500 mb-2">
-                      Kandidaten har allerede en CV lagret. Velg en ny fil kun hvis du ønsker å ersatte den.
+                      Kandidaten har allerede en CV lagret. Velg en ny fil kun hvis du ønsker å erstatte den.
                     </p>
                   )}
                   <Input
@@ -235,6 +249,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                     aria-required={!isEditing ? "true" : "false"}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${cvDescId} ${fieldState.invalid ? cvErrId : ""}`.trim()}
+                    className="bg-white file:text-blue-600"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       field.onChange(file)
@@ -329,6 +344,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet år"
+                      className="bg-white"
                     />
                     <Input
                       type="number"
@@ -344,6 +360,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet måneder"
+                      className="bg-white"
                     />
                     <Input
                       type="number"
@@ -359,6 +376,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       }}
                       aria-invalid={fieldState.invalid}
                       aria-label="Ansiennitet dager"
+                      className="bg-white"
                     />
                   </div>
                   {!fieldState.invalid && (
@@ -391,8 +409,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         <DialogFooter>
           <Button
             type="button"
-            variant="secondary"
-            className="text-sm hover:bg-red-600 hover:text-white cursor-pointer"
+            variant="destructive"
+            className="cursor-pointer"
             hidden={!isEditing}
             onClick={() => setDeleteConfirmOpen(true)}
           >
@@ -420,8 +438,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           />
           <Button
             type="button"
-            variant="secondary"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
+            variant="cancel"
+            className="cursor-pointer"
             onClick={() => {
               setOpen(false)
               form.reset()
@@ -434,7 +452,8 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
           <Button
             type="submit"
             form="add-cv-form"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white"
+            variant="primary"
+            className="cursor-pointer"
             disabled={form.formState.isSubmitting || !isCvSelectionValid}
           >
             {form.formState.isSubmitting ? "Lagrer..." : (isEditing ? "Oppdater" : "Legg til")}

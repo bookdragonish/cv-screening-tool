@@ -51,7 +51,9 @@ ${RUBRIC}
 
 <language_rules>
 - Alle deskriptive feltverdier skrives på norsk bokmål.
+- Om du refererer til feltnavnene must_haves og nice_to_haves i forklaringer, skal disse oversettes på en passende måte til norsk, eksempelvis "absolutte krav" og "ønskede krav".
 - Hold egennavn, teknologi-navn, sertifikater, telefonnummer og e-post i original form.
+- Alle feltnavn i JSON output skal skrives på formatet under på engelsk.
 </language_rules>
 
 <context>
