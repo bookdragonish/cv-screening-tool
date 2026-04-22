@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { useFetchCandidates } from "@/hooks/useFetchCandidates";
 import HeaderSection from "@/components/HeaderSection";
 import ScanningHistoryTable from "@/components/HomePage/ScanningHistoryTable";
+import { formatCapitalizeFirstLetter } from "@/utils/formatCapitalizeFirstLetter";
 
 function Home() {
   const { data: candidatesData } = useFetchCandidates();

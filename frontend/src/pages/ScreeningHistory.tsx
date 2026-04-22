@@ -83,61 +83,61 @@ function ScreeningHistory() {
 
         <section className="space-y-4" aria-live="polite">
           {filteredHistory.map((screening) => (
-            <article
+            <Link
               key={screening.jobPostId}
-              className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
+              to={`/skanning-historikk/${screening.jobPostId}`}
+              className="block rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
             >
-              <div className="flex justify-between items-center">
-                <div className="flex-1">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-1">
-                      <h2 className="text-lg font-semibold text-(--color-dark)">
-                        {screening.title}
-                      </h2>
-                      <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
-                        <span className="flex items-center">
-                          <Clock className="h-4 w-4 m-1" aria-hidden="true" />
-                          <span>{formatDate(screening.screenedAt)}</span>
-                        </span>
-                      </div>
+              <article>
+                <div className="flex justify-between items-center">
+                  <div className="flex-1">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-1">
+                        <h2 className="text-lg font-semibold text-(--color-dark)">
+                          {screening.title}
+                        </h2>
+                        <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
+                          <span className="flex items-center">
+                            <Clock className="h-4 w-4 m-1" aria-hidden="true" />
+                            <span>{formatDate(screening.screenedAt)}</span>
+                          </span>
+                        </div>
 
-                      <div className="mt-4">
-                        <p className="mb-2 text-sm font-medium text-(--color-dark)">
-                          Topp 3 kandidater:
-                        </p>
-                        {screening.candidates.some((c) => c.qualified) ? (
-                          <div className="flex flex-wrap gap-2">
-                            {screening.candidates
-                              .filter((c) => c.qualified)
-                              .slice(0, 3)
-                              .map((candidate, index) => (
-                                <span
-                                  key={index}
-                                  className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
-                                >
-                                  #{index + 1} {candidate.candidateName} (
-                                  {Math.round(candidate.score)}%)
-                                </span>
-                              ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-(--color-dark) opacity-75">
-                            Ingen kvalifiserte kandidater
+                        <div className="mt-4">
+                          <p className="mb-2 text-sm font-medium text-(--color-dark)">
+                            Topp 3 kandidater:
                           </p>
-                        )}
+                          {screening.candidates.some((c) => c.qualified) ? (
+                            <div className="flex flex-wrap gap-2">
+                              {screening.candidates
+                                .filter((c) => c.qualified)
+                                .slice(0, 3)
+                                .map((candidate, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
+                                  >
+                                    #{index + 1} {candidate.candidateName} (
+                                    {Math.round(candidate.score)}%)
+                                  </span>
+                                ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-(--color-dark) opacity-75">
+                              Ingen kvalifiserte kandidater
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <Link
-                  to={`/skanning-historikk/${screening.jobPostId}`}
-                  className="rounded-lg hover-dark-button border-(--color-primary) p-2 border-2"
-                >
-                  Se resultater
-                </Link>
-              </div>
-            </article>
+                  <span className="rounded-lg hover-dark-button border-(--color-primary) p-2 border-2">
+                    Se resultater
+                  </span>
+                </div>
+              </article>
+            </Link>
           ))}
         </section>
 

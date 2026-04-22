@@ -1,5 +1,5 @@
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate } from "@/utils/formatDate";
 import { Clock } from "lucide-react";
 import { Link } from "react-router";
 
