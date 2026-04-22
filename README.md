@@ -127,20 +127,34 @@ Then add .env to the backend folder with info:
 ```
 DB_HOST="localhost"
 DB_PORT="5432"
-DB_USER=""
-DB_PASSWORD=""
+DB_USER="cv_app_user"
+DB_PASSWORD="your_password"
 DB_NAME="cv_database"
+
 FRONTEND_HOSTED_LINK="http://localhost:5173"
-LLM="gemini" #either gemini or norllm
+
+LLM="gemini or norllm"
 GEMINI_API_KEY=""
 NORLLM_KEY=""
 ```
 
+These corresponds to:
+
+| Variable | Description |
+|----------|------------|
+| DB_HOST | Database host (e.g., localhost) |
+| DB_PORT | Database port (default: 5432) |
+| DB_USER | Database user |
+| DB_PASSWORD | Database password |
+| DB_NAME | Database name |
+| FRONTEND_HOSTED_LINK | URL of the frontend application (used for CORS configuration) |
+| LLM | AI provider ("gemini" or "norllm"), default is "gemini" |
+| GEMINI_API_KEY | API key for Gemini |
+| NORLLM_API_KEY | API key for NorLLM |
+
 #### Run the backend
 To run the backend, open a terminal and run these commands.
 
-
-#### backend start
 
 ```bash
 npm run dev
@@ -180,6 +194,13 @@ For more installation documents on the database see the [database.md file](./doc
 
 ## AI models
 
+The system supports integration with:
+
+- Gemini
+- NorLLM
+
+The active model is configured via the LLM environment variable.
+
 ## Security Considerations
 
 - File upload size limit (10MB)
@@ -191,7 +212,8 @@ For more installation documents on the database see the [database.md file](./doc
 
 ## Testing
 
-Not yet implemented unittests and E2E tests.
+- Unit testing with Vitest
+- End-to-end testing with Playwright
 
 ## Collaborators
 
