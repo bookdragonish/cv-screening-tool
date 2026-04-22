@@ -1,6 +1,6 @@
-## Changes to Gemini Prompts
+## Changes to Prompts
 
-When modifying Gemini prompts, begin by asking:
+When modifying prompts, begin by asking:
 
 **Are you only changing how the model responds, or are you changing the JSON structure it returns?**
 
