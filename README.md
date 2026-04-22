@@ -42,6 +42,7 @@ Currently, two official plugins are:
 - Express
 - TypeScript
 - Multer (file upload handling)
+- Pdf-parse
 
 ### Database
 
@@ -52,9 +53,10 @@ Currently, two official plugins are:
 - Gemeni or
 - NorLLM
 
-### Hosting (Planned)
+### Testing
 
-- Google Cloud Platform
+- Playwright
+- Vitest
 
 ---
 
@@ -64,18 +66,17 @@ Currently, two official plugins are:
 CV-SCREENING-TOOL/
 ├── api/
 ├── backend/
-│   ├── node_modules/
 │   ├── src/
 │   │   ├── assets/
-│   │   ├── config/
 │   │   ├── controllers/
 │   │   ├── db/
 │   │   ├── middleware/
 │   │   ├── routes/
+│   │   ├── services/
 │   │   ├── types/
+│   │   ├── utils/
 │   │   ├── app.ts
 │   │   └── server.ts
-│   ├── venv/
 │   └── .env
 │
 ├── docs/
@@ -92,6 +93,7 @@ CV-SCREENING-TOOL/
 │   │   ├── pages/
 │   │   ├── types/
 │   │   ├── utils/
+│   │   ├── validation/
 │   │   └── main.tsx
 │   └── index.html
 ```
@@ -107,25 +109,36 @@ git clone https://github.com/your-username/cv-screening-tool.git
 cd cv-screening-tool
 ```
 
-### backend setup
+### Backend setup
+Per now the backend is not hosted and needs to be running locally for this application. See [the section on database setup](#database-setup) for more info.
+
+After having completed the setup, open a terminal and run:
 
 ```bash
 cd backend
 npm install
 ```
 
+
 #### .env file in /backend
 
-In the backend folder add a file called .env with the info
+Then add .env to the backend folder with info:
 
 ```
 DB_HOST="localhost"
 DB_PORT="5432"
-DB_USER="cv_app_user"
-DB_PASSWORD="your_password"
+DB_USER=""
+DB_PASSWORD=""
 DB_NAME="cv_database"
 FRONTEND_HOSTED_LINK="http://localhost:5173"
+LLM="gemini" #either gemini or norllm
+GEMINI_API_KEY=""
+NORLLM_KEY=""
 ```
+
+#### Run the backend
+To run the backend, open a terminal and run these commands.
+
 
 #### backend start
 
@@ -133,9 +146,9 @@ FRONTEND_HOSTED_LINK="http://localhost:5173"
 npm run dev
 ```
 
-See the link: http://localhost:3000
+After this open the link: http://localhost:3000
 
-### frontend setup
+### Frontend setup
 
 In another terminal run:
 
