@@ -259,9 +259,9 @@ function CandidateScanningTable({
 
                 {visibleFields["Forslag til opplæring"] && (
                   <td className="px-4 py-3 text-center text-sm text-(--color-dark) min-w-50">
-                    {screen.candidateResult.courseRecommendations.length ? (
+                    {screen.candidateResult.course_recommendations.length ? (
                       <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark) text-left">
-                        {screen.candidateResult.courseRecommendations.map(
+                        {screen.candidateResult.course_recommendations.map(
                           (recommendation: string) => (
                             <li key={recommendation}>{formatCapitalizeFirstLetter(recommendation)}</li>
                           ),

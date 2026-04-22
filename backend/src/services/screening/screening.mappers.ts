@@ -282,9 +282,9 @@ export function buildScreeningRecord(params: {
       rank: rankedItem.rank ?? index + 1,
       score: normalizedScore,
       qualified: rankedItem.qualified,
-      qualificationsMet: qualificationResult.met,
-      qualificationsMissing: qualificationResult.missing,
-      courseRecommendations: qualificationResult.courses,
+      qualifications_met: qualificationResult.met,
+      qualifications_missing: qualificationResult.missing,
+      course_recommendations: qualificationResult.courses,
       unknowns: qualificationResult.unknowns,
       summary: normalizeString(rankedItem.summary) || "Ingen oppsummering gitt av modellen.",
     });

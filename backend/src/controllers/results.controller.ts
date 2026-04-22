@@ -150,9 +150,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         rank?: number;
         score?: number;
         qualified?: boolean;
-        qualificationsMet?: unknown;
-        qualificationsMissing?: unknown;
-        courseRecommendations?: unknown;
+        qualifications_met?: unknown;
+        qualifications_missing?: unknown;
+        course_recommendations?: unknown;
         unknowns?: unknown;
         summary?: string;
       }>;
@@ -175,9 +175,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       rank: Number(candidate.rank),
       score: Number(candidate.score),
       qualified: candidate.qualified,
-      qualificationsMet: normalizeStringArray(candidate.qualificationsMet),
-      qualificationsMissing: normalizeStringArray(candidate.qualificationsMissing),
-      courseRecommendations: normalizeStringArray(candidate.courseRecommendations),
+      qualifications_met: normalizeStringArray(candidate.qualifications_met),
+      qualifications_missing: normalizeStringArray(candidate.qualifications_missing),
+      course_recommendations: normalizeStringArray(candidate.course_recommendations),
       unknowns: normalizeStringArray(candidate.unknowns),
       summary: normalizeString(candidate.summary),
     }));
@@ -225,9 +225,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
           candidate.rank,
           candidate.score,
           candidate.qualified,
-          candidate.qualificationsMet,
-          candidate.qualificationsMissing,
-          candidate.courseRecommendations,
+          candidate.qualifications_met,
+          candidate.qualifications_missing,
+          candidate.course_recommendations,
           candidate.unknowns,
           candidate.summary || null,
         ],
@@ -269,9 +269,9 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
-            'courseRecommendations', r.course_recommendations,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
@@ -320,9 +320,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
-            'courseRecommendations', r.course_recommendations,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
@@ -368,9 +368,9 @@ export async function getScreeningByCandidateId(req: Request, res: Response, nex
           'rank', r.rank,
           'score', r.score,
           'qualified', r.qualified,
-          'qualificationsMet', r.qualifications_met,
-          'qualificationsMissing', r.qualifications_missing,
-          'courseRecommendations', r.course_recommendations,
+          'qualifications_met', r.qualifications_met,
+          'qualifications_missing', r.qualifications_missing,
+          'course_recommendations', r.course_recommendations,
           'unknowns', r.unknowns,
           'summary', r.summary,
           'createdAt', r.created_at,
