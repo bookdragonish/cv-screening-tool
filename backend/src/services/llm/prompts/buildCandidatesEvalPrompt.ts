@@ -1,4 +1,4 @@
-import type { JobProfile } from "../../../types/ai.types.js";
+import type { EvalJobPost } from "../../../types/ai.types.js";
 import { RULES, RUBRIC } from "./rulesAndRubric.js";
 
 type CandidateInput = {
@@ -11,7 +11,7 @@ type CandidateInput = {
  * Builds the prompt that evaluates the candidates using their CV.
  */
 export function buildCandidatesEvaluationPrompt(args: {
-  jobProfile: JobProfile;
+  jobProfile: EvalJobPost;
   candidates: CandidateInput[];
 }): string {
   const candidatesJson = JSON.stringify(
@@ -75,7 +75,7 @@ Returner KUN gyldig JSON med dette formatet:
       "candidate_name": string,
       "summary": string,
       "qualified": boolean,
-      "overall_score": number,
+      "score": number,
       "strengths": [{"point": string, "explanation": string}],
       "gaps": [{"point": string, "explanation": string}],
       "unknowns": [{"point": string, "explanation": string}],

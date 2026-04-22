@@ -1,10 +1,10 @@
 import { z } from "zod";
-import type { CandidateEval, JobProfile, Ranking } from "../../../types/ai.types.js";
+import type { EvalCandidate, EvalJobPost, Ranking } from "../../../types/ai.types.js";
 
 /**
  * Expected JSON shape for the extracted job profile.
  */
-export const JobProfileSchema = z.object({
+export const EvalJobPostSchema = z.object({
   role_title: z.string(),
   must_haves: z.array(z.string()),
   must_haves_can_be_coursed: z.array(z.string()).optional(),
@@ -14,20 +14,20 @@ export const JobProfileSchema = z.object({
 /**
  * Expected JSON shape for one candidate evaluation.
  */
-export const CandidateEvalSchema = z.object({
+export const EvalCandidateSchema = z.object({
   candidate_id: z.string(),
   candidate_name: z.string(),
   summary: z.string(),
   qualified: z.boolean(),
-  overall_score: z.number(),
+  score: z.number(),
   strengths: z.array(z.object({ point: z.string(), explanation: z.string() })),
   gaps: z.array(z.object({ point: z.string(), explanation: z.string() })),
   unknowns: z.array(z.object({ point: z.string(), explanation: z.string() })),
   courseRecommendations: z.array(z.object({ point: z.string(), explanation: z.string() })),
 });
 
-export const CandidateEvalsSchema = z.object({
-  evaluations: z.array(CandidateEvalSchema),
+export const EvalCandidatesSchema = z.object({
+  evaluations: z.array(EvalCandidateSchema),
 });
 
 /**
@@ -40,7 +40,7 @@ export const RankingSchema = z.object({
       rank: z.number(),
       candidate_id: z.string(),
       candidate_label: z.string(),
-      overall_score: z.number(),
+      score: z.number(),
       qualified: z.boolean(),
       summary: z.string(),
     })
@@ -123,23 +123,23 @@ function parseJsonOrThrow(text: string): unknown {
 /**
  * Parses and validates job profile output from the LLM.
  */
-export function parseJobProfile(text: string): JobProfile {
-  return JobProfileSchema.parse(parseJsonOrThrow(text)) as JobProfile;
+export function parseJobProfile(text: string): EvalJobPost {
+  return EvalJobPostSchema.parse(parseJsonOrThrow(text)) as EvalJobPost;
 }
 
 /**
  * Parses and validates candidate evaluation output from the LLM.
  */
-export function parseCandidateEval(text: string): CandidateEval {
-  return CandidateEvalSchema.parse(parseJsonOrThrow(text)) as CandidateEval;
+export function parseCandidateEval(text: string): EvalCandidate {
+  return EvalCandidateSchema.parse(parseJsonOrThrow(text)) as EvalCandidate;
 }
 
 /**
  * Parses the candidate evaluations from the LLM.
  */
-export function parseCandidateEvals(text: string): CandidateEval[] {
-  const parsed = CandidateEvalsSchema.parse(parseJsonOrThrow(text)) as {
-    evaluations: CandidateEval[];
+export function parseCandidateEvals(text: string): EvalCandidate[] {
+  const parsed = EvalCandidatesSchema.parse(parseJsonOrThrow(text)) as {
+    evaluations: EvalCandidate[];
   };
   return parsed.evaluations;
 }

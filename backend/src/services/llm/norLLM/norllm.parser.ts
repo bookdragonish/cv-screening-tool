@@ -1,8 +1,8 @@
 import { parseCandidateEval, parseRanking } from "../gemini/schemas.js";
 import type {
-  CandidateEval,
+  EvalCandidate,
   CandidateWithCvText,
-  JobProfile,
+  EvalJobPost,
 } from "../../../types/ai.types.js";
 import {
   normalizeString,
@@ -83,7 +83,7 @@ export function fixCandidateEval(params: {
   text: string;
   fallbackCandidateId: string;
   fallbackCandidateName: string;
-}): CandidateEval {
+}): EvalCandidate {
   const { text, fallbackCandidateId, fallbackCandidateName } = params;
 
   try {
@@ -97,7 +97,7 @@ export function fixCandidateEval(params: {
       // continue with empty object
     }
 
-    const score = toScore(raw.overall_score);
+    const score = toScore(raw.score);
     const strengthsRaw = Array.isArray(raw.strengths) ? raw.strengths : [];
     const gapsRaw = Array.isArray(raw.gaps) ? raw.gaps : [];
     const unknownsRaw = Array.isArray(raw.unknowns) ? raw.unknowns : [];
@@ -209,7 +209,7 @@ export function fixCandidateEval(params: {
       ),
       qualified:
         typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
-      overall_score: score,
+      score,
       strengths: strengths.length
         ? strengths
         : [{ point: "Ingen tydelige styrker", explanation: "Ikke oppgitt" }],
@@ -268,11 +268,11 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
                 ? record.candidate_label
                 : "",
             ) || `Kandidat ${candidateId}`,
-          overall_score: toScore(record.overall_score),
+          score: toScore(record.score),
           qualified:
             typeof record.qualified === "boolean"
               ? record.qualified
-              : toScore(record.overall_score) >= 50,
+              : toScore(record.score) >= 50,
           summary:
             normalizeString(
               typeof record.summary === "string" ? record.summary : "",
@@ -286,7 +286,7 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
           rank: number;
           candidate_id: string;
           candidate_label: string;
-          overall_score: number;
+          score: number;
           qualified: boolean;
           summary: string;
         } => item !== null,
@@ -302,8 +302,8 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
 }
 
 export function buildFallbackRankingFromEvals(params: {
-  jobProfile: JobProfile;
-  evals: CandidateEval[];
+  jobProfile: EvalJobPost;
+  evals: EvalCandidate[];
   candidatesWithCv: CandidateWithCvText[];
 }): ReturnType<typeof parseRanking> {
   const { jobProfile, evals, candidatesWithCv } = params;
@@ -317,7 +317,7 @@ export function buildFallbackRankingFromEvals(params: {
       const candidate = candidateById.get(evaluation.candidate_id);
       if (!candidate) return null;
 
-      const score = toScore(evaluation.overall_score);
+      const score = toScore(evaluation.score);
 
       return {
         candidate_id: String(candidate.id),
@@ -325,7 +325,7 @@ export function buildFallbackRankingFromEvals(params: {
           normalizeString(evaluation.candidate_name) ||
           normalizeString(candidate.name) ||
           `Kandidat ${candidate.id}`,
-        overall_score: score,
+        score,
         qualified:
           typeof evaluation.qualified === "boolean"
             ? evaluation.qualified
@@ -341,12 +341,12 @@ export function buildFallbackRankingFromEvals(params: {
       ): item is {
         candidate_id: string;
         candidate_label: string;
-        overall_score: number;
+        score: number;
         qualified: boolean;
         summary: string;
       } => item !== null,
     )
-    .sort((a, b) => b.overall_score - a.overall_score)
+    .sort((a, b) => b.score - a.score)
     .map((item, index) => ({
       ...item,
       rank: index + 1,
