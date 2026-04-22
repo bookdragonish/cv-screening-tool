@@ -34,10 +34,10 @@ function ProcessingStatusCard({
               Kandidatmatchene er klare. Velg hva du vil gjøre videre.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Button variant="outline" className="w-38 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer" onClick={onStartNew}>
+              <Button variant="primary" className="w-38 cursor-pointer" onClick={onStartNew}>
                 Start ny skanning
               </Button>
-              <Button asChild variant="outline" className="w-38 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer">
+              <Button asChild variant="primary" className="w-38 cursor-pointer">
                 <Link to={resultsHref}>Se resultater</Link>
               </Button>
             </div>

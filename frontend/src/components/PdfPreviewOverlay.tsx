@@ -83,7 +83,8 @@ function PdfPreviewOverlay({
             onClick={onClose}
             aria-label="Lukk forhåndvisning"
             title="Lukk forhåndsvisning"
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white border border-transparent hover:border-(--color-primary) transition-all duration-200 h-7 w-7 p-0 rounded-full"
+            variant="primary"
+            className="cursor-pointer h-7 w-7 p-0 rounded-full"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -109,10 +110,10 @@ function PdfPreviewOverlay({
 
         <footer className="flex items-center justify-between border-t border-border px-6 py-4">
           <Button
-            variant="outline"
+            variant="primary"
             onClick={prevPdfPreview}
             disabled={!hasPrevious}
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-transparent hover:border-(--color-primary) transition-all duration-200"
+            className="cursor-pointer disabled:cursor-not-allowed"
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             <span>Forrige kandidat</span>
@@ -123,9 +124,10 @@ function PdfPreviewOverlay({
           </span>
 
           <Button
+            variant="primary"
             onClick={nextPdfPreview}
             disabled={!hasNext}
-            className="bg-(--color-primary) hover:bg-white text-white hover:text-(--color-primary) cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 focus-visible:border-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-transparent hover:border-(--color-primary) transition-all duration-200"
+            className="cursor-pointer disabled:cursor-not-allowed"
           >
             <span>Neste kandidat</span>
             <ChevronRight className="h-4 w-4 opacity-80" aria-hidden="true" />

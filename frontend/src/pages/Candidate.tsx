@@ -91,7 +91,7 @@ function Candidate() {
             </div>
             <TooltipProvider>
               {candidateCV ? (
-                <Button variant="outline" className="h-auto px-6 py-3" asChild>
+                <Button variant="light" className="h-auto px-6 py-3" asChild>
                   <a
                     href={candidateCV.toString()}
                     target="_blank"
@@ -106,7 +106,7 @@ function Candidate() {
                   <TooltipTrigger asChild>
                     <div>
                       <Button
-                        variant="outline"
+                        variant="light"
                         className="h-auto px-6 py-3 cursor-not-allowed"
                         disabled
                       >

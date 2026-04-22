@@ -262,8 +262,8 @@ function CandidateScanningTable({
                     {screen.candidateResult.courseRecommendations.length ? (
                       <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark) text-left">
                         {screen.candidateResult.courseRecommendations.map(
-                          (recommandation: string) => (
-                            <li key={recommandation}>{formatCapitalizeFirstLetter(recommandation)}</li>
+                          (recommendation: string) => (
+                            <li key={recommendation}>{formatCapitalizeFirstLetter(recommendation)}</li>
                           ),
                         )}
                       </ul>

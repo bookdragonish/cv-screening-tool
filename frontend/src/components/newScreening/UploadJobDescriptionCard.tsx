@@ -290,15 +290,16 @@ function UploadJobDescriptionCard({
           <div className="mt-6 flex justify-end gap-3">
             <Button
               type="button"
-              variant="outline"
-              className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+              variant="cancel"
+              className="w-28 cursor-pointer"
               asChild
             >
               <Link to="/">Avbryt</Link>
             </Button>
           <Button
             type="submit"
-            className="w-28 hover-dark-button border-2 border-(--color-primary) p-2 cursor-pointer"
+            variant="primary"
+            className="w-28 cursor-pointer"
             disabled={isSubmitDisabled}
           >
             {showRetryLabel ? "Prøv igjen" : "Neste"}

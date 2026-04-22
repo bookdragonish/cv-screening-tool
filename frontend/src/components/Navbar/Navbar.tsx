@@ -62,9 +62,9 @@ function Profile() {
       <span className="text-regular font-medium text-(--color-dark)">HR-bruker</span>
       <Button
         onClick={handleLogout}
-        variant="secondary"
+        variant="destructive"
         size="sm"
-        className="bg-(--color-primary) text-white hover:bg-red-600 hover:text-white cursor-pointer"
+        className="cursor-pointer"
       >
         Logg ut
       </Button>
