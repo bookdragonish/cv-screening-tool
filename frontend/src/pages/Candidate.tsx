@@ -9,16 +9,19 @@ import {
 } from "@/components/ui/tooltip";
 import { useFetchCandidate } from "@/hooks/useFetchCandidates";
 import { useFetchPDF } from "@/hooks/useFetchPDF";
-import { Clock, Download } from "lucide-react";
+import { Clock, Download, FileText } from "lucide-react";
 import { useParams } from "react-router";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "../components/ui/badge";
 import { formatDate } from "@/utils/formatDate";
 import CandidateScanningTable from "@/components/CandidatePage/CandidateScanningTable";
 import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
+import { useState } from "react";
+import PdfPreviewOverlay from "@/components/PdfPreviewOverlay";
 
 function Candidate() {
   const { candidateId } = useParams<{ candidateId: string }>();
+    const [previewId, setPreviewId] = useState<number | null>(null);
 
   if (!candidateId) {
     return (
@@ -90,34 +93,67 @@ function Candidate() {
               </p>
             </div>
             <TooltipProvider>
-              {candidateCV ? (
-                <Button variant="light" className="h-auto px-6 py-3" asChild>
-                  <a
-                    href={candidateCV.toString()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Download className="size-5" />
-                    Last ned CV
-                  </a>
-                </Button>
-              ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
+              <div className="flex gap-2">
+                {candidate.has_pdf ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
                       <Button
                         variant="light"
-                        className="h-auto px-6 py-3 cursor-not-allowed"
-                        disabled
+                        className="h-auto px-6 py-3"
+                        onClick={() => setPreviewId(candidate.id)}
                       >
-                        <Download className="size-5" />
-                        Last ned CV
+                        <FileText className="size-5" />
+                        Forhåndsvis CV
                       </Button>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>Kandidaten har ingen CV</TooltipContent>
-                </Tooltip>
-              )}
+                    </TooltipTrigger>
+                  </Tooltip>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <Button
+                          variant="light"
+                          className="h-auto px-6 py-3 cursor-not-allowed"
+                          disabled
+                        >
+                          <FileText className="size-5" />
+                          Forhåndsvis CV
+                        </Button>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Kandidaten har ingen CV</TooltipContent>
+                  </Tooltip>
+                )}
+
+                {candidateCV ? (
+                  <Button variant="light" className="h-auto px-6 py-3" asChild>
+                    <a
+                      href={candidateCV.toString()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Download className="size-5" />
+                      Last ned CV
+                    </a>
+                  </Button>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <Button
+                          variant="light"
+                          className="h-auto px-6 py-3 cursor-not-allowed"
+                          disabled
+                        >
+                          <Download className="size-5" />
+                          Last ned CV
+                        </Button>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>Kandidaten har ingen CV</TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
             </TooltipProvider>
           </div>
         </div>
@@ -127,6 +163,13 @@ function Candidate() {
           candidateName={candidate.name}
         />
       </div>
+      {previewId != null && (
+        <PdfPreviewOverlay
+          candidates={[{ id: candidate.id, name: candidate.name }]}
+          initialId={previewId}
+          onClose={() => setPreviewId(null)}
+        />
+      )}
     </main>
   );
 }
