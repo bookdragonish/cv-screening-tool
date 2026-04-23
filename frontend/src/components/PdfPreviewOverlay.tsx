@@ -106,32 +106,34 @@ function PdfPreviewOverlay({
             </div>
           )}
         </div>
-
-
         <footer className="flex items-center justify-between border-t border-border px-6 py-4">
-          <Button
-            variant="primary"
-            onClick={prevPdfPreview}
-            disabled={!hasPrevious}
-            className="cursor-pointer disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            <span>Forrige kandidat</span>
-          </Button>
+          {candidates.length > 1 && (
+            <>
+              <Button
+                variant="primary"
+                onClick={prevPdfPreview}
+                disabled={!hasPrevious}
+                className="cursor-pointer disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                <span>Forrige kandidat</span>
+              </Button>
 
-          <span className="text-sm font-medium text-muted-foreground">
-            {selectedIndex + 1} av {candidates.length}
-          </span>
+              <span className="text-sm font-medium text-muted-foreground">
+                {selectedIndex + 1} av {candidates.length}
+              </span>
 
-          <Button
-            variant="primary"
-            onClick={nextPdfPreview}
-            disabled={!hasNext}
-            className="cursor-pointer disabled:cursor-not-allowed"
-          >
-            <span>Neste kandidat</span>
-            <ChevronRight className="h-4 w-4 opacity-80" aria-hidden="true" />
-          </Button>
+              <Button
+                variant="primary"
+                onClick={nextPdfPreview}
+                disabled={!hasNext}
+                className="cursor-pointer disabled:cursor-not-allowed"
+              >
+                <span>Neste kandidat</span>
+                <ChevronRight className="h-4 w-4 opacity-80" aria-hidden="true" />
+              </Button>
+            </>
+          )}
         </footer>
       </div>
     </div>
