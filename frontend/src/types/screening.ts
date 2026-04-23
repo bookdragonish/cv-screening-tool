@@ -15,9 +15,9 @@ export type RankedCandidate = {
   rank: number;
   score: number;
   qualified: boolean;
-  qualificationsMet: string[];
-  qualificationsMissing: string[];
-  courseRecommendations: string[];
+  qualifications_met: string[];
+  qualifications_missing: string[];
+  course_recommendations: string[];
   unknowns: string[];
   summary?: string;
   createdAt: string;
@@ -46,9 +46,9 @@ export type SaveScreeningRunPayload = {
     rank: number;
     score: number;
     qualified: boolean;
-    qualificationsMet: string[];
-    qualificationsMissing: string[];
-    courseRecommendations: string[];
+    qualifications_met: string[];
+    qualifications_missing: string[];
+    course_recommendations: string[];
     unknowns: string[];
     summary?: string;
   }>;

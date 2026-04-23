@@ -84,7 +84,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
 
       <div
         className={`mt-5 grid gap-3 ${
-          candidate.unknowns.length + candidate.courseRecommendations.length
+          candidate.unknowns.length + candidate.course_recommendations.length
             ? "lg:grid-cols-3"
             : "md:grid-cols-2"
         }`}
@@ -96,8 +96,8 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
 
           {(() => {
             const fallbackMet = "Ingen kvalifikasjoner oppnådd.";
-            const metItems = candidate.qualificationsMet.length
-              ? candidate.qualificationsMet
+            const metItems = candidate.qualifications_met.length
+              ? candidate.qualifications_met
               : [fallbackMet];
 
             return (
@@ -133,8 +133,8 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
 
           {(() => {
             const fallbackMissing = "Ingen manglende kvalifikasjoner";
-            const missingItems = candidate.qualificationsMissing.length
-              ? candidate.qualificationsMissing
+            const missingItems = candidate.qualifications_missing.length
+              ? candidate.qualifications_missing
               : [fallbackMissing];
 
             return (
@@ -163,7 +163,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
           })()}
         </section>
 
-        {candidate.unknowns.length + candidate.courseRecommendations.length ? (
+        {candidate.unknowns.length + candidate.course_recommendations.length ? (
           <section className="py-1">
             <div className="mb-3">
               <h3 className="text-sm font-semibold text-(--color-dark)">
@@ -189,7 +189,7 @@ function CandidateCard({ candidate, id, setPreviewId }: CandidateCardProps) {
                 </li>
               ))}
 
-              {candidate.courseRecommendations.map((item, index) => (
+              {candidate.course_recommendations.map((item, index) => (
                 <li
                   key={`${item}-${index}`}
                   className="flex items-start gap-2 leading-5"

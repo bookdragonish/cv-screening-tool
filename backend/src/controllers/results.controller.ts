@@ -2,121 +2,6 @@ import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 import { normalizeString, normalizeStringList as normalizeStringArray } from "../utils/normailizers.js";
 
-
-/**
- * List all screening results.
- *
- * Response:
- * - 200: JSON array of screening results
- */
-export async function list(_req: Request, res: Response, next: NextFunction) {
-  try {
-    const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at from results order by job_post_id, candidate_id desc",
-    );
-    res.json(r.rows);
-  } catch (e) {
-    next(e);
-  }
-}
-
-/**
- * Gets single screening result by job post id and candidate id.
- *
- * Request should include 'jobPostId' and 'candidateId'.
- *
- * Responses:
- * - 200: JSON object of the screening result
- * - 404: If no screening result with the given job post id and candidate id exists
- */
-export async function getById(req: Request, res: Response, next: NextFunction) {
-  try {
-    const job_post_id = Number(req.params.jobPostId);
-    const candidate_id = Number(req.params.candidateId);
-    const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at from results where job_post_id=$1 and candidate_id=$2",
-      [job_post_id, candidate_id],
-    );
-    if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
-    res.json(r.rows[0]);
-  } catch (e) {
-    next(e);
-  }
-}
-
-/**
- * Creates a new screening result.
- *
- * Request should include 'job_post_id', 'candidate_id', 'rank', 'score', 'qualified', 'qualifications_met', and 'qualifications_missing'. 'summary' is optional.
- *
- * Responses:
- * - 201: JSON object of the created screening result
- * - 400: If any required fields are missing
- */
-export async function create(req: Request, res: Response, next: NextFunction) {
-  try {
-    const {
-      job_post_id,
-      candidate_id,
-      rank,
-      score,
-      qualified,
-      qualifications_met,
-      qualifications_missing,
-      course_recommendations,
-      unknowns = [],
-      summary,
-    } = req.body as {
-      job_post_id: number;
-      candidate_id: number;
-      rank: number;
-      score: number;
-      qualified: boolean;
-      qualifications_met: string[];
-      qualifications_missing: string[];
-      course_recommendations?: string[];
-      unknowns?: string[];
-      summary?: string;
-    };
-
-    if (
-      !job_post_id ||
-      !candidate_id ||
-      rank === null || rank === undefined ||
-      score === null || score === undefined ||
-      qualified === null || qualified === undefined ||
-      !Array.isArray(qualifications_met) ||
-      !Array.isArray(qualifications_missing)
-    )
-      return res
-        .status(400)
-        .json({
-          error:
-            "job_post_id, candidate_id, rank, score, qualified, qualifications_met, and qualifications_missing are required",
-        });
-
-    const r = await pool.query(
-      "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary, created_at",
-      [
-        job_post_id,
-        candidate_id,
-        rank,
-        score,
-        qualified,
-        qualifications_met,
-        qualifications_missing,
-        course_recommendations ?? [],
-        unknowns,
-        summary,
-      ],
-    );
-
-    res.status(201).json(r.rows[0]);
-  } catch (e) {
-    next(e);
-  }
-}
-
 /**
  * Creates a persisted screening run by inserting one job post row and its
  * candidate result rows in a single transaction.
@@ -150,9 +35,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
         rank?: number;
         score?: number;
         qualified?: boolean;
-        qualificationsMet?: unknown;
-        qualificationsMissing?: unknown;
-        courseRecommendations?: unknown;
+        qualifications_met?: unknown;
+        qualifications_missing?: unknown;
+        course_recommendations?: unknown;
         unknowns?: unknown;
         summary?: string;
       }>;
@@ -175,9 +60,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       rank: Number(candidate.rank),
       score: Number(candidate.score),
       qualified: candidate.qualified,
-      qualificationsMet: normalizeStringArray(candidate.qualificationsMet),
-      qualificationsMissing: normalizeStringArray(candidate.qualificationsMissing),
-      courseRecommendations: normalizeStringArray(candidate.courseRecommendations),
+      qualifications_met: normalizeStringArray(candidate.qualifications_met),
+      qualifications_missing: normalizeStringArray(candidate.qualifications_missing),
+      course_recommendations: normalizeStringArray(candidate.course_recommendations),
       unknowns: normalizeStringArray(candidate.unknowns),
       summary: normalizeString(candidate.summary),
     }));
@@ -225,9 +110,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
           candidate.rank,
           candidate.score,
           candidate.qualified,
-          candidate.qualificationsMet,
-          candidate.qualificationsMissing,
-          candidate.courseRecommendations,
+          candidate.qualifications_met,
+          candidate.qualifications_missing,
+          candidate.course_recommendations,
           candidate.unknowns,
           candidate.summary || null,
         ],
@@ -269,9 +154,9 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
-            'courseRecommendations', r.course_recommendations,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
@@ -320,9 +205,9 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
-            'courseRecommendations', r.course_recommendations,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
@@ -368,9 +253,9 @@ export async function getScreeningByCandidateId(req: Request, res: Response, nex
           'rank', r.rank,
           'score', r.score,
           'qualified', r.qualified,
-          'qualificationsMet', r.qualifications_met,
-          'qualificationsMissing', r.qualifications_missing,
-          'courseRecommendations', r.course_recommendations,
+          'qualifications_met', r.qualifications_met,
+          'qualifications_missing', r.qualifications_missing,
+          'course_recommendations', r.course_recommendations,
           'unknowns', r.unknowns,
           'summary', r.summary,
           'createdAt', r.created_at,
@@ -393,23 +278,3 @@ export async function getScreeningByCandidateId(req: Request, res: Response, nex
   }
 }
 
-/**
- * Deletes a screening result by job post id and candidate id combined as the primary key.
- *
- * Request should include 'jobPostId' and 'candidateId' as URL parameters.
- *
- * Responses:
- * - 204: If the screening result was successfully deleted
- * - 404: If no screening result with the given job post id and candidate id exists
- */
-export async function deleteById(req: Request, res: Response, next: NextFunction) {
-  try {
-    const job_post_id = Number(req.params.jobPostId);
-    const candidate_id = Number(req.params.candidateId);
-    const r = await pool.query("delete from results where job_post_id=$1 and candidate_id=$2", [job_post_id, candidate_id]);
-    if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
-    res.status(204).send();
-  } catch (e) {
-    next(e);
-  }
-}

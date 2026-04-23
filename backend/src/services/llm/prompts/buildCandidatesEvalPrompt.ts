@@ -1,4 +1,4 @@
-import type { JobProfile } from "../../../types/ai.types.js";
+import type { EvalJobPost } from "../../../types/ai.types.js";
 import { RULES, RUBRIC } from "./rulesAndRubric.js";
 
 type CandidateInput = {
@@ -11,7 +11,7 @@ type CandidateInput = {
  * Builds the prompt that evaluates the candidates using their CV.
  */
 export function buildCandidatesEvaluationPrompt(args: {
-  jobProfile: JobProfile;
+  jobProfile: EvalJobPost;
   candidates: CandidateInput[];
 }): string {
   const candidatesJson = JSON.stringify(
@@ -51,7 +51,7 @@ ${RUBRIC}
 
 <language_rules>
 - Alle deskriptive feltverdier skrives på norsk bokmål.
-- Om du refererer til feltnavnene must_haves og nice_to_haves i forklaringer, skal disse oversettes på en passende måte til norsk, eksempelvis "absolutte krav" og "ønskede krav".
+- Om du refererer til feltnavn som must_haves og nice_to_haves i forklaringer, skal disse oversettes på en passende måte til norsk, eksempelvis "absolutte krav" og "ønskede krav".
 - Hold egennavn, teknologi-navn, sertifikater, telefonnummer og e-post i original form.
 - Alle feltnavn i JSON output skal skrives på formatet under på engelsk.
 </language_rules>
@@ -75,7 +75,7 @@ Returner KUN gyldig JSON med dette formatet:
       "candidate_name": string,
       "summary": string,
       "qualified": boolean,
-      "overall_score": number,
+      "score": number,
       "strengths": [{"point": string, "explanation": string}],
       "gaps": [{"point": string, "explanation": string}],
       "unknowns": [{"point": string, "explanation": string}],

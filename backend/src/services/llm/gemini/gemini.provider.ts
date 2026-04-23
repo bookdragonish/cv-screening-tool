@@ -13,10 +13,10 @@ import {
 } from "../prompts/prompts.js";
 import type {
   ApiCandidate,
-  CandidateEval,
+  EvalCandidate,
   CandidateWithCvText,
   JobDescriptionInput,
-  JobProfile,
+  EvalJobPost,
 } from "../../../types/ai.types.js";
 
 const MODEL_NAME = "gemini-2.5-flash";
@@ -32,7 +32,7 @@ const CANDIDATE_EVAL_SCHEMA_DESCRIPTION = `{
     "candidate_name": string,
     "summary": string,
     "qualified": boolean,
-    "overall_score": number,
+    "score": number,
     "strengths": [{"point": string, "explanation": string}],
     "gaps": [{"point": string, "explanation": string}],
     "unknowns": [{"point": string, "explanation": string}],
@@ -145,7 +145,7 @@ export function createGeminiProvider() {
     async createJobProfile(
       _input: JobDescriptionInput,
       jobDescriptionText: string,
-    ): Promise<JobProfile> {
+    ): Promise<EvalJobPost> {
       void _input;
 
       const prompt = buildJobProfileFromTextPrompt(jobDescriptionText);
@@ -168,8 +168,8 @@ export function createGeminiProvider() {
 
     async evaluateCandidates(params: {
       candidatesWithCv: CandidateWithCvText[];
-      jobProfile: JobProfile;
-    }): Promise<CandidateEval[]> {
+      jobProfile: EvalJobPost;
+    }): Promise<EvalCandidate[]> {
       const { candidatesWithCv, jobProfile } = params;
       if (candidatesWithCv.length === 0) {
         return [];
