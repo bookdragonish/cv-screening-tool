@@ -176,6 +176,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
         </DialogHeader>
         <button
           type="button"
+          title="Lukk"
           aria-label="Lukk"
           className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 cursor-pointer [&_svg]:size-4"
           onMouseDown={(e) => {
