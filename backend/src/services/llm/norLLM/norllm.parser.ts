@@ -1,12 +1,11 @@
 import { parseCandidateEval, parseRanking } from "../gemini/schemas.js";
 import type {
-  CandidateEval,
+  EvalCandidate,
   CandidateWithCvText,
-  JobProfile,
+  EvalJobPost,
 } from "../../../types/ai.types.js";
 import {
   normalizeString,
-  normalizeStringList as toNonEmptyStringArray,
 } from "../../../utils/normailizers.js";
 
 // These parsers ensueres that norllm gets information in a reable way after its collected from the database
@@ -74,15 +73,6 @@ function pickLikelyJsonRoot(value: unknown): Record<string, unknown> {
   return record;
 }
 
-function normalizeImpact(value: unknown): "high" | "medium" | "low" {
-  const s = typeof value === "string" ? value.trim().toLowerCase() : "";
-
-  if (s === "high" || s === "hoy" || s === "høy") return "high";
-  if (s === "low" || s === "lav") return "low";
-
-  return "medium";
-}
-
 function toScore(value: unknown): number {
   const n = Number(value);
   if (!Number.isFinite(n)) return 0;
@@ -92,9 +82,9 @@ function toScore(value: unknown): number {
 export function fixCandidateEval(params: {
   text: string;
   fallbackCandidateId: string;
-  fallbackCandidateLabel: string;
-}): CandidateEval {
-  const { text, fallbackCandidateId, fallbackCandidateLabel } = params;
+  fallbackCandidateName: string;
+}): EvalCandidate {
+  const { text, fallbackCandidateId, fallbackCandidateName } = params;
 
   try {
     return parseCandidateEval(text);
@@ -107,9 +97,11 @@ export function fixCandidateEval(params: {
       // continue with empty object
     }
 
-    const score = toScore(raw.overall_score);
+    const score = toScore(raw.score);
     const strengthsRaw = Array.isArray(raw.strengths) ? raw.strengths : [];
     const gapsRaw = Array.isArray(raw.gaps) ? raw.gaps : [];
+    const unknownsRaw = Array.isArray(raw.unknowns) ? raw.unknowns : [];
+    const courseRecommendationsRaw = Array.isArray(raw.courseRecommendations) ? raw.courseRecommendations : [];
 
     const strengths = strengthsRaw
       .map((item) => {
@@ -151,17 +143,56 @@ export function fixCandidateEval(params: {
         return {
           point: point || "Uspesifisert gap",
           explanation: explanation || "Ikke oppgitt",
-          impact: normalizeImpact(record.impact),
         };
       })
       .filter(
-        (
-          item,
-        ): item is {
-          point: string;
-          explanation: string;
-          impact: "high" | "medium" | "low";
-        } => item !== null,
+        (item): item is { point: string; explanation: string } => item !== null,
+      );
+
+    const unknowns = unknownsRaw
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as Record<string, unknown>;
+
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
+        );
+
+        if (!point && !explanation) return null;
+
+        return {
+          point: point || "Uspesifisert unknown",
+          explanation: explanation || "Ikke oppgitt",
+        };
+      })
+      .filter(
+        (item): item is { point: string; explanation: string } => item !== null,
+      );
+
+    const courseRecommendations = courseRecommendationsRaw
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as Record<string, unknown>;
+
+        const point = normalizeString(
+          typeof record.point === "string" ? record.point : "",
+        );
+        const explanation = normalizeString(
+          typeof record.explanation === "string" ? record.explanation : "",
+        );
+
+        if (!point && !explanation) return null;
+
+        return {
+          point: point || "Uspesifisert kursanbefaling",
+          explanation: explanation || "Ikke oppgitt",
+        };
+      })
+      .filter(
+        (item): item is { point: string; explanation: string } => item !== null,
       );
 
     return {
@@ -169,24 +200,28 @@ export function fixCandidateEval(params: {
         normalizeString(
           typeof raw.candidate_id === "string" ? raw.candidate_id : "",
         ) || fallbackCandidateId,
-      candidate_label:
+      candidate_name:
         normalizeString(
-          typeof raw.candidate_label === "string" ? raw.candidate_label : "",
-        ) || fallbackCandidateLabel,
-      candidate_role:
-        normalizeString(
-          typeof raw.candidate_role === "string" ? raw.candidate_role : "",
-        ) || "Kandidat",
+          typeof raw.candidate_name === "string" ? raw.candidate_name : "",
+        ) || fallbackCandidateName,
+      summary: normalizeString(
+        typeof raw.summary === "string" ? raw.summary : "",
+      ),
       qualified:
         typeof raw.qualified === "boolean" ? raw.qualified : score >= 50,
-      overall_score: score,
-      experience_highlights: toNonEmptyStringArray(raw.experience_highlights),
-      education: toNonEmptyStringArray(raw.education),
+      score,
       strengths: strengths.length
         ? strengths
         : [{ point: "Ingen tydelige styrker", explanation: "Ikke oppgitt" }],
-      gaps,
-      unknowns: toNonEmptyStringArray(raw.unknowns),
+      gaps: gaps.length
+        ? gaps
+        : [{ point: "Ingen tydelige gaps", explanation: "Ikke oppgitt" }],
+      unknowns: unknowns.length
+        ? unknowns
+        : [{ point: "Ingen tydelige unknows", explanation: "Ikke oppgitt" }],
+      courseRecommendations: courseRecommendations.length
+        ? courseRecommendations
+        : [{ point: "Ingen tydelige kursanbefalinger", explanation: "Ikke oppgitt" }],
     };
   }
 }
@@ -233,11 +268,11 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
                 ? record.candidate_label
                 : "",
             ) || `Kandidat ${candidateId}`,
-          overall_score: toScore(record.overall_score),
+          score: toScore(record.score),
           qualified:
             typeof record.qualified === "boolean"
               ? record.qualified
-              : toScore(record.overall_score) >= 50,
+              : toScore(record.score) >= 50,
           summary:
             normalizeString(
               typeof record.summary === "string" ? record.summary : "",
@@ -251,7 +286,7 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
           rank: number;
           candidate_id: string;
           candidate_label: string;
-          overall_score: number;
+          score: number;
           qualified: boolean;
           summary: string;
         } => item !== null,
@@ -267,8 +302,8 @@ export function fixRanking(text: string): ReturnType<typeof parseRanking> {
 }
 
 export function buildFallbackRankingFromEvals(params: {
-  jobProfile: JobProfile;
-  evals: CandidateEval[];
+  jobProfile: EvalJobPost;
+  evals: EvalCandidate[];
   candidatesWithCv: CandidateWithCvText[];
 }): ReturnType<typeof parseRanking> {
   const { jobProfile, evals, candidatesWithCv } = params;
@@ -282,22 +317,21 @@ export function buildFallbackRankingFromEvals(params: {
       const candidate = candidateById.get(evaluation.candidate_id);
       if (!candidate) return null;
 
-      const score = toScore(evaluation.overall_score);
+      const score = toScore(evaluation.score);
 
       return {
         candidate_id: String(candidate.id),
         candidate_label:
-          normalizeString(evaluation.candidate_label) ||
+          normalizeString(evaluation.candidate_name) ||
           normalizeString(candidate.name) ||
           `Kandidat ${candidate.id}`,
-        overall_score: score,
+        score,
         qualified:
           typeof evaluation.qualified === "boolean"
             ? evaluation.qualified
             : score >= 50,
         summary:
-          normalizeString(evaluation.strengths?.[0]?.point) ||
-          normalizeString(evaluation.candidate_role) ||
+          normalizeString(evaluation.summary) ||
           "Ingen oppsummering tilgjengelig.",
       };
     })
@@ -307,12 +341,12 @@ export function buildFallbackRankingFromEvals(params: {
       ): item is {
         candidate_id: string;
         candidate_label: string;
-        overall_score: number;
+        score: number;
         qualified: boolean;
         summary: string;
       } => item !== null,
     )
-    .sort((a, b) => b.overall_score - a.overall_score)
+    .sort((a, b) => b.score - a.score)
     .map((item, index) => ({
       ...item,
       rank: index + 1,

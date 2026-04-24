@@ -1,4 +1,4 @@
-import type { SaveScreeningRunPayload, ScreeningDetails } from "@/types/screening";
+import type { CandidateScreeningEntry, SaveScreeningRunPayload, ScreeningDetails } from "@/types/screening";
 import { API_URL } from "@/utils/variables";
 
 
@@ -19,8 +19,17 @@ export async function getScreeningByJobPostId(
     throw new Error(`Response Status: ${response.status}`);
   }
   const result: ScreeningDetails = await response.json();
-
   return result;
+}
+
+export async function getScreeningsByCandidateId(
+  candidateId: number,
+): Promise<CandidateScreeningEntry[]> {
+  const response = await fetch(API_URL + `/api/results/candidates/${candidateId}`);
+  if (!response.ok) {
+    throw new Error(`Response Status: ${response.status}`);
+  }
+  return response.json();
 }
 
 export async function saveScreeningRun(

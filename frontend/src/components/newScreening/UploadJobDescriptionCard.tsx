@@ -11,7 +11,7 @@ import {
   type UploadJobDescriptionValues,
   toJobDescriptionInput,
 } from "@/validations/UploadJobDescriptionSchema";
-import { formatBytes } from "@/utils/newScreeningUtils";
+import { formatBytes } from "@/utils/formatBytes";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -116,7 +116,7 @@ function UploadJobDescriptionCard({
       : jobDescriptionText.trim().length === 0;
 
   return (
-    <Card className="mt-6 gap-0 px-2 border-slate-200 bg-white">
+    <Card className="mt-6 gap-0 px-2 border border-(--color-primary) shadow-sm bg-white">
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -132,26 +132,25 @@ function UploadJobDescriptionCard({
           <div className="flex items-center gap-2">
             <Button
               type="button"
-              size="sm"
-              variant={mode === "pdf" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "pdf"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
+              }`}
               onClick={() => setMode("pdf")}
+
             >
               PDF
             </Button>
             <Button
               type="button"
-              size="sm"
-              variant={mode === "text" ? "default" : "outline"}
-              className={
+              variant="outline"
+              className={`w-14 p-2 border-2 border-(--color-primary) transition-all cursor-pointer ${
                 mode === "text"
-                  ? "bg-primary hover:bg-primary/80"
-                  : "border-slate-300 bg-white hover:bg-slate-100"
-              }
+                  ? "bg-white-text-(--color-primary) hover:bg-(--color-light)/50 hover:text-(--color-primary)"
+                  : "bg-(--color-primary) text-white hover:bg-white hover:text-(--color-primary)"
+              }`}
               onClick={() => setMode("text")}
             >
               Tekst
@@ -195,7 +194,10 @@ function UploadJobDescriptionCard({
                     }}
                   />
 
-                  <div className="rounded-lg border border-dashed border-slate-300 px-6 min-h-52 mt-7 py-12 text-center transition">
+                  <div
+                    className="rounded-lg border-2 border-dashed border-(--color-primary) bg-(--color-light)/10 px-6 min-h-52 mt-7 py-12 text-center transition hover:bg-(--color-light)/20 cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     <UploadIcon className="mx-auto h-14 w-14 text-primary" />
 
                     {isPdfSelectionValid ? (
@@ -211,7 +213,7 @@ function UploadJobDescriptionCard({
                           variant="ghost"
                           type="button"
                           className="mt-2 text-sm text-red-500 hover:text-red-600"
-                          onClick={() => setPickedFile(undefined)}
+                          onClick={(e) => { e.stopPropagation(); setPickedFile(undefined); }}
                         >
                           Fjern fil
                         </Button>
@@ -222,7 +224,7 @@ function UploadJobDescriptionCard({
                         <button
                           type="button"
                           className="inline cursor-pointer rounded-sm text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                         >
                           bla gjennom filer
                         </button>
@@ -232,7 +234,7 @@ function UploadJobDescriptionCard({
 
                   {!fieldState.invalid && (
                     <FieldDescription className="mt-2">
-                      Kun PDF-filer er tillatt
+                      Kun PDF-filer er tillatt.
                     </FieldDescription>
                   )}
 
@@ -259,7 +261,7 @@ function UploadJobDescriptionCard({
                   <Textarea
                     {...field}
                     id={textAreaId}
-                    className="min-h-52 text-foreground rounder-lg"
+                    className="min-h-52 text-foreground rounded-lg border-2 border-(--color-primary) focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-(--color-light)/50"
                     placeholder="Lim inn stillingsbeskrivelsen her..."
                     maxLength={MAX_JOB_DESCRIPTION_TEXT_LENGTH}
                     aria-invalid={fieldState.invalid}
@@ -286,27 +288,26 @@ function UploadJobDescriptionCard({
           )}
 
           <div className="mt-6 flex justify-end gap-3">
-            <Link to="/">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-slate-300 bg-white hover:bg-slate-100 hover:text-black"
-                asChild
-              >
-                <span>Avbryt</span>
-              </Button>
-            </Link>
             <Button
-              type="submit"
-              className="bg-primary hover:bg-primary/80"
-              disabled={isSubmitDisabled}
+              type="button"
+              variant="cancel"
+              className="w-28 cursor-pointer"
+              asChild
             >
-              {showRetryLabel ? "Prøv igjen" : "Neste"}
+              <Link to="/">Avbryt</Link>
             </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-28 cursor-pointer"
+            disabled={isSubmitDisabled}
+          >
+            {showRetryLabel ? "Prøv igjen" : "Neste"}
+          </Button>
+        </div>
+      </form>
+    </CardContent>
+    </Card >
   );
 }
 

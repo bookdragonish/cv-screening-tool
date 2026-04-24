@@ -1,8 +1,10 @@
 import { deleteCandidate } from "@/api/fetchCandidates";
 import type { Candidate } from "@/types/candidate";
 import { AddNewCVModal } from "@/components/addNewCv/AddNewCVModal";
+import { DeleteCandidateDialog } from "@/components/DeleteCandidateDialog";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router";
+import { useState } from "react";
 
 type CandidateTableProps = {
   filteredData: Candidate[];
@@ -19,19 +21,14 @@ function CandidateTable({
   setReloadKey,
   setPopup,
 }: CandidateTableProps) {
+  const [pendingDelete, setPendingDelete] = useState<{ id: number; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   function showPreview(id: number) {
     setPreviewId(id);
   }
 
-  const handleDelete = async (id: number, name: string) => {
-    if (
-      !window.confirm(
-        "Er du sikker på at du vil slette " +
-        name +
-        "? Denne handlingen kan ikke angres.",
-      )
-    )
-      return false;
+  const handleDelete = async (id: number, name: string): Promise<boolean> => {
     try {
       await deleteCandidate(id);
       setReloadKey((prev) => prev + 1);
@@ -43,7 +40,23 @@ function CandidateTable({
     }
   };
 
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setIsDeleting(true);
+    await handleDelete(pendingDelete.id, pendingDelete.name);
+    setIsDeleting(false);
+    setPendingDelete(null);
+  };
+
   return (
+    <>
+    <DeleteCandidateDialog
+      open={pendingDelete !== null}
+      onOpenChange={(open) => { if (!open) setPendingDelete(null); }}
+      candidateName={pendingDelete?.name ?? ""}
+      onConfirm={confirmDelete}
+      isDeleting={isDeleting}
+    />
     <div className="space-y-3">
       <section
         className="overflow-hidden rounded-lg border border-(--color-primary) bg-white shadow-sm"
@@ -111,6 +124,7 @@ function CandidateTable({
                         onClick={() => showPreview(candidate.id)}
                         className="cursor-pointer rounded-md p-2 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                         aria-label={`Forhandsvis PDF for ${candidate.name ?? `kandidat ${candidate.id}`}`}
+                        title="Forhåndsvis PDF"
                       >
                         <Eye
                           className="h-6 w-6 opacity-70 hover:opacity-100"
@@ -155,10 +169,10 @@ function CandidateTable({
                     <button
                       type="button"
                       onClick={() =>
-                        handleDelete(
-                          candidate.id,
-                          candidate.name ?? `Kandidat ${candidate.id}`,
-                        )
+                        setPendingDelete({
+                          id: candidate.id,
+                          name: candidate.name ?? `Kandidat ${candidate.id}`,
+                        })
                       }
                       className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-(--color-primary) focus-visible:outline-offset-2"
                       title="Slett kandidat"
@@ -179,10 +193,11 @@ function CandidateTable({
 
       <footer>
         <p className="px-1 text-smaller text-(--color-dark) opacity-75">
-          Viser {filteredData.length} av {dataLength} kandidater
+          Viser {filteredData.length} av {dataLength} kandidater.
         </p>
       </footer>
     </div>
+    </>
   );
 }
 

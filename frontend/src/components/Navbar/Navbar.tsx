@@ -12,8 +12,8 @@ const navItems = [
 
 function Navbar() {
   return (
-    <header className="border-b border-(--color-primary) bg-white px-4 py-4 sm:px-6">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <header className="border-b border-(--color-primary) bg-white">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-4 sm:gap-8">
           <Logo />
 
@@ -62,9 +62,9 @@ function Profile() {
       <span className="text-regular font-medium text-(--color-dark)">HR-bruker</span>
       <Button
         onClick={handleLogout}
-        variant="secondary"
+        variant="destructive"
         size="sm"
-        className="bg-(--color-primary) text-white hover:bg-red-600 hover:text-white cursor-pointer"
+        className="cursor-pointer"
       >
         Logg ut
       </Button>

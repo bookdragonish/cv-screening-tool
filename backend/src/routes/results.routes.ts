@@ -9,13 +9,10 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-router.get("/", results.list);
-router.post("/", results.create);
 router.post("/screenings/run", upload.single("jobDescriptionFile"), ai.runScreeningController);
 router.post("/screenings", results.createScreeningRun);
 router.get("/history", results.getScreeningHistory);
 router.get("/job_posts/:jobPostId", results.getScreeningByJobPostId);
-router.get("/:jobPostId/:candidateId", results.getById);
-router.delete("/:jobPostId/:candidateId", results.deleteById);
+router.get("/candidates/:candidateId", results.getScreeningByCandidateId);
 
 export default router;

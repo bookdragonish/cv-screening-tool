@@ -1,8 +1,8 @@
 import type {
-  CandidateEval,
+  EvalCandidate,
   CandidateWithCvText,
   JobDescriptionInput,
-  JobProfile,
+  EvalJobPost,
 } from "./ai.types.js";
 
 // Interface for the providers to ensure they cotains similar functions
@@ -19,12 +19,12 @@ export type GeminiProvider = {
   createJobProfile(
     input: JobDescriptionInput,
     jobDescriptionText: string,
-  ): Promise<JobProfile>;
+  ): Promise<EvalJobPost>;
 
   evaluateCandidates(params: {
     candidatesWithCv: CandidateWithCvText[];
-    jobProfile: JobProfile;
-  }): Promise<CandidateEval[]>;
+    jobProfile: EvalJobPost;
+  }): Promise<EvalCandidate[]>
 };
 
 export type NorllmProvider = {
@@ -39,12 +39,12 @@ export type NorllmProvider = {
   createJobProfile(
     input: JobDescriptionInput,
     jobDescriptionText: string,
-  ): Promise<JobProfile>;
+  ): Promise<EvalJobPost>;
 
   evaluateCandidates(params: {
     candidatesWithCv: CandidateWithCvText[];
-    jobProfile: JobProfile;
-  }): Promise<CandidateEval[]>;
+    jobProfile: EvalJobPost;
+  }): Promise<EvalCandidate[]>;
 };
 
 export type ScreeningLlmProvider =

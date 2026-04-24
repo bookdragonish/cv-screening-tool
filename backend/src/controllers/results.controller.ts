@@ -2,123 +2,11 @@ import type { Request, Response, NextFunction } from "express";
 import { pool } from "../db/pool.js";
 import { normalizeString, normalizeStringList as normalizeStringArray } from "../utils/normailizers.js";
 
-
-/**
- * List all screening results.
- *
- * Response:
- * - 200: JSON array of screening results
- */
-export async function list(_req: Request, res: Response, next: NextFunction) {
-  try {
-    const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at from results order by job_post_id, candidate_id desc",
-    );
-    res.json(r.rows);
-  } catch (e) {
-    next(e);
-  }
-}
-
-/**
- * Gets single screening result by job post id and candidate id.
- *
- * Request should include 'jobPostId' and 'candidateId'.
- *
- * Responses:
- * - 200: JSON object of the screening result
- * - 404: If no screening result with the given job post id and candidate id exists
- */
-export async function getById(req: Request, res: Response, next: NextFunction) {
-  try {
-    const job_post_id = Number(req.params.jobPostId);
-    const candidate_id = Number(req.params.candidateId);
-    const r = await pool.query(
-      "select job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at from results where job_post_id=$1 and candidate_id=$2",
-      [job_post_id, candidate_id],
-    );
-    if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
-    res.json(r.rows[0]);
-  } catch (e) {
-    next(e);
-  }
-}
-
-/**
- * Creates a new screening result.
- *
- * Request should include 'job_post_id', 'candidate_id', 'rank', 'score', 'qualified', 'qualifications_met', and 'qualifications_missing'. 'summary' is optional.
- *
- * Responses:
- * - 201: JSON object of the created screening result
- * - 400: If any required fields are missing
- */
-export async function create(req: Request, res: Response, next: NextFunction) {
-  try {
-    const {
-      job_post_id,
-      candidate_id,
-      rank,
-      score,
-      qualified,
-      qualifications_met,
-      qualifications_missing,
-      unknowns = [],
-      summary,
-    } = req.body as {
-      job_post_id: number;
-      candidate_id: number;
-      rank: number;
-      score: number;
-      qualified: boolean;
-      qualifications_met: string[];
-      qualifications_missing: string[];
-      unknowns?: string[];
-      summary?: string;
-    };
-
-    if (
-      !job_post_id ||
-      !candidate_id ||
-      rank === null || rank === undefined ||
-      score === null || score === undefined ||
-      qualified === null || qualified === undefined ||
-      !Array.isArray(qualifications_met) ||
-      !Array.isArray(qualifications_missing)
-    )
-      return res
-        .status(400)
-        .json({
-          error:
-            "job_post_id, candidate_id, rank, score, qualified, qualifications_met, and qualifications_missing are required",
-        });
-
-    const r = await pool.query(
-      "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary, created_at",
-      [
-        job_post_id,
-        candidate_id,
-        rank,
-        score,
-        qualified,
-        qualifications_met,
-        qualifications_missing,
-        unknowns,
-        summary,
-      ],
-    );
-
-    res.status(201).json(r.rows[0]);
-  } catch (e) {
-    next(e);
-  }
-}
-
 /**
  * Creates a persisted screening run by inserting one job post row and its
  * candidate result rows in a single transaction.
  *
- * Request should include 'title', 'description', 'hardQualifications', 'softQualifications',
+ * Request should include 'title', 'description', 'must_have_qualifications', 'nice_to_have_qualifications',
  * and 'candidates'.
  *
  * Responses:
@@ -133,22 +21,23 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       title,
       header,
       description,
-      hardQualifications,
-      softQualifications,
+      must_have_qualifications,
+      nice_to_have_qualifications,
       candidates,
     } = req.body as {
       title?: string;
       header?: string;
       description?: string;
-      hardQualifications?: unknown;
-      softQualifications?: unknown;
+      must_have_qualifications?: string[];
+      nice_to_have_qualifications?: string[];
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
         score?: number;
         qualified?: boolean;
-        qualificationsMet?: unknown;
-        qualificationsMissing?: unknown;
+        qualifications_met?: unknown;
+        qualifications_missing?: unknown;
+        course_recommendations?: unknown;
         unknowns?: unknown;
         summary?: string;
       }>;
@@ -157,8 +46,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     const normalizedTitle = normalizeString(title);
     const normalizedHeader = normalizeString(header) || normalizedTitle;
     const normalizedDescription = normalizeString(description);
-    const normalizedHardQualifications = normalizeStringArray(hardQualifications);
-    const normalizedSoftQualifications = normalizeStringArray(softQualifications);
+    const normalizedMustHaveQualifications = normalizeStringArray(must_have_qualifications);
+    const normalizedNiceToHaveQualifications = normalizeStringArray(nice_to_have_qualifications);
 
     if (!normalizedTitle || !normalizedDescription || !Array.isArray(candidates) || !candidates.length) {
       return res.status(400).json({
@@ -171,8 +60,9 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       rank: Number(candidate.rank),
       score: Number(candidate.score),
       qualified: candidate.qualified,
-      qualificationsMet: normalizeStringArray(candidate.qualificationsMet),
-      qualificationsMissing: normalizeStringArray(candidate.qualificationsMissing),
+      qualifications_met: normalizeStringArray(candidate.qualifications_met),
+      qualifications_missing: normalizeStringArray(candidate.qualifications_missing),
+      course_recommendations: normalizeStringArray(candidate.course_recommendations),
       unknowns: normalizeStringArray(candidate.unknowns),
       summary: normalizeString(candidate.summary),
     }));
@@ -195,13 +85,13 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     await client.query("begin");
 
     const jobPostResult = await client.query(
-      "insert into job_posts(header, title, description, hardQualifications, softQualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
+      "insert into job_posts(header, title, description, must_have_qualifications, nice_to_have_qualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
       [
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
-        normalizedHardQualifications.join("\n"),
-        normalizedSoftQualifications.join("\n"),
+        normalizedMustHaveQualifications,
+        normalizedNiceToHaveQualifications,
       ],
     );
 
@@ -213,15 +103,16 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
 
     for (const candidate of normalizedCandidates) {
       await client.query(
-        "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        "insert into results(job_post_id, candidate_id, rank, score, qualified, qualifications_met, qualifications_missing, course_recommendations, unknowns, summary) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
         [
           createdJobPost.id,
           candidate.candidateId,
           candidate.rank,
           candidate.score,
           candidate.qualified,
-          candidate.qualificationsMet,
-          candidate.qualificationsMissing,
+          candidate.qualifications_met,
+          candidate.qualifications_missing,
+          candidate.course_recommendations,
           candidate.unknowns,
           candidate.summary || null,
         ],
@@ -263,13 +154,16 @@ export async function getScreeningHistory(_req: Request, res: Response, next: Ne
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
             'aml46', c.aml46,
-            'aml47', c.aml47
+            'aml47', c.aml47,
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -302,6 +196,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
         jp.id as "jobPostId",
         jp.title,
         jp.created_at as "screenedAt",
+        jp.must_have_qualifications as "must_have_qualifications",
+        jp.nice_to_have_qualifications as "nice_to_have_qualifications",
         json_agg(
           json_build_object(
             'candidateId', c.id,
@@ -309,13 +205,16 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
             'rank', r.rank,
             'score', r.score,
             'qualified', r.qualified,
-            'qualificationsMet', r.qualifications_met,
-            'qualificationsMissing', r.qualifications_missing,
+            'qualifications_met', r.qualifications_met,
+            'qualifications_missing', r.qualifications_missing,
+            'course_recommendations', r.course_recommendations,
             'unknowns', r.unknowns,
             'summary', r.summary,
             'createdAt', r.created_at,
             'aml46', c.aml46,
-            'aml47', c.aml47
+            'aml47', c.aml47,
+            'ansiennitet', c.ansiennitet,
+            'hasPdf', (c.cv_pdf IS NOT NULL)
           ) ORDER BY r.rank
         ) as candidates
       FROM job_posts jp
@@ -333,22 +232,49 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
 }
 
 /**
- * Deletes a screening result by job post id and candidate id combined as the primary key.
+ * Gets all screenings a specific candidate has participated in.
  *
- * Request should include 'jobPostId' and 'candidateId' as URL parameters.
+ * Request should include 'candidateId' as a URL parameter.
  *
  * Responses:
- * - 204: If the screening result was successfully deleted
- * - 404: If no screening result with the given job post id and candidate id exists
+ * - 200: JSON array where each item includes 'jobPostId', 'title', 'screenedAt', 'candidateResult', and 'totalCandidates'
  */
-export async function deleteById(req: Request, res: Response, next: NextFunction) {
+export async function getScreeningByCandidateId(req: Request, res: Response, next: NextFunction) {
   try {
-    const job_post_id = Number(req.params.jobPostId);
     const candidate_id = Number(req.params.candidateId);
-    const r = await pool.query("delete from results where job_post_id=$1 and candidate_id=$2", [job_post_id, candidate_id]);
-    if (r.rowCount === 0) return res.status(404).json({ error: "Not found" });
-    res.status(204).send();
+    const r = await pool.query(
+      `SELECT
+        jp.id as "jobPostId",
+        jp.title,
+        jp.created_at as "screenedAt",
+        json_build_object(
+          'candidateId', c.id,
+          'candidateName', c.name,
+          'rank', r.rank,
+          'score', r.score,
+          'qualified', r.qualified,
+          'qualifications_met', r.qualifications_met,
+          'qualifications_missing', r.qualifications_missing,
+          'course_recommendations', r.course_recommendations,
+          'unknowns', r.unknowns,
+          'summary', r.summary,
+          'createdAt', r.created_at,
+          'aml46', c.aml46,
+          'aml47', c.aml47,
+          'ansiennitet', c.ansiennitet,
+          'hasPdf', (c.cv_pdf IS NOT NULL)
+        ) as "candidateResult",
+        (SELECT COUNT(*) FROM results r2 WHERE r2.job_post_id = jp.id)::int as "totalCandidates"
+      FROM results r
+      JOIN job_posts jp ON r.job_post_id = jp.id
+      JOIN candidates c ON r.candidate_id = c.id
+      WHERE r.candidate_id = $1
+      ORDER BY jp.created_at DESC`,
+      [candidate_id],
+    );
+    res.json(r.rows);
   } catch (e) {
     next(e);
   }
 }
+

@@ -37,12 +37,27 @@ const AddNewCvSchema = z.object({
     .boolean(),
 
   ansiennitet: z
-    .number()
-    .int("Ansiennitet må være et heltall")
-    .min(0, "Ansiennitet kan ikke være negativ")
-    .max(100, "Ansiennitet kan ikke være lengre enn 100 år")
+    .array(
+      z
+        .number()
+        .int("Ansiennitet må være et heltall")
+        .min(0, "Ansiennitet kan ikke være negativ")
+        .nullable()
+    )
     .nullable()
-    .optional(),
+    .optional()
+    .refine(
+      (val) => !val || val[0] === null || val[0] <= 100,
+      { message: "År kan ikke være mer enn 100" }
+    )
+    .refine(
+      (val) => !val || val[1] === null || val[1] <= 11,
+      { message: "Måneder kan ikke være mer enn 11" }
+    )
+    .refine(
+      (val) => !val || val[2] === null || val[2] <= 30,
+      { message: "Dager kan ikke være mer enn 30" }
+    ),
 })
 
 type AddNewCvValues = z.infer<typeof AddNewCvSchema>

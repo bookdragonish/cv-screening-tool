@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "tsx src/api/gemini.tsx",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "playwright test --project=webkit --headed --workers=1",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@google/genai": "^1.38.0",
@@ -38,7 +40,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/node": "^24.12.2",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^24.10.9",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",

@@ -1,20 +1,20 @@
-export type JobProfile = {
+export type EvalJobPost = {
   role_title: string;
   must_haves: string[];
+  must_haves_can_be_coursed?: string[];
   nice_to_haves?: string[];
 };
 
-export type CandidateEval = {
+export type EvalCandidate = {
   candidate_id: string;
-  candidate_label: string;
-  candidate_role?: string;
+  candidate_name: string;
+  summary: string;
   qualified: boolean;
-  overall_score: number;
-  experience_highlights?: string[];
-  education?: string[];
+  score: number;
   strengths: Array<{ point: string; explanation: string }>;
-  gaps: Array<{ point: string; explanation: string; impact: "high" | "medium" | "low" }>;
-  unknowns: string[];
+  gaps: Array<{ point: string; explanation: string }>;
+  unknowns: Array<{ point: string; explanation: string }>;
+  courseRecommendations: Array<{ point: string; explanation: string }>;
 };
 
 export type Ranking = {
@@ -23,7 +23,7 @@ export type Ranking = {
     rank: number;
     candidate_id: string;
     candidate_label: string;
-    overall_score: number;
+    score: number;
     qualified: boolean;
     summary: string;
   }>;
@@ -51,6 +51,7 @@ export type ScreeningCandidate = {
   score: number;
   met: string[];
   missing: string[];
+  courseRecommendations: string[];
   summary: string;
   experience: string[];
   education: string[];
@@ -58,26 +59,27 @@ export type ScreeningCandidate = {
   phone: string;
 };
 
-export type SaveScreeningRunPayload = {
+export type Screening = {
   title: string;
   header: string;
   description: string;
-  hardQualifications: string[];
-  softQualifications: string[];
+  must_have_qualifications: string[];
+  nice_to_have_qualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;
     score: number;
     qualified: boolean;
-    qualificationsMet: string[];
-    qualificationsMissing: string[];
+    qualifications_met: string[];
+    qualifications_missing: string[];
+    course_recommendations: string[];
     unknowns: string[];
     summary?: string;
   }>;
 };
 
 export type RunScreeningResponse = {
-  screeningRecord: SaveScreeningRunPayload;
+  screeningRecord: Screening;
   requiredSkills: string[];
   candidates: ScreeningCandidate[];
 };

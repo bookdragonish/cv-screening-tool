@@ -24,7 +24,7 @@ function StepNode({
   const containerClassName =
     status === "upcoming"
       ? "border-slate-300 bg-slate-100 text-slate-500"
-      : "border-primary bg-primary text-white";
+      : "border-(--color-primary) bg-(--color-primary) text-white";
 
   return (
     <li
