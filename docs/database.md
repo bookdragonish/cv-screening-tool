@@ -87,8 +87,11 @@ Ensure that:
 - Any custom database or user names are updated accordingly
 
 ### Add Data
-// TODO: Add initial schema or seed data instructions
 
+Run the sql code in the 
+```backend/assets/dbSql.sql```
+For setting up mock data run the
+```docs/mockData/MockData.sql```
 
 ### Running the Application
 

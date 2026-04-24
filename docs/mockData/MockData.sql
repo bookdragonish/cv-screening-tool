@@ -11,16 +11,15 @@ INSERT INTO job_posts (
     header,
     title,
     description,
-    hardQualifications,
-    softQualifications
+    must_have_qualifications,
+    nice_to_have_qualifications
 ) VALUES (
     1,
     'Vernepleier - Trondheim kommune',
     'Vernepleier - Trondheim kommune',
     'Analysert fra opplastet PDF: Vernepleier.pdf',
     ARRAY[
-        'Bachelor i vernepleie',
-        'Flytende norsk, både muntlig og skriftlig'
+        'Bachelor i vernepleie'
     ]::text[],
     ARRAY[
         'Relevant erfaring med det å bistå personer med utviklingshemning',
@@ -49,61 +48,61 @@ INSERT INTO results (
 VALUES
 (
     1,
-    1,
     4,
-    78,
+    1,
+    100,
     true,
-    ARRAY['Vernepleier', 'Miljøarbeid', 'Autisme erfaring']::text[],
-    ARRAY['Lang erfaring']::text[],
-    ARRAY['Videregående kurs i atferdshåndtering']::text[],
-    ARRAY['Ledererfaring']::text[],
-    'Solid kandidat med relevant erfaring, men noe begrenset ansiennitet.'
+    ARRAY['Bachelor i vernepleie','Relevant erfaring med det å bistå personer med utviklingshemning','Relevant erfaring med det å bistå personer med autismespekterdiagnose','Erfaring med målrettet miljøarbeid','Erfaring med utfordrende adferd','Erfaring fra det å samarbeide med pårørende','Førerkort for vanlig bil','Flytende norsk, både muntlig og skriftlig','Tegnspråkkompetanse', 'Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
+    ARRAY[]::text[],
+    ARRAY[]::text[],
+    ARRAY[]::text[],
+    'Ragnar Lindholm er en svært erfaren og autorisert vernepleier med over 20 års erfaring. Han oppfyller alle de absolutte og ønskede kravene, inkludert omfattende erfaring med personer med utviklingshemming og autismespekterdiagnoser, målrettet miljøarbeid, håndtering av utfordrende atferd, og samarbeid med pårørende. Han har lang erfaring som primærkontakt, førerkort klasse B, flytende norsk og grunnleggende tegnspråkkompetanse.'
 ),
 (
     1,
     2,
-    2,
-    88,
+    1,
+    100,
     true,
-    ARRAY['Vernepleier', 'Primærkontakt', 'Tiltaksplaner', 'Autisme erfaring']::text[],
-    ARRAY['Lang erfaring']::text[],
-    ARRAY['Avansert miljøterapi kurs']::text[],
-    ARRAY['Formell lederrolle']::text[],
-    'Sterk kandidat med god erfaring og bred kompetanse.'
+    ARRAY['Bachelor i vernepleie','Relevant erfaring med det å bistå personer med utviklingshemning','Relevant erfaring med det å bistå personer med autismespekterdiagnose','Erfaring med målrettet miljøarbeid','Erfaring med utfordrende adferd','Erfaring fra det å samarbeide med pårørende','Førerkort for vanlig bil','Flytende norsk, både muntlig og skriftlig','Tegnspråkkompetanse', 'Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
+    ARRAY[]::text[],
+    ARRAY[]::text[],
+    ARRAY[]::text[],
+    'Ingrid Sandgren er en autorisert vernepleier med bachelorgrad og solid erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Hun oppfyller alle de absolutte og ønskede kravene, inkludert kompetanse innen målrettet miljøarbeid, trygg håndtering av utfordrende atferd, og omfattende samarbeid med pårørende. Hun har erfaring som primærkontakt, førerkort klasse B, flytende norsk og grunnleggende tegnspråkkompetanse.'
+),
+(
+    1,
+    5,
+    3,
+    80,
+    true,
+    ARRAY['Bachelor i vernepleie','Relevant erfaring med det å bistå personer med utviklingshemning','Relevant erfaring med det å bistå personer med autismespekterdiagnose','Erfaring med målrettet miljøarbeid','Erfaring med utfordrende adferd','Erfaring fra det å samarbeide med pårørende','Flytende norsk, både muntlig og skriftlig','Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
+    ARRAY['Tegnspråkkompetanse']::text[],
+    ARRAY[]::text[],
+    ARRAY['Førerkort for vanlig bil']::text[],
+    'Selda Ingerman er en vernepleier med bachelorgrad og solid erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Hun har erfaring med målrettet miljøarbeid, håndtering av utfordrende atferd, og samarbeid med pårørende, samt erfaring som primærkontakt. Hun behersker norsk flytende. Det er uklart om hun har førerkort for vanlig bil, og hun mangler dokumentert tegnspråkkompetanse.'
+),
+(
+    1,
+    1,
+    3,
+    80,
+    true,
+    ARRAY['Bachelor i vernepleie','Relevant erfaring med det å bistå personer med utviklingshemning','Relevant erfaring med det å bistå personer med autismespekterdiagnose','Erfaring med målrettet miljøarbeid','Erfaring med utfordrende adferd','Erfaring fra det å samarbeide med pårørende','Førerkort for vanlig bil','Flytende norsk, både muntlig og skriftlig','Tegnspråkkompetanse', 'Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
+    ARRAY['Erfaring fra det å samarbeide med pårørende','Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
+    ARRAY[]::text[],
+    ARRAY[]::text[],
+    'Gøran Haraldson er en autorisert vernepleier med bachelorgrad og erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Han har kompetanse innen målrettet miljøarbeid og erfaring med håndtering av utfordrende atferd. Han har førerkort klasse B, behersker norsk flytende og har grunnleggende tegnspråkkompetanse. Det er uklart om han har spesifikk erfaring med samarbeid med pårørende eller som primærkontakt.'
 ),
 (
     1,
     3,
-    5,
-    65,
+    3,
+    60,
     false,
-    ARRAY['Helsefaglig bakgrunn']::text[],
-    ARRAY['Vernepleier', 'Miljøarbeid erfaring', 'Autisme erfaring']::text[],
-    ARRAY['Miljøarbeid grunnkurs', 'Autisme kurs']::text[],
-    ARRAY['Reell erfaring med målgruppen']::text[],
-    'Relevant helsefaglig bakgrunn, men mangler kjernekompetanse.'
-),
-(
-    1,
-    4,
-    1,
-    97,
-    true,
-    ARRAY['Vernepleier', '20+ års erfaring', 'Ledelse', 'Tiltaksplaner', 'Autisme ekspertise']::text[],
-    ARRAY[]::text[],
-    ARRAY[]::text[],
-    ARRAY[]::text[],
-    'Svært sterk senior kandidat med omfattende erfaring og faglig tyngde.'
-),
-(
-    1,
-    5,
-    3,
-    83,
-    true,
-    ARRAY['Vernepleier', 'Primærkontakt', 'Miljøarbeid', 'Autisme erfaring']::text[],
-    ARRAY['Lang erfaring']::text[],
+    ARRAY['Relevant erfaring med det å bistå personer med utviklingshemning','Erfaring med målrettet miljøarbeid','Erfaring med utfordrende adferd','Erfaring fra det å samarbeide med pårørende','Førerkort for vanlig bil','Flytende norsk, både muntlig og skriftlig']::text[],
+    ARRAY['Bachelor i vernepleie','Relevant erfaring med det å bistå personer med autismespekterdiagnose','Tegnspråkkompetanse','Erfaring som primærkontakt eller tilsvarende ansvar']::text[],
     ARRAY['Videregående fagkurs']::text[],
-    ARRAY['Spesialisering']::text[],
-    'God kandidat med relevant erfaring og potensial for videre utvikling.'
+    ARRAY[]::text[],
+    'Kim Knudsen er en sykepleier med noe erfaring fra miljøarbeid og bistand til personer med utviklingshemming. Han har grunnleggende erfaring med målrettet miljøarbeid og håndtering av utfordrende atferd, samt erfaring med pårørende. Han har førerkort klasse B og behersker norsk flytende. Kandidaten mangler den etterspurte bachelorgraden i vernepleie, og det er uklart om han har erfaring med autismespekterdiagnoser eller som primærkontakt. Han har heller ikke dokumentert tegnspråkkompetanse.'
 );
