@@ -12,10 +12,10 @@ import {
 
 import type {
   ApiCandidate,
-  CandidateEval,
+  EvalCandidate,
   CandidateWithCvText,
   JobDescriptionInput,
-  JobProfile,
+  EvalJobPost,
 } from "../../../types/ai.types.js";
 import { callNorLlm, parseNorLlmJsonWithRepair } from "../norLLM/norllm.client.js";
 
@@ -64,7 +64,7 @@ export function createNorllmProvider() {
     async createJobProfile(
       _jobDescriptionInput: JobDescriptionInput,
       jobDescriptionText: string,
-    ): Promise<JobProfile> {
+    ): Promise<EvalJobPost> {
       const prompt = buildJobProfileFromTextPrompt(jobDescriptionText);
       const responseText = await callNorLlm(prompt);
 
@@ -82,8 +82,8 @@ export function createNorllmProvider() {
 
     async evaluateCandidates(params: {
       candidatesWithCv: CandidateWithCvText[];
-      jobProfile: JobProfile;
-    }): Promise<CandidateEval[]> {
+      jobProfile: EvalJobPost;
+    }): Promise<EvalCandidate[]> {
       const { candidatesWithCv, jobProfile } = params;
       if (candidatesWithCv.length === 0) {
         return [];
@@ -111,7 +111,7 @@ export function createNorllmProvider() {
     "candidate_name": string,
     "summary": string,
     "qualified": boolean,
-    "overall_score": number,
+    "score": number,
     "strengths": [{"point": string, "explanation": string}],
     "gaps": [{"point": string, "explanation": string}],
     "unknowns": [{"point": string, "explanation": string}],

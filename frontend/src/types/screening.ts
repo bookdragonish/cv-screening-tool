@@ -3,8 +3,8 @@ export type ScreeningDetails = {
   title: string;
   screenedAt: string;
   aiJobDescription?: string,
-  hardQualifications: string[];
-  softQualifications: string[];
+  must_have_qualifications: string[];
+  nice_to_have_qualifications: string[];
   candidates: Array<RankedCandidate>;
 };
 
@@ -15,9 +15,9 @@ export type RankedCandidate = {
   rank: number;
   score: number;
   qualified: boolean;
-  qualificationsMet: string[];
-  qualificationsMissing: string[];
-  courseRecommendations: string[];
+  qualifications_met: string[];
+  qualifications_missing: string[];
+  course_recommendations: string[];
   unknowns: string[];
   summary?: string;
   createdAt: string;
@@ -39,16 +39,16 @@ export type SaveScreeningRunPayload = {
   title: string;
   header: string;
   description: string;
-  hardQualifications: string[];
-  softQualifications: string[];
+  must_have_qualifications: string[];
+  nice_to_have_qualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;
     score: number;
     qualified: boolean;
-    qualificationsMet: string[];
-    qualificationsMissing: string[];
-    courseRecommendations: string[];
+    qualifications_met: string[];
+    qualifications_missing: string[];
+    course_recommendations: string[];
     unknowns: string[];
     summary?: string;
   }>;
