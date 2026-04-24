@@ -251,8 +251,8 @@ export function buildScreeningRecord(params: {
     normalizeString(jobProfile.role_title) ||
     getFallbackJobTitle(jobDescriptionInput);
 
-  const hardQualifications = normalizeStringList((jobProfile.must_haves ?? []).concat(jobProfile.must_haves_can_be_coursed ?? []));
-  const softQualifications = normalizeStringList(jobProfile.nice_to_haves);
+  const must_have_qualifications = normalizeStringList((jobProfile.must_haves ?? []).concat(jobProfile.must_haves_can_be_coursed ?? []));
+  const nice_to_have_qualifications = normalizeStringList(jobProfile.nice_to_haves);
 
   const candidates: Screening["candidates"] = [];
 
@@ -297,8 +297,8 @@ export function buildScreeningRecord(params: {
         ? normalizeString(jobDescriptionText) ||
           `Stillingsbeskrivelse for ${title}`
         : `Analysert fra opplastet PDF: ${jobDescriptionInput.originalName}`,
-    hardQualifications,
-    softQualifications,
+    must_have_qualifications,
+    nice_to_have_qualifications,
     candidates,
   };
 }
