@@ -250,7 +250,7 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                     aria-required={!isEditing ? "true" : "false"}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={`${cvDescId} ${fieldState.invalid ? cvErrId : ""}`.trim()}
-                    className="bg-white file:text-blue-600"
+                    className="bg-white file:text-blue-600 cursor-pointer"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       field.onChange(file)
