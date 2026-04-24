@@ -46,7 +46,7 @@ function Screening() {
         second_site_link={"/skanning-historikk"}
       />
 
-       <ScreeningHeader title={data.title} hardQualifications={data.hardQualifications} softQualifications={data.softQualifications} screenedAt={data.screenedAt} />
+      <ScreeningHeader title={data.title} must_have_qualifications={data.must_have_qualifications} nice_to_have_qualifications={data.nice_to_have_qualifications} screenedAt={data.screenedAt} />
 
 
       <div id="result-container" className="grid grid-cols-1 gap-6 lg:grid-cols-3">

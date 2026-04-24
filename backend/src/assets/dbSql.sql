@@ -22,7 +22,7 @@ create table
         header text not null,
         title text not null,
         description text not null,
-        hardQualifications text[],
-        softQualifications text[],
+        must_have_qualifications text[],
+        nice_to_have_qualifications text[],
         created_at timestamptz default now ()
     );

@@ -4,15 +4,15 @@ import { Clock } from "lucide-react";
 
 type ScreeningHeaderProps = {
   title: string;
-  hardQualifications: string[];
-  softQualifications: string[];
+  must_have_qualifications: string[];
+  nice_to_have_qualifications: string[];
   screenedAt: string;
 };
 
 function ScreeningHeader({
   title,
-  hardQualifications,
-  softQualifications,
+  must_have_qualifications,
+  nice_to_have_qualifications,
   screenedAt,
 }: ScreeningHeaderProps) {
   
@@ -31,7 +31,7 @@ function ScreeningHeader({
               Harde kvalifikasjoner:
             </h2>
            <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
-            {hardQualifications?.map((qualification, index) => (
+            {must_have_qualifications?.map((qualification, index) => (
               <li key={index}>{formatCapitalizeFirstLetter(qualification)}</li>
             ))}
           </ul>
@@ -43,7 +43,7 @@ function ScreeningHeader({
             </h2>
 
            <ul className="list-disc space-y-2 pl-5 text-sm text-(--color-dark)">
-            {softQualifications?.map((qualification, index) => (
+            {nice_to_have_qualifications?.map((qualification, index) => (
               <li key={index}>{formatCapitalizeFirstLetter(qualification)}</li>
             ))}
           </ul>

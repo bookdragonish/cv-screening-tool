@@ -6,7 +6,7 @@ import { normalizeString, normalizeStringList as normalizeStringArray } from "..
  * Creates a persisted screening run by inserting one job post row and its
  * candidate result rows in a single transaction.
  *
- * Request should include 'title', 'description', 'hardQualifications', 'softQualifications',
+ * Request should include 'title', 'description', 'must_have_qualifications', 'nice_to_have_qualifications',
  * and 'candidates'.
  *
  * Responses:
@@ -21,15 +21,15 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
       title,
       header,
       description,
-      hardQualifications,
-      softQualifications,
+      must_have_qualifications,
+      nice_to_have_qualifications,
       candidates,
     } = req.body as {
       title?: string;
       header?: string;
       description?: string;
-      hardQualifications?: string[];
-      softQualifications?: string[];
+      must_have_qualifications?: string[];
+      nice_to_have_qualifications?: string[];
       candidates?: Array<{
         candidateId?: number;
         rank?: number;
@@ -46,8 +46,8 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     const normalizedTitle = normalizeString(title);
     const normalizedHeader = normalizeString(header) || normalizedTitle;
     const normalizedDescription = normalizeString(description);
-    const normalizedHardQualifications = normalizeStringArray(hardQualifications);
-    const normalizedSoftQualifications = normalizeStringArray(softQualifications);
+    const normalizedMustHaveQualifications = normalizeStringArray(must_have_qualifications);
+    const normalizedNiceToHaveQualifications = normalizeStringArray(nice_to_have_qualifications);
 
     if (!normalizedTitle || !normalizedDescription || !Array.isArray(candidates) || !candidates.length) {
       return res.status(400).json({
@@ -85,13 +85,13 @@ export async function createScreeningRun(req: Request, res: Response, next: Next
     await client.query("begin");
 
     const jobPostResult = await client.query(
-      "insert into job_posts(header, title, description, hardQualifications, softQualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
+      "insert into job_posts(header, title, description, must_have_qualifications, nice_to_have_qualifications) values($1, $2, $3, $4, $5) returning id, title, created_at",
       [
         normalizedHeader,
         normalizedTitle,
         normalizedDescription,
-        normalizedHardQualifications,
-        normalizedSoftQualifications,
+        normalizedMustHaveQualifications,
+        normalizedNiceToHaveQualifications,
       ],
     );
 
@@ -196,8 +196,8 @@ export async function getScreeningByJobPostId(req: Request, res: Response, next:
         jp.id as "jobPostId",
         jp.title,
         jp.created_at as "screenedAt",
-        jp.hardqualifications as "hardQualifications",
-        jp.softqualifications as "softQualifications",
+        jp.must_have_qualifications as "must_have_qualifications",
+        jp.nice_to_have_qualifications as "nice_to_have_qualifications",
         json_agg(
           json_build_object(
             'candidateId', c.id,

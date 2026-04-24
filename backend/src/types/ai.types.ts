@@ -63,8 +63,8 @@ export type Screening = {
   title: string;
   header: string;
   description: string;
-  hardQualifications: string[];
-  softQualifications: string[];
+  must_have_qualifications: string[];
+  nice_to_have_qualifications: string[];
   candidates: Array<{
     candidateId: number;
     rank: number;
