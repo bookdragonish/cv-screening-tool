@@ -215,6 +215,46 @@ The active model is configured via the LLM environment variable.
 - Unit testing with Vitest
 - End-to-end testing with Playwright
 
+For testing, first run:
+
+```bash
+cd frontend
+npm install
+```
+
+Then, the different tests are run using:
+
+Unit testing:
+
+```bash
+npm run test
+```
+
+Unit testing with coverage report:
+
+```bash
+npm run test:coverage
+```
+
+End to end testing:
+
+```bash
+npx playwright install  
+npm run test:e2e
+```
+
+End to end testing for user interface:
+
+```bash
+npm run test:e2e:ui
+```
+
+The coverage report from the unit testing can be accessed using:
+
+```bash
+start coverage/index.html
+```
+
 ## Collaborators
 
 - Helene Selvig
