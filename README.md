@@ -239,6 +239,7 @@ npm run test:coverage
 End to end testing:
 
 ```bash
+npx playwright install  
 npm run test:e2e
 ```
 
