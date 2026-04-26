@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { formatBytes, formatAnalyzedDate } from '../src/utils/newScreeningUtils'
+import { formatBytes } from '../src/utils/formatBytes'
+import { formatAnalyzedDate } from '../src/utils/formatDate'
 
 describe('newScreeningUtils', () => {
   it('formatBytes returns bytes when small', () => {

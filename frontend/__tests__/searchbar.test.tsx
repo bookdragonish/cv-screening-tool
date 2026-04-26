@@ -31,6 +31,6 @@ describe('Search and small components', () => {
     const candidates = [{ id: 1, name: 'Ola' }]
     render(<PdfPreviewOverlay candidates={candidates as any} initialId={1} onClose={onClose} />)
     expect(screen.getByText('Ola')).toBeTruthy()
-    expect(screen.getByText(/1 av 1/)).toBeTruthy()
+    expect(screen.queryByText(/1 av 1/)).toBeNull()
   })
 })

@@ -20,7 +20,7 @@ describe('AddNewCvSchema', () => {
       cv: f,
       aml46: false,
       aml47: false,
-      ansiennitet: 5,
+      ansiennitet: [5, 0, 0],
     })
     expect(res.success).toBe(true)
   })
@@ -35,7 +35,7 @@ describe('AddNewCvSchema', () => {
       cv: big,
       aml46: false,
       aml47: false,
-      ansiennitet: 5,
+      ansiennitet: [5, 0, 0],
     })
     expect(res.success).toBe(false)
     if (!res.success) {
@@ -49,7 +49,7 @@ describe('AddNewCvSchema', () => {
       cv: undefined,
       aml46: false,
       aml47: false,
-      ansiennitet: null,
+      ansiennitet: [null, null, null],
     })
     expect(res.success).toBe(false)
     if (!res.success) {

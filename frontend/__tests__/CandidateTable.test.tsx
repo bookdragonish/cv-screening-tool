@@ -55,6 +55,9 @@ describe('CandidateTable interactions', () => {
     const deleteBtn = screen.getByLabelText(/Slett kandidat Alice/i)
     await userEvent.click(deleteBtn)
 
+    const confirmDeleteBtn = await screen.findByRole('button', { name: /^Slett$/i })
+    await userEvent.click(confirmDeleteBtn)
+
     await waitFor(() => {
       expect(setPopup).toHaveBeenCalled()
       expect(setReloadKey).toHaveBeenCalled()

@@ -17,21 +17,24 @@ describe('Screening components', () => {
       rank: 1,
       score: 90,
       summary: 'Summary',
-      qualificationsMet: ['A'],
-      qualificationsMissing: [],
+      qualifications_met: ['A'],
+      qualifications_missing: [],
+      course_recommendations: [],
       unknowns: [],
       aml46: false,
       aml47: false,
+      createdAt: new Date().toISOString(),
+      hasPdf: false,
     }
-    render(<CandidateCard candidate={candidate as any} id={1} />)
+    render(<CandidateCard candidate={candidate as any} id={1} setPreviewId={vi.fn()} />)
     expect(screen.getByText('Test candidate')).toBeTruthy()
     expect(screen.getByText(/Matchscore/i)).toBeTruthy()
   })
 
   it('CandidateOverview renders sections', () => {
     const candidates = [
-      { candidateId: 1, candidateName: 'A', qualified: true, rank: 1, score: 90, summary: null, qualificationsMet: [], qualificationsMissing: [], unknowns: [], aml46: false, aml47: false },
-      { candidateId: 2, candidateName: 'B', qualified: false, rank: 2, score: 50, summary: null, qualificationsMet: [], qualificationsMissing: [], unknowns: [], aml46: false, aml47: false },
+      { candidateId: 1, candidateName: 'A', qualified: true, rank: 1, score: 90, summary: null, qualifications_met: [], qualifications_missing: [], course_recommendations: [], unknowns: [], aml46: false, aml47: false, createdAt: new Date().toISOString(), hasPdf: false },
+      { candidateId: 2, candidateName: 'B', qualified: false, rank: 2, score: 50, summary: null, qualifications_met: [], qualifications_missing: [], course_recommendations: [], unknowns: [], aml46: false, aml47: false, createdAt: new Date().toISOString(), hasPdf: false },
     ]
     render(<CandidateOverview candidates={candidates as any} />)
     expect(screen.getByRole('heading', { name: /^Kvalifiserte kandidater$/i })).toBeTruthy()
