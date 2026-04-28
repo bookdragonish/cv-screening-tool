@@ -1,10 +1,10 @@
 INSERT INTO candidates (id, name, email, cv_pdf, ansiennitet)
 VALUES
-(1, 'Gøran Haraldson', 'goeranh@gmail.com', NULL, ARRAY[2, 2, 0]),
-(2, 'Ingrid Sandgren', 'ingrid.sandgren@gmail.com', NULL, ARRAY[5, 2, 1]),
-(3, 'Kim Knudsen', 'kim.knudsen@gmail.com', NULL, ARRAY[4, 1, 0]),
-(4, 'Ragnar Lindholm', 'ragnar.lindholm@gmail.com', NULL, ARRAY[14, 6, 2]),
-(5, 'Selda Ingerman', 'selda.ingerman@gmail.com', NULL, ARRAY[4, 2, 1]);
+(-1, 'Gøran Haraldson', 'goeranh@gmail.com', NULL, ARRAY[2, 2, 0]),
+(-2, 'Ingrid Sandgren', 'ingrid.sandgren@gmail.com', NULL, ARRAY[5, 2, 1]),
+(-3, 'Kim Knudsen', 'kim.knudsen@gmail.com', NULL, ARRAY[4, 1, 0]),
+(-4, 'Ragnar Lindholm', 'ragnar.lindholm@gmail.com', NULL, ARRAY[14, 6, 2]),
+(-5, 'Selda Ingerman', 'selda.ingerman@gmail.com', NULL, ARRAY[4, 2, 1]);
 
 INSERT INTO job_posts (
     id,
@@ -14,7 +14,7 @@ INSERT INTO job_posts (
     must_have_qualifications,
     nice_to_have_qualifications
 ) VALUES (
-    1,
+    -1,
     'Vernepleier - Trondheim kommune',
     'Vernepleier - Trondheim kommune',
     'Analysert fra opplastet PDF: Vernepleier.pdf',
@@ -47,8 +47,8 @@ INSERT INTO results (
 )
 VALUES
 (
-    1,
-    4,
+    -1,
+    -4,
     1,
     100,
     true,
@@ -59,8 +59,8 @@ VALUES
     'Ragnar Lindholm er en svært erfaren og autorisert vernepleier med over 20 års erfaring. Han oppfyller alle de absolutte og ønskede kravene, inkludert omfattende erfaring med personer med utviklingshemming og autismespekterdiagnoser, målrettet miljøarbeid, håndtering av utfordrende atferd, og samarbeid med pårørende. Han har lang erfaring som primærkontakt, førerkort klasse B, flytende norsk og grunnleggende tegnspråkkompetanse.'
 ),
 (
-    1,
-    2,
+    -1,
+    -2,
     1,
     100,
     true,
@@ -71,8 +71,8 @@ VALUES
     'Ingrid Sandgren er en autorisert vernepleier med bachelorgrad og solid erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Hun oppfyller alle de absolutte og ønskede kravene, inkludert kompetanse innen målrettet miljøarbeid, trygg håndtering av utfordrende atferd, og omfattende samarbeid med pårørende. Hun har erfaring som primærkontakt, førerkort klasse B, flytende norsk og grunnleggende tegnspråkkompetanse.'
 ),
 (
-    1,
-    5,
+    -1,
+    -5,
     3,
     80,
     true,
@@ -83,8 +83,8 @@ VALUES
     'Selda Ingerman er en vernepleier med bachelorgrad og solid erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Hun har erfaring med målrettet miljøarbeid, håndtering av utfordrende atferd, og samarbeid med pårørende, samt erfaring som primærkontakt. Hun behersker norsk flytende. Det er uklart om hun har førerkort for vanlig bil, og hun mangler dokumentert tegnspråkkompetanse.'
 ),
 (
-    1,
-    1,
+    -1,
+    -1,
     3,
     80,
     true,
@@ -95,8 +95,8 @@ VALUES
     'Gøran Haraldson er en autorisert vernepleier med bachelorgrad og erfaring fra arbeid med personer med utviklingshemming og autismespekterdiagnoser. Han har kompetanse innen målrettet miljøarbeid og erfaring med håndtering av utfordrende atferd. Han har førerkort klasse B, behersker norsk flytende og har grunnleggende tegnspråkkompetanse. Det er uklart om han har spesifikk erfaring med samarbeid med pårørende eller som primærkontakt.'
 ),
 (
-    1,
-    3,
+    -1,
+    -3,
     3,
     60,
     false,
