@@ -56,10 +56,14 @@ describe('UploadJobDescriptionSchema', () => {
     const f = new File(['%PDF'], 'jd.pdf', { type: 'application/pdf' })
     const pdf = toJobDescriptionInput({ mode: 'pdf', jobDescriptionFile: f })
     expect(pdf.mode).toBe('pdf')
-    expect((pdf as any).file).toBe(f)
+    if (pdf.mode === 'pdf') {
+      expect(pdf.file).toBe(f)
+    }
 
     const txt = toJobDescriptionInput({ mode: 'text', jobDescriptionText: '  Hello world  ' })
     expect(txt.mode).toBe('text')
-    expect((txt as any).text).toBe('Hello world')
+    if (txt.mode === 'text') {
+      expect(txt.text).toBe('Hello world')
+    }
   })
 })

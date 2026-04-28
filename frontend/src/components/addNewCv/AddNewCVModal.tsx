@@ -31,7 +31,7 @@ import type { Candidate } from "@/types/candidate"
 
 type AddNewCVModalProps = {
   onCreated?: () => void
-  onDelete?: (id: number, name: string) => Promise<Boolean>
+  onDelete?: (id: number, name: string) => Promise<boolean>
   candidateToEdit?: Partial<Candidate>
   customTrigger?: React.ReactNode
 }
@@ -83,6 +83,14 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
   const amlGroupLabelId = `add-cv-aml-label-${uid}`
   const ansienitetDescId = `add-cv-ansiennitet-desc-${uid}`
   const ansienitetErrId = `add-cv-ansiennitet-err-${uid}`
+  const ansiennitetErrors = form.formState.errors.ansiennitet as
+    | {
+      message?: string
+      0?: { message?: string }
+      1?: { message?: string }
+      2?: { message?: string }
+    }
+    | undefined
   async function onSubmit(values: AddNewCvValues) {
     setSubmitError(null)
     if (!isEditing && !values.cv) {
@@ -390,9 +398,9 @@ function AddNewCVModal({ onCreated, onDelete, candidateToEdit, customTrigger }: 
                       <FieldError errors={[
                         fieldState.error?.message 
                           ? fieldState.error 
-                          : (form.formState.errors.ansiennitet as any)?.[0] ??
-                            (form.formState.errors.ansiennitet as any)?.[1] ??
-                            (form.formState.errors.ansiennitet as any)?.[2] ??
+                          : ansiennitetErrors?.[0] ??
+                            ansiennitetErrors?.[1] ??
+                            ansiennitetErrors?.[2] ??
                             { message: "Ugyldig verdi i ansiennitet" }
                       ]} />
                     </div>

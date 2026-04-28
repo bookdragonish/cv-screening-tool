@@ -7,6 +7,8 @@ import CandidateOverview from '../src/components/ScreeningPage/CandidateOverview
 import CandidateSidbar from '../src/components/ScreeningPage/CandidateSidebar'
 import ScanningHistoryTable from '../src/components/HomePage/ScanningHistoryTable'
 import CandidateTable from '../src/components/CVDatabase/CandidateTable'
+import type { Candidate } from '../src/types/candidate'
+import type { RankedCandidate } from '../src/types/screening'
 
 describe('Screening components', () => {
   it('CandidateCard displays info', () => {
@@ -25,8 +27,8 @@ describe('Screening components', () => {
       aml47: false,
       createdAt: new Date().toISOString(),
       hasPdf: false,
-    }
-    render(<CandidateCard candidate={candidate as any} id={1} setPreviewId={vi.fn()} />)
+    } satisfies RankedCandidate
+    render(<CandidateCard candidate={candidate} id={1} setPreviewId={vi.fn()} />)
     expect(screen.getByText('Test candidate')).toBeTruthy()
     expect(screen.getByText(/Matchscore/i)).toBeTruthy()
   })
@@ -35,8 +37,8 @@ describe('Screening components', () => {
     const candidates = [
       { candidateId: 1, candidateName: 'A', qualified: true, rank: 1, score: 90, summary: null, qualifications_met: [], qualifications_missing: [], course_recommendations: [], unknowns: [], aml46: false, aml47: false, createdAt: new Date().toISOString(), hasPdf: false },
       { candidateId: 2, candidateName: 'B', qualified: false, rank: 2, score: 50, summary: null, qualifications_met: [], qualifications_missing: [], course_recommendations: [], unknowns: [], aml46: false, aml47: false, createdAt: new Date().toISOString(), hasPdf: false },
-    ]
-    render(<CandidateOverview candidates={candidates as any} />)
+    ] satisfies RankedCandidate[]
+    render(<CandidateOverview candidates={candidates} />)
     expect(screen.getByRole('heading', { name: /^Kvalifiserte kandidater$/i })).toBeTruthy()
     expect(screen.getByRole('heading', { name: /^Ikke kvalifiserte kandidater$/i })).toBeTruthy()
   })
@@ -45,8 +47,8 @@ describe('Screening components', () => {
     const candidates = [
       { candidateId: 1, candidateName: 'A', qualified: true, aml46: false, aml47: false },
       { candidateId: 2, candidateName: 'B', qualified: false, aml46: true, aml47: false },
-    ]
-    render(<CandidateSidbar candidates={candidates as any} />)
+    ] satisfies RankedCandidate[]
+    render(<CandidateSidbar candidates={candidates} />)
     expect(screen.getByText('A')).toBeTruthy()
     expect(screen.getByText('B')).toBeTruthy()
   })
@@ -58,7 +60,7 @@ describe('Screening components', () => {
   })
 
   it('CandidateTable renders structure', () => {
-    const filteredData: any[] = []
+    const filteredData: Candidate[] = []
     const setPreviewId = vi.fn()
     const setReloadKey = vi.fn()
     const setPopup = vi.fn()

@@ -4,6 +4,16 @@ import { vi } from 'vitest'
 
 const mockNavigate = vi.fn()
 
+type LinkLikeProps = {
+  to: string
+  children?: React.ReactNode
+  className?: string | ((args: { isActive: boolean }) => string | undefined)
+}
+
+type MemoryRouterProps = {
+  children?: React.ReactNode
+}
+
 // Provide a simple in-memory localStorage implementation for tests
 const __storage: Record<string, string> = {}
 vi.stubGlobal('localStorage', {
@@ -13,15 +23,14 @@ vi.stubGlobal('localStorage', {
 })
 
 vi.mock('react-router', () => {
-  const React = require('react')
   return {
-    Link: (props: any) => React.createElement('a', { ...props, href: props.to }, props.children),
-    NavLink: (props: any) => {
+    Link: (props: LinkLikeProps) => React.createElement('a', { ...props, href: props.to }, props.children),
+    NavLink: (props: LinkLikeProps) => {
       const cls = typeof props.className === 'function' ? props.className({ isActive: false }) : props.className
       return React.createElement('a', { ...props, href: props.to, className: cls }, props.children)
     },
     useNavigate: () => mockNavigate,
-    MemoryRouter: ({ children }: any) => React.createElement('div', null, children),
+    MemoryRouter: ({ children }: MemoryRouterProps) => React.createElement('div', null, children),
   }
 })
 

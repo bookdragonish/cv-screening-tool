@@ -27,15 +27,16 @@ function PdfPreviewOverlay({
 
   const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex);
   const selectedCandidate = candidates[selectedIndex];
+  const selectedCandidateId = selectedCandidate?.id ?? initialId;
 
-  const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidate.id);
+  const { documentURL, isError, isLoading } = useFetchPDF(selectedCandidateId);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       closeBtnRef.current?.focus();
     }, 50);
     return () => clearTimeout(timer);
-  }), [];
+  }, []);
 
   if (isError) {
     return (

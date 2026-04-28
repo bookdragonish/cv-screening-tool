@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import Searchbar from '../src/components/Searchbar'
 import CheckMarkPopUp from '../src/components/CheckMarkPopUp'
 import PdfPreviewOverlay from '../src/components/PdfPreviewOverlay'
+import type { CandidatePreview } from '../src/types/candidate'
 
 describe('Search and small components', () => {
   it('Searchbar renders and calls setSearchQuery', async () => {
@@ -28,8 +29,8 @@ describe('Search and small components', () => {
 
   it('PdfPreviewOverlay shows candidate name and counters', () => {
     const onClose = vi.fn()
-    const candidates = [{ id: 1, name: 'Ola' }]
-    render(<PdfPreviewOverlay candidates={candidates as any} initialId={1} onClose={onClose} />)
+    const candidates: CandidatePreview[] = [{ id: 1, name: 'Ola' }]
+    render(<PdfPreviewOverlay candidates={candidates} initialId={1} onClose={onClose} />)
     expect(screen.getByText('Ola')).toBeTruthy()
     expect(screen.queryByText(/1 av 1/)).toBeNull()
   })
