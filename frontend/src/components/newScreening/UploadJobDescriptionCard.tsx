@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileTextIcon, UploadIcon } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
   MAX_JOB_DESCRIPTION_PDF_BYTES,
@@ -61,9 +61,9 @@ function UploadJobDescriptionCard({
     });
   }, [initialInput, form]);
 
-  const mode = form.watch("mode");
-  const selectedFile = form.watch("jobDescriptionFile");
-  const jobDescriptionText = form.watch("jobDescriptionText") ?? "";
+  const mode = useWatch({ control: form.control, name: "mode" });
+  const selectedFile = useWatch({ control: form.control, name: "jobDescriptionFile" });
+  const jobDescriptionText = useWatch({ control: form.control, name: "jobDescriptionText" }) ?? "";
   const isPdfSelectionValid =
     selectedFile !== undefined &&
     selectedFile.type === "application/pdf" &&

@@ -4,6 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import CandidateTable from '../src/components/CVDatabase/CandidateTable'
+import type { Candidate } from '../src/types/candidate'
 
 describe('CandidateTable interactions', () => {
   const candidate = {
@@ -21,12 +22,13 @@ describe('CandidateTable interactions', () => {
     const setPreviewId = vi.fn()
     const setReloadKey = vi.fn()
     const setPopup = vi.fn()
+    const candidates: Candidate[] = [candidate]
 
     render(
       <CandidateTable
-        filteredData={[candidate as any]}
+        filteredData={candidates}
         setPreviewId={setPreviewId}
-        setReloadKey={setReloadKey as any}
+        setReloadKey={setReloadKey as unknown as React.Dispatch<React.SetStateAction<number>>}
         dataLength={1}
         setPopup={setPopup}
       />,
@@ -41,12 +43,13 @@ describe('CandidateTable interactions', () => {
     const setPreviewId = vi.fn()
     const setReloadKey = vi.fn()
     const setPopup = vi.fn()
+    const candidates: Candidate[] = [candidate]
 
     render(
       <CandidateTable
-        filteredData={[candidate as any]}
+        filteredData={candidates}
         setPreviewId={setPreviewId}
-        setReloadKey={setReloadKey as any}
+        setReloadKey={setReloadKey as unknown as React.Dispatch<React.SetStateAction<number>>}
         dataLength={1}
         setPopup={setPopup}
       />,

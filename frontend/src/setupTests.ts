@@ -6,11 +6,11 @@ const originalConsoleWarn = console.warn
 console.error = function(...args: unknown[]) {
   const joined = args.map(a => String(a ?? '')).join(' ')
   if (joined.includes('Missing `Description` or `aria-describedby`')) return
-  originalConsoleError.apply(console, args as any)
+  Reflect.apply(originalConsoleError, console, args)
 }
 
 console.warn = function(...args: unknown[]) {
   const joined = args.map(a => String(a ?? '')).join(' ')
   if (joined.includes('Missing `Description` or `aria-describedby`')) return
-  originalConsoleWarn.apply(console, args as any)
+  Reflect.apply(originalConsoleWarn, console, args)
 }

@@ -39,7 +39,8 @@ async function parseErrorMessage(response: Response): Promise<string> {
     if (typeof json?.error === "string" && json.error.trim()) {
       return json.error;
     }
-  } catch {
+  } catch (error) {
+    void error;
   }
 
   return fallbackMessage;

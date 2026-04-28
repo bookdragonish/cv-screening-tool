@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useFetchCandidate } from "@/hooks/useFetchCandidates";
 import { useFetchPDF } from "@/hooks/useFetchPDF";
-import { Clock, Download, FileText } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { useParams } from "react-router";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "../components/ui/badge";
-import { formatDate } from "@/utils/formatDate";
 import CandidateScanningTable from "@/components/CandidatePage/CandidateScanningTable";
 import { formatAnsiennitet } from "@/utils/formatAnsiennitet";
 import { useState } from "react";
@@ -21,7 +20,18 @@ import PdfPreviewOverlay from "@/components/PdfPreviewOverlay";
 
 function Candidate() {
   const { candidateId } = useParams<{ candidateId: string }>();
-    const [previewId, setPreviewId] = useState<number | null>(null);
+  const [previewId, setPreviewId] = useState<number | null>(null);
+
+  const candidateIdValue = candidateId ?? "";
+  const candidateIdNumber = candidateId ? Number(candidateId) : 0;
+
+  const {
+    data: candidate,
+    isLoading: candidateLoading,
+    isError: candidateError,
+  } = useFetchCandidate(candidateIdValue);
+
+  const { documentURL: candidateCV } = useFetchPDF(candidateIdNumber);
 
   if (!candidateId) {
     return (
@@ -30,18 +40,6 @@ function Candidate() {
       </section>
     );
   }
-
-  const {
-    data: candidate,
-    isLoading: candidateLoading,
-    isError: candidateError,
-  } = useFetchCandidate(candidateId);
-
-  const {
-    documentURL: candidateCV,
-    isLoading: candidateCVLoading,
-    isError: candidateCVError,
-  } = useFetchPDF(Number(candidateId));
 
   if (candidateLoading || !candidate) {
     return (
