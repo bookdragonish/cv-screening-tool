@@ -60,7 +60,7 @@ function NewScreeningPage() {
         setErrorBox({
           title: "Screeningen ble ikke lagret i historikken",
           message:
-            "Screeningen ble fullfort, men kunne ikke lagres i historikken.",
+            "Screeningen ble fullført, men kunne ikke lagres i historikken.",
         });
       }
 
