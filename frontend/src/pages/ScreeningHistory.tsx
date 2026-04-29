@@ -1,9 +1,12 @@
 import { Link } from "react-router";
-import { Clock, FileText, Search } from "lucide-react";
+import { Clock, FileText } from "lucide-react";
 import React from "react";
 import { useFetchScreenings } from "@/hooks/useFetchScreening";
 import { Spinner } from "@/components/ui/spinner";
 import ErrorBox from "@/components/ErrorBox";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import Searchbar from "@/components/Searchbar";
+import HeaderSection from "@/components/HeaderSection";
 
 function ScreeningHistory() {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -11,7 +14,12 @@ function ScreeningHistory() {
 
   if (isLoading || !screeningData) {
     return (
-      <main className="flex justify-center items-center h-170">
+      <main
+        id="main-content"
+        className="flex h-170 items-center justify-center"
+        aria-busy="true"
+        aria-live="polite"
+      >
         <Spinner />
       </main>
     );
@@ -22,7 +30,7 @@ function ScreeningHistory() {
       <section className="w-full flex justify-center my-10">
         <ErrorBox
           title={"Kan ikke hente screeninghistorikk"}
-          message={"Prøv å refresh eller sjekke internet tilkoblingen"}
+          message={"Prøv å refresh eller sjekke internett-tilkoblingen"}
         />
       </section>
     );
@@ -40,121 +48,123 @@ function ScreeningHistory() {
     }).format(new Date(dateValue));
 
   return (
-    <main className="min-h-screen px-8 py-6">
-      <nav className="mb-4 flex items-center gap-1 text-sm text-(--color-dark) opacity-75">
-        <Link
-          to="/"
-          className="cursor-pointer transition-opacity hover:opacity-75"
-        >
-          Hjem
-        </Link>
-        <span>›</span>
-        <span className="text-(--color-dark)">Screeninghistorikk</span>
-      </nav>
+    <main
+      id="main-content"
+      className="mx-auto max-w-7xl min-h-screen px-8 py-6"
+    >
+      <Breadcrumbs second_site_name={"Skanninghistorikk"} />
 
-      <div className="min-h-screen">
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold text-(--color-dark)">
-            Screeninghistorikk
-          </h1>
-          <p className="mt-2 text-(--color-dark) opacity-75">
-            Få oversikt over tidligere CV-screeningsresultater
-          </p>
-        </div>
+      <section className="min-h-screen" aria-label="Skanninghistorikk">
+        <HeaderSection
+          header={"Skanninghistorikk"}
+          subsection={
+            "Oversikt over tidligere CV-skanninger. Resultatene er kun veiledende og kan inneholde unøyaktigheter."
+          }
+        />
 
         {isLoading && (
           <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Laster screeninghistorikk...
+            Laster skanninghistorikk...
           </div>
         )}
 
         {isError && (
-          <div className="mb-6 rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm">
-            Kunne ikke hente screeninghistorikk.
-          </div>
+          <ErrorBox
+            title={"Kunne ikke hente skanninghistorikk."}
+            message={"Prøv igjen senere"}
+          />
         )}
 
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-(--color-dark) opacity-50" />
-            <input
-              type="text"
-              placeholder="Søk etter jobbtittel..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-(--color-primary) py-3 pr-4 pl-10 text-(--color-dark) outline-none focus:ring-2 focus:ring-(--color-primary)"
-            />
-          </div>
-        </div>
+        <Searchbar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          searchAttribute={"jobbtittel"}
+        />
 
-        <div className="space-y-4">
+        <section className="space-y-4" aria-live="polite">
           {filteredHistory.map((screening) => (
-            <div
+            <Link
               key={screening.jobPostId}
-              className="rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
+              to={`/skanning-historikk/${screening.jobPostId}`}
+              className="block rounded-lg border border-(--color-primary) bg-white p-6 shadow-sm transition-colors hover:bg-(--color-light)/40"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-(--color-light)">
-                      <FileText className="h-5 w-5 text-(--color-primary)" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-(--color-dark)">
-                        {screening.title}
-                      </h3>
-                      <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
-                        <span className="flex items-center">
-                          <Clock className="h-4 w-4" />
-                          <span>{formatDate(screening.screenedAt)}</span>
-                        </span>
-                      </div>
+              <article>
+                <div className="flex justify-between items-center">
+                  <div className="flex-1">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-1">
+                        <h2 className="text-lg font-semibold text-(--color-dark)">
+                          {screening.title}
+                        </h2>
+                        <div className="mt-2 flex items-center space-x-4 text-sm text-(--color-dark) opacity-75">
+                          <span className="flex items-center">
+                            <Clock className="h-4 w-4 m-1" aria-hidden="true" />
+                            <span>{formatDate(screening.screenedAt)}</span>
+                          </span>
+                        </div>
 
-                      <div className="mt-4">
-                        <p className="mb-2 text-sm font-medium text-(--color-dark)">
-                          Top 3 kandidater:
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {screening.candidates
-                            .slice(0, 3)
-                            .map((candidate, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
-                              >
-                                #{index + 1} {candidate.candidateName} (
-                                {Math.round(candidate.score)}%)
-                              </span>
-                            ))}
+                        <div className="mt-4">
+                          <p className="mb-2 text-sm font-medium text-(--color-dark)">
+                            Topp 3 kandidater:
+                          </p>
+                          {screening.candidates.some((c) => c.qualified) ? (
+                            <div className="flex flex-wrap gap-2">
+                              {screening.candidates
+                                .filter((c) => c.qualified)
+                                .slice(0, 3)
+                                .map((candidate, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-flex items-center rounded-full bg-(--color-light) px-3 py-1 text-xs font-medium text-(--color-dark)"
+                                  >
+                                    #{index + 1} {candidate.candidateName} (
+                                    {Math.round(candidate.score)}%)
+                                  </span>
+                                ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-(--color-dark) opacity-75">
+                              Ingen kvalifiserte kandidater
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <Link
-                  to={`/screening-historikk/${screening.jobPostId}`}
-                  className="ml-4 whitespace-nowrap rounded-lg bg-(--color-primary) px-4 py-2 font-medium text-white transition-opacity hover:opacity-90"
-                >
-                  Se resultater
-                </Link>
-              </div>
-            </div>
+                  <span className="rounded-lg hover-dark-button border-(--color-primary) p-2 border-2">
+                    Se resultater
+                  </span>
+                </div>
+              </article>
+            </Link>
           ))}
-        </div>
+        </section>
+
+        <footer>
+          <p className="px-1 text-smaller text-(--color-dark) opacity-75">
+            Viser {filteredHistory.length} av {screeningData.length} skanninger.
+          </p>
+        </footer>
 
         {!isLoading && filteredHistory.length === 0 && (
-          <div className="rounded-lg border border-(--color-primary) bg-white  p-12 text-center shadow-sm">
-            <FileText className="mx-auto mb-4 h-16 w-16 text-(--color-primary) opacity-60" />
+          <section
+            className="rounded-lg border border-(--color-primary) bg-white p-12 text-center shadow-sm"
+            aria-live="polite"
+          >
+            <FileText
+              className="mx-auto mb-4 h-16 w-16 text-(--color-primary) opacity-60"
+              aria-hidden="true"
+            />
             <h3 className="mb-2 text-lg font-semibold text-(--color-dark)">
               Ingen screeningresultater funnet for søket ditt
             </h3>
             <p className="text-sm text-(--color-dark) opacity-75">
               Prøv å justere søket ditt
             </p>
-          </div>
+          </section>
         )}
-      </div>
+      </section>
     </main>
   );
 }

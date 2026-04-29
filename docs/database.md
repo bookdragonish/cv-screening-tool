@@ -1,48 +1,65 @@
-# How to PostgreSQL
+# PostgreSQL Setup Guide
 
-This guide explains how to set up **PostgreSQL** locally so you can run the backend and test it with Postman.
+This guide describes how to install and configure **PostgreSQL** locally in order to run the backend.
+
+---
 
 ## Overview
+
 - [Installation](#installation)
-- [Setup database](#setup-database)
-    - [Create a cv_database](#create-a-cv_database)
-    - [Create limited user](#create-limited-user)
-    - [Update .env](#update-env)
-    - [Add info](#add-info)
-    - [Reset test data](#reset-test-data)
-- [Test that it is running](#how-to-test-that-it-is-running)
-    - [Postman](#postman-optional)
-    - [Client password must be a string](#client-password-must-be-a-string)
-- [Notes to my future self](#notes-to-my-future-self)
+- [Database Setup](#database-setup)
+  - [Create Database](#create-database)
+  - [Create Limited User](#create-limited-user)
+  - [Update Environment Variables](#update-environment-variables)
+  - [Add Data](#add-data)
+- [Running the Application](#running-the-application)
+- [Verification](#verification)
+  - [Using Postman (Optional)](#using-postman-optional)
+  - [Using Browser Endpoints](#using-browser-endpoints)
+- [Known Issues](#known-issues)
 
-## How to run
-Once the db is set up on your machine you can run it using ```npm run dev``` in backend folder
-
+---
 
 ## Installation
-- [Link to PostgreSQL](https://www.postgresql.org/)
-    - Install both PostgreSQL and (optional) pgAdmin.
-    - pgAdmin is the interface to manage the db. This is an option you need to choose if you want it after downloading and **before** clicking install PostgreSQL.
-    - When installing you will set a password for the db **remember this**.
 
-## Setup database
-I will assume you have the pgAdmin interface from this point on, if you prefer to work in the terminal, wo ho to you, but I cannot help you.
+Download PostgreSQL from the official website:  
+https://www.postgresql.org/
 
-### Create a cv_database:
-In pgAdmin, open in the sidebar: Servers -> PostgreSQL 18 -> Databases
+During installation:
+- Install both **PostgreSQL** and (optionally) **pgAdmin**
+- pgAdmin provides a graphical interface for database management
+- Set a password for the default `postgres` user and store it securely
 
-Right click on databases and choose create. This need no spesifications (I think???), but set the name to cv_database (you can choose something else but then you cannot mindlessly copy paste later).
+---
 
-### Create limited user:
-We have a user called postgres, however this is similar to writing "sudo", we would like a user with a bit more limited access.
+## Database Setup
 
-In the pgAdmin cv_database choose Query Tool the top tab named "cv_database/postgres@PostgreSQL 18". Here you can write sql. **Change password before creating new user**. 
-```
+The following steps assume usage of **pgAdmin**. If you prefer using the terminal, equivalent commands may be executed there.
+
+### Create Database
+
+In pgAdmin:
+- Navigate to: `Servers → PostgreSQL → Databases`
+- Right-click **Databases** → **Create → Database**
+- Name the database: cv_database
+
+> You may choose another name, but you must then update all references accordingly.
+
+---
+
+### Create Limited User
+
+The default `postgres` user has full administrative privileges. It is recommended to create a more restricted user for application access.
+
+Open the **Query Tool** for `cv_database` and execute:
+
+```sql
 CREATE USER cv_app_user WITH PASSWORD 'strongpassword';
 GRANT CONNECT ON DATABASE cv_database TO cv_app_user;
 ```
-Give schema permissions for now and future
-```
+
+Grant schema and table permissions:
+```sql
 GRANT USAGE ON SCHEMA public TO cv_app_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO cv_app_user;
 GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO cv_app_user;
@@ -52,11 +69,12 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO cv_app_user;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO cv_app_user;
+```
+### Update Environment Variables
 
-```
-### Update .env
-Change password to the one you created when setting up the database. if you changed DB name or user name, this is the place to update it.
-```
+Update your `.env` file to reflect your database configuration:
+
+```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=cv_app_user
@@ -64,114 +82,119 @@ DB_PASSWORD=your_password
 DB_NAME=cv_database
 ```
 
-### Add info:
+Ensure that:
+- The password matches the one defined during user creation
+- Any custom database or user names are updated accordingly
 
-The same place we ran the create user (in pgAdmin) we will now run SQL.
+### Add Data
 
-```
-create table
-    if not exists candidates (
-        id serial primary key,
-        name text not null,
-        email TEXT unique,
-        cv_pdf BYTEA,
-        cv_markdown text,
-        created_at timestamptz default now ()
-    );
+Run the sql code in the 
+```backend/assets/dbSql.sql```
+For setting up mock data run the
+```docs/mockData/MockData.sql```
 
-create table if not exists job_posts (
-  id serial primary key,
-  header text not null,
-  title text not null,
-  description text not null,
-  hardQualifications text,
-  softQualifications text,
-  created_at timestamptz default now()
-);
+### Running the Application
 
-INSERT INTO candidates (name, email)
-VALUES 
-  ('Alice Johnson', 'alice.johnson@example.com'),
-  ('Mark Chen', 'mark.chen@example.com');
-
-INSERT INTO job_posts(header, title, description, hardQualifications, softQualifications)
-VALUES 
-  ('Do you want to be our new contract manager?', 'Contract manager', 'Responsible for enforcing and updating the rules of the group contract', 'minimum 10 years experience with vinstraff.no, saved children from a burning hospital, must work at nasa', 'good at giving vinstraffer, fair, cool'),
-('Do you want to be our new meeting coordinator?', 'Meeting coordinator', 'Responsible booking rooms and reminding the group of meetings', 'must be named Marius, must have drivers licence', 'should know ball, should be able to book rooms');
+Once PostgreSQL is installed and configured, start the backend:
 
 ```
-To check if they were added:
+npm run dev
 ```
+Run this command from the backend directory.
+
+## Verification
+
+### Using Postman (Optional)
+
+[Postman](https://www.postman.com/) is a widely used tool for testing API endpoints. While optional, it is highly recommended for development and debugging.
+
+Postman allows you to:
+- Send HTTP requests (e.g., GET, POST, PUT, DELETE)
+- Inspect response bodies, status codes, and headers
+- Test endpoints independently of the frontend
+- Identify whether issues originate from the backend or frontend
+
+#### Basic Usage
+
+1. Open Postman
+2. Select the request method (e.g., `GET`)
+3. Enter the request URL (e.g., `http://localhost:3000/api/candidates`)
+4. Click **Send**
+5. Inspect the response in the lower panel
+
+You may also:
+- Add query parameters
+- Include request bodies (for POST/PUT)
+- Set headers (e.g., `Content-Type`)
+
+Using Postman helps isolate and diagnose backend issues more efficiently, especially when frontend behavior is uncertain.
+
+### Using Browser Endpoints
+
+You can also verify the system directly through your browser by accessing the following endpoints:
+
+- **Health check**  
+  http://localhost:3000/health  
+  Confirms that the backend service is running.
+
+- **Database connection check**  
+  http://localhost:3000/db-check  
+  Verifies that the backend can successfully connect to the database.
+
+- **Retrieve candidate data**  
+  http://localhost:3000/api/candidates  
+  Returns stored candidate data. If mock data has been added, this endpoint should return a populated response.
+
+
+| Description         | Endpoint                | Body                |
+| ------------------- | ----------------------- |--------------------|
+| Get all candidates  | GET /api/candidates     |                  |
+| Get candidate by ID | GET /api/candidates/:id ||
+| Create candidate    | POST /api/candidates    |Content-Type: application/json { "name": "John Doe", "email": "john@examplecom"}|
+|Upload CV | POST /api/candidates/:id/cv | Content-Type: multipart/form-data FormData: cv: <PDF file>
+
+
+---
+
+## Known Issues
+
+### Database Not Running
+
+On Windows systems:
+
+1. Press `Win + R`
+2. Enter `services.msc` and press Enter
+3. Locate a service named similar to `postgresql-x64-XX` (version number may vary)
+4. Ensure the status is **Running**
+   - If not, right-click and select **Start**
+
+If pgAdmin is open and connected, the database is typically running.
+
+---
+
+### `/health` Responds but `/db-check` Fails
+
+This usually indicates a database configuration issue. Verify the following:
+
+- The database user has been created
+- Credentials in the `.env` file are correct
+- The database is accessible
+
+Additionally, confirm that the following query executes successfully:
+
+```sql
 SELECT * FROM candidates;
 
-or:
-
-SELECT * FROM job_posts;
 ```
 
-### Reset test data
-In the future, if you need to reset test data:
-```TRUNCATE candidates RESTART IDENTITY;```
+### Error: "Client password must be a string"
 
+This error typically occurs when:
 
-## How to test that it is running
+- The database user has not been created, or
+- The username is incorrect, causing the password to be undefined
 
-```npm run dev``` in the backend folder then
+Ensure that:
 
-### Postman (optional)
-[Postman](https://www.postman.com/) is a great tool for api testing, it is not needed but if you'd like more experience with backend or need to setup api request later, this is a good tool.
-
-If you have not used it before it has a simple interface:
-![alt text](/public/images/screenshot_postman.png)
-Here you can define if you like to get, post or whatever to the database link. You can also spesify params (do you want a certain ID or so on). 
-
-Basically it checks that the database is up and you get the response that you want. You can also check this using the code we write, however if there is issues with the code, it might be difficult to know if the cause is frontend or backend.
-
-This also gives better error codes.
-
-### Paste the link in a browser
-If you have followed the guide correctly, the links you can write is:
-
-
-Idk if this doesnt run something ain't right| http://localhost:3000/health
-
-Check if the db is running | http://localhost:3000/db-check
-
-Check that you can get the info | http://localhost:3000/api/candidates
-
-The last one should return:
-
-![screenshot of data](/public/images/database_images.png)
-
-
-## Known issues
-
-### I do not know if my db is running...?
-1. Press Win + R
-2. Type: services.msc → Enter
-3. Find a service named something like: postgresql-x64-17 (version number may differ)
-4. Status should be Running. If not running: right-click → Start
-
-If you have crapple I dont care. Also if you have pgAdmin open..it is running.
-
-### /health runs but not /db-check
-Your db is setup wrong. Double check:
-- Do you have a user?
-- Is the username set in the .env
-- Check that the ```SELECT * FROM candidates;``` command runs
-
-### Client password must be a string
-You do not have a user. And if you do the username is set wrong so the system sees the password as undefined.
-
-
-## Notes to my future self
-When moving on to using one hosted db this is the code for separate login roles:
-
-``` 
-CREATE ROLE ingvi WITH LOGIN PASSWORD 'StrongPassword1!';
-GRANT CONNECT ON DATABASE cv_database TO ingvi;
-GRANT USAGE ON SCHEMA public TO ingvi;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ingvi;
-GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO ingvi;
-```
-
+- The user exists in PostgreSQL
+- The .env configuration matches the defined credentials

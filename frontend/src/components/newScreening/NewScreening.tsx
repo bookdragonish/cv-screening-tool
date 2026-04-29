@@ -1,10 +1,10 @@
 import ErrorBox from "@/components/ErrorBox";
-import NewScreeningHeader from "@/components/newScreening/NewScreeningHeader";
-import ProcessingStatusCard from "@/components/newScreening/ProcessingStatusCard";
-import type { JobDescriptionInput } from "@/components/newScreening/UploadJobDescriptionSchema";
-import ScreeningProgressSteps from "@/components/newScreening/ScreeningProgressSteps";
+import ProcessingStatusCard from "@/components/NewScreening/ProcessingStatusCard";
+import type { JobDescriptionInput } from "@/validations/UploadJobDescriptionSchema";
+import ScreeningProgressSteps from "@/components/NewScreening/ScreeningProgressSteps";
 import type { StepStatus } from "@/types/newScreeningTypes";
-import UploadJobDescriptionCard from "@/components/newScreening/UploadJobDescriptionCard";
+import UploadJobDescriptionCard from "@/components/NewScreening/UploadJobDescriptionCard";
+import HeaderSection from "../HeaderSection";
 
 type NewScreeningError = {
   title: string;
@@ -15,7 +15,6 @@ type NewScreeningProps = {
   view: "upload" | "processing";
   isProcessingComplete: boolean;
   jobDescriptionInput: JobDescriptionInput | null;
-  canGoToResults: boolean;
   uploadStatus: StepStatus;
   processingStatus: StepStatus;
   resultsStatus: StepStatus;
@@ -31,7 +30,6 @@ function NewScreening({
   view,
   isProcessingComplete,
   jobDescriptionInput,
-  canGoToResults,
   uploadStatus,
   processingStatus,
   resultsStatus,
@@ -43,8 +41,11 @@ function NewScreening({
   onStartNew,
 }: NewScreeningProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-8">
-      <NewScreeningHeader canGoToResults={canGoToResults} />
+    <section
+      className="w-full"
+      aria-labelledby="new-screening-title"
+    >
+      <HeaderSection id="new-screening-title" header={"Ny skanning"} subsection={"Last opp en stillingsbeskrivelse for å matche aktive kandidater fra kandidat-listen."} />
 
       <ScreeningProgressSteps
         uploadStatus={uploadStatus}
@@ -72,7 +73,7 @@ function NewScreening({
           resultsHref={resultsHref}
         />
       )}
-    </div>
+    </section>
   );
 }
 

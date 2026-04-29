@@ -8,7 +8,8 @@ router.get("/", candidates.list);
 router.post("/", candidates.create);
 router.get("/:id", candidates.getById);
 router.get("/:id/cv", candidates.getCV);
- router.delete("/:id", candidates.remove);
+router.delete("/:id", candidates.remove);
+router.put("/:id", candidates.update);
 
 const upload = multer({
   storage: multer.memoryStorage(),
