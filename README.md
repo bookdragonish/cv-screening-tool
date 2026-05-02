@@ -50,7 +50,7 @@ Currently, two official plugins are:
 
 ### AI Integration
 
-- Gemeni or
+- Gemini or
 - NorLLM
 
 ### Testing
